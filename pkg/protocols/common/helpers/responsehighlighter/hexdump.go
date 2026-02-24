@@ -65,7 +65,7 @@ func (hexDump HighlightableHexDump) highlight(snippetToColor string) Highlightab
 func highlightHexSection(hexDump HighlightableHexDump, snippetToColor string) HighlightableHexDump {
 	var snippetHexCharactersMatchPattern strings.Builder
 	for _, char := range snippetToColor {
-		snippetHexCharactersMatchPattern.WriteString(fmt.Sprintf(`(%02x[ \n]+)`, char))
+		fmt.Fprintf(&snippetHexCharactersMatchPattern, `(%02x[ \n]+)`, char)
 	}
 
 	hexDump.hex = highlight(hexDump.hex, snippetHexCharactersMatchPattern.String(), func(v string) string {
@@ -84,7 +84,7 @@ func highlightAsciiSection(hexDump HighlightableHexDump, snippetToColor string) 
 		} else {
 			value = "."
 		}
-		snippetCharactersMatchPattern.WriteString(fmt.Sprintf(`(%s\n*)`, value))
+		fmt.Fprintf(&snippetCharactersMatchPattern, `(%s\n*)`, value)
 	}
 
 	hexDump.ascii = highlight(hexDump.ascii, snippetCharactersMatchPattern.String(), func(v string) string {
