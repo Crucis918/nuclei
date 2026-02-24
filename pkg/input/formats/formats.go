@@ -21,7 +21,7 @@ type ParseReqRespCallback func(rr *types.RequestResponse) bool
 type InputFormatOptions struct {
 	// Variables is list of variables that can be used
 	// while generating requests in given format
-	Variables map[string]interface{}
+	Variables map[string]any
 	// SkipFormatValidation is used to skip format validation
 	// while debugging or testing if format is invalid then
 	// requests are skipped instead of creating invalid requests

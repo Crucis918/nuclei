@@ -51,7 +51,7 @@ func CreateReportDescription(event *output.ResultEvent, formatter ResultFormatte
 	attributes.Set("Protocol", strings.ToUpper(event.Type))
 	attributes.Set("Full URL", event.Matched)
 	attributes.Set("Timestamp", event.Timestamp.Format("Mon Jan 2 15:04:05 -0700 MST 2006"))
-	attributes.ForEach(func(key string, data interface{}) {
+	attributes.ForEach(func(key string, data any) {
 		fmt.Fprintf(builder, "%s: %s\n\n", formatter.MakeBold(key), types.ToString(data))
 	})
 

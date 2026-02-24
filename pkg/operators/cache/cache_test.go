@@ -49,7 +49,7 @@ func TestDSLCache_SetGet(t *testing.T) {
 func TestRegexCache_EvictionByCapacity(t *testing.T) {
 	SetCapacities(3, 3)
 	c := Regex()
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		k := string(rune('a' + i))
 		re := regexp.MustCompile(k)
 		_ = c.Set(k, re)
@@ -99,7 +99,7 @@ func TestSetCapacities_ConcurrentAccess(t *testing.T) {
 	stop := make(chan struct{})
 
 	go func() {
-		for i := 0; i < 5000; i++ {
+		for i := range 5000 {
 			_ = Regex().Set("k"+string(rune('a'+(i%26))), regexp.MustCompile("a"))
 			_, _ = Regex().GetIFPresent("k" + string(rune('a'+(i%26))))
 			_, _ = DSL().GetIFPresent("1+2==3")
@@ -107,7 +107,7 @@ func TestSetCapacities_ConcurrentAccess(t *testing.T) {
 		close(stop)
 	}()
 
-	for i := 0; i < 200; i++ {
+	for i := range 200 {
 		SetCapacities(64+(i%5), 64+((i+1)%5))
 	}
 	<-stop

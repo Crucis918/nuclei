@@ -361,7 +361,7 @@ func TestIndexFilterFunc(t *testing.T) {
 	require.NoError(t, err)
 
 	// Add test metadata
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		metadata := &Metadata{
 			ID:       "test-" + string(rune('a'+i)),
 			FilePath: "/tmp/test.yaml",

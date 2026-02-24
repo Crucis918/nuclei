@@ -19,7 +19,7 @@ func TestHTTPCompile(t *testing.T) {
 	templateID := "testing-http"
 	request := &Request{
 		Name: "testing",
-		Payloads: map[string]interface{}{
+		Payloads: map[string]any{
 			"username": []string{"admin"},
 			"password": []string{"admin", "guest", "password", "test", "12345", "123456"},
 		},

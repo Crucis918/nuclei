@@ -177,7 +177,7 @@ func isAuthenticated(executionId string, host string, port int) (bool, error) {
 // const redis = require('nuclei/redis');
 // const result = redis.RunLuaScript('acme.com', 6379, 'password', 'return redis.call("get", KEYS[1])');
 // ```
-func RunLuaScript(ctx context.Context, host string, port int, password string, script string) (interface{}, error) {
+func RunLuaScript(ctx context.Context, host string, port int, password string, script string) (any, error) {
 	executionId := ctx.Value("executionId").(string)
 	if !protocolstate.IsHostAllowed(executionId, host) {
 		// host is not valid according to network policy

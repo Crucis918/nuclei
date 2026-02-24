@@ -89,7 +89,7 @@ type Rule struct {
 	//      or
 	//       x-header: 1
 	//       x-header: 2
-	Fuzz SliceOrMapSlice `yaml:"fuzz,omitempty" json:"fuzz,omitempty" jsonschema:"title=payloads of fuzz rule,description=Payloads to perform fuzzing substitutions with"`
+	Fuzz SliceOrMapSlice `yaml:"fuzz,omitempty" json:"fuzz" jsonschema:"title=payloads of fuzz rule,description=Payloads to perform fuzzing substitutions with"`
 	// description: |
 	//  replace-regex is regex for regex-replace rule type
 	//  it is only required for replace-regex rule type

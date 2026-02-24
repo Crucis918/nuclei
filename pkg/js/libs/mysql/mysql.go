@@ -122,7 +122,7 @@ type (
 		TLS       bool                 `json:"tls"`
 		Transport string               `json:"transport"`
 		Version   string               `json:"version,omitempty"`
-		Debug     plugins.ServiceMySQL `json:"debug,omitempty"`
+		Debug     plugins.ServiceMySQL `json:"debug"`
 		Raw       string               `json:"metadata"`
 	}
 )

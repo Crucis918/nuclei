@@ -10,7 +10,7 @@ import (
 // if template contains more than 1 request and matchers require requestcondition from
 // both requests , then we need to request for event from interactsh even if current request
 // doesnot use interactsh url in it
-func GetInteractshURLSFromEvent(event map[string]interface{}) []string {
+func GetInteractshURLSFromEvent(event map[string]any) []string {
 	interactshUrls := map[string]struct{}{}
 	for k, v := range event {
 		if strings.HasPrefix(k, "interactsh-url") {

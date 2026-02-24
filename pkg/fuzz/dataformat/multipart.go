@@ -189,7 +189,7 @@ func (m *MultiPartForm) Decode(data string) (KV, error) {
 	}
 
 	for key, files := range form.File {
-		fileContents := []interface{}{}
+		fileContents := []any{}
 		var fileMetadataList []FileMetadata
 
 		for _, fileHeader := range files {

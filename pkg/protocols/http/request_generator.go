@@ -13,7 +13,7 @@ import (
 // it will automatically select between them based on the template.
 type requestGenerator struct {
 	currentIndex     int
-	currentPayloads  map[string]interface{}
+	currentPayloads  map[string]any
 	okCurrentPayload bool
 	request          *Request
 	options          *protocols.ExecutorOptions
@@ -41,7 +41,7 @@ func (request *Request) newGenerator(disablePayloads bool) *requestGenerator {
 
 // nextValue returns the next path or the next raw request depending on user input
 // It returns false if all the inputs have been exhausted by the generator instance.
-func (r *requestGenerator) nextValue() (value string, payloads map[string]interface{}, result bool) {
+func (r *requestGenerator) nextValue() (value string, payloads map[string]any, result bool) {
 	// Iterate each payload sequentially for each request path/raw
 	//
 	// If the sequence has finished for the current payload values

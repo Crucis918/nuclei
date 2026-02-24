@@ -11,7 +11,7 @@ import (
 func memoizedconnectWithDSN(executionId string, dsn string) (bool, error) {
 	hash := "connectWithDSN" + ":" + fmt.Sprint(executionId) + ":" + fmt.Sprint(dsn)
 
-	v, err, _ := protocolstate.Memoizer.Do(hash, func() (interface{}, error) {
+	v, err, _ := protocolstate.Memoizer.Do(hash, func() (any, error) {
 		return connectWithDSN(executionId, dsn)
 	})
 	if err != nil {

@@ -20,7 +20,7 @@ type MultiProtocol struct {
 	requests     []protocols.Request
 	options      *protocols.ExecutorOptions
 	results      *atomic.Bool
-	readOnlyArgs map[string]interface{} // readOnlyArgs are readonly args that are available after compilation
+	readOnlyArgs map[string]any // readOnlyArgs are readonly args that are available after compilation
 }
 
 // NewMultiProtocol creates a new multiprotocol template engine from a list of requests
@@ -58,7 +58,7 @@ func (m *MultiProtocol) ExecuteWithResults(ctx *scan.ScanContext) error {
 	m.options.GetTemplateCtx(ctx.Input.MetaInput).Merge(m.readOnlyArgs)
 
 	// add all input args to template context
-	ctx.Input.ForEach(func(key string, value interface{}) {
+	ctx.Input.ForEach(func(key string, value any) {
 		m.options.GetTemplateCtx(ctx.Input.MetaInput).Set(key, value)
 	})
 

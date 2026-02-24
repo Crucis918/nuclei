@@ -432,7 +432,7 @@ func TestCacheConcurrency(t *testing.T) {
 	// Test concurrent writes
 	t.Run("Concurrent Set", func(t *testing.T) {
 		done := make(chan bool)
-		for i := 0; i < 10; i++ {
+		for i := range 10 {
 			go func(id int) {
 				metadata := &Metadata{
 					ID:       string(rune('a' + id)),
@@ -444,7 +444,7 @@ func TestCacheConcurrency(t *testing.T) {
 		}
 
 		// Wait for all goroutines
-		for i := 0; i < 10; i++ {
+		for range 10 {
 			<-done
 		}
 
@@ -460,7 +460,7 @@ func TestCacheConcurrency(t *testing.T) {
 		cache.Set(metadata.FilePath, metadata)
 
 		done := make(chan bool)
-		for i := 0; i < 20; i++ {
+		for range 20 {
 			go func() {
 				_ = cache.Has(metadata.FilePath)
 				done <- true
@@ -468,7 +468,7 @@ func TestCacheConcurrency(t *testing.T) {
 		}
 
 		// Wait for all goroutines
-		for i := 0; i < 20; i++ {
+		for range 20 {
 			<-done
 		}
 	})
@@ -482,7 +482,7 @@ func TestCacheSize(t *testing.T) {
 	require.Equal(t, 0, cache.Size(), "New cache should have size 0")
 
 	// Add entries
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		metadata := &Metadata{
 			ID:       string(rune('a' + i)),
 			FilePath: filepath.Join("/tmp", string(rune('a'+i))+".yaml"),
@@ -620,7 +620,7 @@ func TestCachePersistenceWithLargeDataset(t *testing.T) {
 	require.NoError(t, err)
 
 	// Add 100 entries to test bulk operations
-	for i := 0; i < 100; i++ {
+	for i := range 100 {
 		metadata := &Metadata{
 			ID:       fmt.Sprintf("template-%d", i),
 			FilePath: filepath.Join("/tmp", fmt.Sprintf("template-%d.yaml", i)),

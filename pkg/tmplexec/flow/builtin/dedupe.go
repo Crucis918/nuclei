@@ -60,7 +60,7 @@ func NewDedupe(vm *goja.Runtime) *Dedupe {
 }
 
 // hashValue returns a hash of the value
-func hashValue(value interface{}) string {
+func hashValue(value any) string {
 	res := types.ToString(value)
 	md5sum := md5.Sum([]byte(res))
 	return string(md5sum[:])

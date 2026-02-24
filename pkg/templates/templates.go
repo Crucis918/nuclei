@@ -135,15 +135,15 @@ type Template struct {
 	//   WARNING: 'signature' will be deprecated and will be removed in a future release. Prefer using 'code' protocol for writing cloud checks
 	// values:
 	//   - "AWS"
-	Signature http.SignatureTypeHolder `yaml:"signature,omitempty" json:"signature,omitempty" jsonschema:"title=signature is the http request signature method,description=Signature is the HTTP Request signature Method,enum=AWS,deprecated=true"`
+	Signature http.SignatureTypeHolder `yaml:"signature,omitempty" json:"signature" jsonschema:"title=signature is the http request signature method,description=Signature is the HTTP Request signature Method,enum=AWS,deprecated=true"`
 
 	// description: |
 	//   Variables contains any variables for the current request.
-	Variables variables.Variable `yaml:"variables,omitempty" json:"variables,omitempty" jsonschema:"title=variables for the http request,description=Variables contains any variables for the current request,type=object"`
+	Variables variables.Variable `yaml:"variables,omitempty" json:"variables" jsonschema:"title=variables for the http request,description=Variables contains any variables for the current request,type=object"`
 
 	// description: |
 	//   Constants contains any scalar constant for the current template
-	Constants map[string]interface{} `yaml:"constants,omitempty" json:"constants,omitempty" jsonschema:"title=constant for the template,description=constants contains any constant for the template,type=object"`
+	Constants map[string]any `yaml:"constants,omitempty" json:"constants,omitempty" jsonschema:"title=constant for the template,description=constants contains any constant for the template,type=object"`
 
 	// TotalRequests is the total number of requests for the template.
 	TotalRequests int `yaml:"-" json:"-"`
@@ -333,7 +333,7 @@ func (template *Template) MarshalYAML() ([]byte, error) {
 }
 
 // UnmarshalYAML forces recursive struct validation after unmarshal operation
-func (template *Template) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (template *Template) UnmarshalYAML(unmarshal func(any) error) error {
 	type Alias Template
 	alias := &Alias{}
 	err := unmarshal(alias)
@@ -575,7 +575,7 @@ func (template *Template) UnmarshalJSON(data []byte) error {
 	// check if the template contains more than 1 protocol request
 	// if so  preserve the order of the protocols and requests
 	if template.hasMultipleRequests() {
-		var tempMap map[string]interface{}
+		var tempMap map[string]any
 		err = json.Unmarshal(data, &tempMap)
 		if err != nil {
 			return errkit.Wrapf(err, "failed to unmarshal multi protocol template %s", template.ID)

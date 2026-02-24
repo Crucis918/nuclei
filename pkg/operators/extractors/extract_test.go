@@ -23,10 +23,10 @@ func TestExtractor_ExtractKval(t *testing.T) {
 	err := e.CompileExtractors()
 	require.Nil(t, err)
 
-	got := e.ExtractKval(map[string]interface{}{"content_type": "text/html"})
+	got := e.ExtractKval(map[string]any{"content_type": "text/html"})
 	require.Equal(t, map[string]struct{}{"text/html": {}}, got)
 
-	got = e.ExtractKval(map[string]interface{}{"authorization": "Basic YWxhZGRpbjpvcGVuc2VzYW1l"})
+	got = e.ExtractKval(map[string]any{"authorization": "Basic YWxhZGRpbjpvcGVuc2VzYW1l"})
 	require.Equal(t, map[string]struct{}{}, got)
 
 }
@@ -82,9 +82,9 @@ func TestExtractor_ExtractDSL(t *testing.T) {
 	err := e.CompileExtractors()
 	require.Nil(t, err)
 
-	got := e.ExtractDSL(map[string]interface{}{"hello": "hi"})
+	got := e.ExtractDSL(map[string]any{"hello": "hi"})
 	require.Equal(t, map[string]struct{}{"HI": {}}, got)
 
-	got = e.ExtractDSL(map[string]interface{}{"hi": "hello"})
+	got = e.ExtractDSL(map[string]any{"hi": "hello"})
 	require.Equal(t, map[string]struct{}{}, got)
 }

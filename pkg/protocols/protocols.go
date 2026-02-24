@@ -104,7 +104,7 @@ type ExecutorOptions struct {
 	// Variables is a list of variables from template
 	Variables variables.Variable
 	// Constants is a list of constants from template
-	Constants map[string]interface{}
+	Constants map[string]any
 	// ExcludeMatchers is the list of matchers to exclude
 	ExcludeMatchers *excludematchers.ExcludeMatchers
 	// InputHelper is a helper for input normalization
@@ -221,7 +221,7 @@ func (e *ExecutorOptions) GetTemplateCtx(input *contextargs.MetaInput) *contexta
 
 // AddTemplateVars adds vars to template context with given template type as prefix
 // this method is no-op if template is not multi protocol
-func (e *ExecutorOptions) AddTemplateVars(input *contextargs.MetaInput, reqType templateTypes.ProtocolType, reqID string, vars map[string]interface{}) {
+func (e *ExecutorOptions) AddTemplateVars(input *contextargs.MetaInput, reqType templateTypes.ProtocolType, reqID string, vars map[string]any) {
 	// if we want to disable adding response variables and other variables to template context
 	// this is the statement that does it . template context is currently only enabled for
 	// multiprotocol and flow templates
@@ -249,7 +249,7 @@ func (e *ExecutorOptions) AddTemplateVars(input *contextargs.MetaInput, reqType 
 
 // AddTemplateVar adds given var to template context with given template type as prefix
 // this method is no-op if template is not multi protocol
-func (e *ExecutorOptions) AddTemplateVar(input *contextargs.MetaInput, templateType templateTypes.ProtocolType, reqID string, key string, value interface{}) {
+func (e *ExecutorOptions) AddTemplateVar(input *contextargs.MetaInput, templateType templateTypes.ProtocolType, reqID string, key string, value any) {
 	if !e.IsMultiProtocol && e.Flow == "" {
 		// no-op if not multi protocol template or flow template
 		return
@@ -271,44 +271,44 @@ func (e *ExecutorOptions) AddTemplateVar(input *contextargs.MetaInput, templateT
 // Copy returns a copy of the executeroptions structure
 func (e *ExecutorOptions) Copy() *ExecutorOptions {
 	copy := &ExecutorOptions{
-		TemplateID:          e.TemplateID,
-		TemplatePath:        e.TemplatePath,
-		TemplateInfo:        e.TemplateInfo,
-		TemplateVerifier:    e.TemplateVerifier,
+		TemplateID:                   e.TemplateID,
+		TemplatePath:                 e.TemplatePath,
+		TemplateInfo:                 e.TemplateInfo,
+		TemplateVerifier:             e.TemplateVerifier,
 		TemplateVerificationCallback: e.TemplateVerificationCallback,
-		RawTemplate:         e.RawTemplate,
-		Output:              e.Output,
-		Options:             e.Options,
-		IssuesClient:        e.IssuesClient,
-		Progress:            e.Progress,
-		RateLimiter:         e.RateLimiter,
-		Catalog:             e.Catalog,
-		ProjectFile:         e.ProjectFile,
-		Browser:             e.Browser,
-		Interactsh:          e.Interactsh,
-		HostErrorsCache:     e.HostErrorsCache,
-		StopAtFirstMatch:    e.StopAtFirstMatch,
-		Variables:           e.Variables,
-		Constants:           e.Constants,
-		ExcludeMatchers:     e.ExcludeMatchers,
-		InputHelper:         e.InputHelper,
-		FuzzParamsFrequency: e.FuzzParamsFrequency,
-		FuzzStatsDB:         e.FuzzStatsDB,
-		Operators:           e.Operators,
-		DoNotCache:          e.DoNotCache,
-		Colorizer:           e.Colorizer,
-		WorkflowLoader:      e.WorkflowLoader,
-		ResumeCfg:           e.ResumeCfg,
-		ProtocolType:        e.ProtocolType,
-		Flow:                e.Flow,
-		IsMultiProtocol:     e.IsMultiProtocol,
-		JsCompiler:          e.JsCompiler,
-		AuthProvider:        e.AuthProvider,
-		TemporaryDirectory:  e.TemporaryDirectory,
-		Parser:              e.Parser,
-		ExportReqURLPattern: e.ExportReqURLPattern,
-		GlobalMatchers:      e.GlobalMatchers,
-		Logger:              e.Logger,
+		RawTemplate:                  e.RawTemplate,
+		Output:                       e.Output,
+		Options:                      e.Options,
+		IssuesClient:                 e.IssuesClient,
+		Progress:                     e.Progress,
+		RateLimiter:                  e.RateLimiter,
+		Catalog:                      e.Catalog,
+		ProjectFile:                  e.ProjectFile,
+		Browser:                      e.Browser,
+		Interactsh:                   e.Interactsh,
+		HostErrorsCache:              e.HostErrorsCache,
+		StopAtFirstMatch:             e.StopAtFirstMatch,
+		Variables:                    e.Variables,
+		Constants:                    e.Constants,
+		ExcludeMatchers:              e.ExcludeMatchers,
+		InputHelper:                  e.InputHelper,
+		FuzzParamsFrequency:          e.FuzzParamsFrequency,
+		FuzzStatsDB:                  e.FuzzStatsDB,
+		Operators:                    e.Operators,
+		DoNotCache:                   e.DoNotCache,
+		Colorizer:                    e.Colorizer,
+		WorkflowLoader:               e.WorkflowLoader,
+		ResumeCfg:                    e.ResumeCfg,
+		ProtocolType:                 e.ProtocolType,
+		Flow:                         e.Flow,
+		IsMultiProtocol:              e.IsMultiProtocol,
+		JsCompiler:                   e.JsCompiler,
+		AuthProvider:                 e.AuthProvider,
+		TemporaryDirectory:           e.TemporaryDirectory,
+		Parser:                       e.Parser,
+		ExportReqURLPattern:          e.ExportReqURLPattern,
+		GlobalMatchers:               e.GlobalMatchers,
+		Logger:                       e.Logger,
 	}
 	copy.CreateTemplateCtxStore()
 	return copy
@@ -327,9 +327,9 @@ type Request interface {
 	// Match performs matching operation for a matcher on model and returns:
 	// true and a list of matched snippets if the matcher type is supports it
 	// otherwise false and an empty string slice
-	Match(data map[string]interface{}, matcher *matchers.Matcher) (bool, []string)
+	Match(data map[string]any, matcher *matchers.Matcher) (bool, []string)
 	// Extract performs extracting operation for an extractor on model and returns true or false.
-	Extract(data map[string]interface{}, matcher *extractors.Extractor) map[string]struct{}
+	Extract(data map[string]any, matcher *extractors.Extractor) map[string]struct{}
 	// ExecuteWithResults executes the protocol requests and returns results instead of writing them.
 	ExecuteWithResults(input *contextargs.Context, dynamicValues, previous output.InternalEvent, callback OutputEventCallback) error
 	// MakeResultEventItem creates a result event from internal wrapped event. Intended to be used by MakeResultEventItem internally
@@ -384,7 +384,7 @@ func MakeDefaultResultEvent(request Request, wrapped *output.InternalWrappedEven
 }
 
 // MakeDefaultExtractFunc performs extracting operation for an extractor on model and returns true or false.
-func MakeDefaultExtractFunc(data map[string]interface{}, extractor *extractors.Extractor) map[string]struct{} {
+func MakeDefaultExtractFunc(data map[string]any, extractor *extractors.Extractor) map[string]struct{} {
 	part := extractor.Part
 	if part == "" {
 		part = "response"
@@ -412,7 +412,7 @@ func MakeDefaultExtractFunc(data map[string]interface{}, extractor *extractors.E
 }
 
 // MakeDefaultMatchFunc performs matching operation for a matcher on model and returns true or false.
-func MakeDefaultMatchFunc(data map[string]interface{}, matcher *matchers.Matcher) (bool, []string) {
+func MakeDefaultMatchFunc(data map[string]any, matcher *matchers.Matcher) (bool, []string) {
 	part := matcher.Part
 	if part == "" {
 		part = "response"

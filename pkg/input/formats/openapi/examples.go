@@ -11,7 +11,7 @@ import (
 
 // From: https://github.com/danielgtaylor/apisprout/blob/master/example.go
 
-func getSchemaExample(schema *openapi3.Schema) (interface{}, bool) {
+func getSchemaExample(schema *openapi3.Schema) (any, bool) {
 	if schema.Example != nil {
 		return schema.Example, true
 	}
@@ -91,7 +91,7 @@ func isRequired(schema *openapi3.Schema, key string) bool {
 
 type cachedSchema struct {
 	pending bool
-	out     interface{}
+	out     any
 }
 
 var (
@@ -102,7 +102,7 @@ var (
 	ErrNoExample = errors.New("No example found")
 )
 
-func openAPIExample(schema *openapi3.Schema, cache map[*openapi3.Schema]*cachedSchema) (out interface{}, err error) {
+func openAPIExample(schema *openapi3.Schema, cache map[*openapi3.Schema]*cachedSchema) (out any, err error) {
 	if ex, ok := getSchemaExample(schema); ok {
 		return ex, nil
 	}
@@ -126,7 +126,7 @@ func openAPIExample(schema *openapi3.Schema, cache map[*openapi3.Schema]*cachedS
 
 	// Handle combining keywords
 	if len(schema.OneOf) > 0 {
-		var ex interface{}
+		var ex any
 		var err error
 
 		for _, candidate := range schema.OneOf {
@@ -138,7 +138,7 @@ func openAPIExample(schema *openapi3.Schema, cache map[*openapi3.Schema]*cachedS
 		return ex, err
 	}
 	if len(schema.AnyOf) > 0 {
-		var ex interface{}
+		var ex any
 		var err error
 
 		for _, candidate := range schema.AnyOf {
@@ -150,7 +150,7 @@ func openAPIExample(schema *openapi3.Schema, cache map[*openapi3.Schema]*cachedS
 		return ex, err
 	}
 	if len(schema.AllOf) > 0 {
-		example := map[string]interface{}{}
+		example := map[string]any{}
 
 		for _, allOf := range schema.AllOf {
 			candidate, err := openAPIExample(allOf.Value, cache)
@@ -158,7 +158,7 @@ func openAPIExample(schema *openapi3.Schema, cache map[*openapi3.Schema]*cachedS
 				return nil, err
 			}
 
-			value, ok := candidate.(map[string]interface{})
+			value, ok := candidate.(map[string]any)
 			if !ok {
 				return nil, ErrNoExample
 			}
@@ -221,7 +221,7 @@ func openAPIExample(schema *openapi3.Schema, cache map[*openapi3.Schema]*cachedS
 		}
 		return example, nil
 	case schema.Type.Is("array"), schema.Items != nil:
-		example := []interface{}{}
+		example := []any{}
 
 		if schema.Items != nil && schema.Items.Value != nil {
 			ex, err := openAPIExample(schema.Items.Value, cache)
@@ -237,7 +237,7 @@ func openAPIExample(schema *openapi3.Schema, cache map[*openapi3.Schema]*cachedS
 		}
 		return example, nil
 	case schema.Type.Is("object"), len(schema.Properties) > 0:
-		example := map[string]interface{}{}
+		example := map[string]any{}
 
 		for k, v := range schema.Properties {
 			if excludeFromMode(v.Value) {
@@ -279,7 +279,7 @@ func openAPIExample(schema *openapi3.Schema, cache map[*openapi3.Schema]*cachedS
 // object, which is an extended subset of JSON Schema.
 //
 // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.1.md#schemaObject
-func generateExampleFromSchema(schema *openapi3.Schema) (interface{}, error) {
+func generateExampleFromSchema(schema *openapi3.Schema) (any, error) {
 	return openAPIExample(schema, make(map[*openapi3.Schema]*cachedSchema)) // TODO: Use caching
 }
 

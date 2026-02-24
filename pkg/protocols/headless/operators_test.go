@@ -31,7 +31,7 @@ func TestRequest_ExtractXPath(t *testing.T) {
 </body>
 </html>`
 
-	data := map[string]interface{}{
+	data := map[string]any{
 		"data": htmlContent,
 	}
 
@@ -104,7 +104,7 @@ func TestRequest_ExtractJSON(t *testing.T) {
 		}
 	}`
 
-	data := map[string]interface{}{
+	data := map[string]any{
 		"data": jsonContent,
 	}
 
@@ -170,7 +170,7 @@ func TestRequest_ExtractJSON(t *testing.T) {
 
 	// Test with invalid JSON
 	invalidJSON := `{"invalid": json}`
-	data = map[string]interface{}{
+	data = map[string]any{
 		"data": invalidJSON,
 	}
 
@@ -213,7 +213,7 @@ func TestRequest_MatchXPath(t *testing.T) {
 </body>
 </html>`
 
-	data := map[string]interface{}{
+	data := map[string]any{
 		"data": htmlContent,
 	}
 
@@ -247,7 +247,7 @@ func TestRequest_MatchXPath(t *testing.T) {
 func TestRequest_getMatchPart(t *testing.T) {
 	request := &Request{}
 
-	data := map[string]interface{}{
+	data := map[string]any{
 		"data":    "body content",
 		"header":  "header content",
 		"history": "history content",
@@ -291,7 +291,7 @@ func TestRequest_ExtractWithDifferentParts(t *testing.T) {
 	htmlContent := `<!doctype html><html><body><div><h1>Title</h1></div></body></html>`
 	jsonContent := `{"id": 123}`
 
-	data := map[string]interface{}{
+	data := map[string]any{
 		"data":    htmlContent,
 		"header":  jsonContent,
 		"history": htmlContent,
@@ -365,7 +365,7 @@ func TestRequest_ExtractWithComplexJSON(t *testing.T) {
 		}
 	}`
 
-	data := map[string]interface{}{
+	data := map[string]any{
 		"data": jsonContent,
 	}
 
@@ -479,7 +479,7 @@ func TestRequest_ExtractWithComplexHTML(t *testing.T) {
 </body>
 </html>`
 
-	data := map[string]interface{}{
+	data := map[string]any{
 		"data": htmlContent,
 	}
 

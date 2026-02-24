@@ -29,7 +29,7 @@ type Context struct {
 	CookieJar *cookiejar.Jar
 
 	// Args is a workflow shared key-value store
-	args *mapsutil.SyncLockMap[string, interface{}]
+	args *mapsutil.SyncLockMap[string, any]
 }
 
 // Create a new contextargs instance
@@ -56,8 +56,8 @@ func NewWithInput(ctx context.Context, input string) *Context {
 		ctx:       ctx,
 		MetaInput: metaInput,
 		CookieJar: jar,
-		args: &mapsutil.SyncLockMap[string, interface{}]{
-			Map:      make(map[string]interface{}),
+		args: &mapsutil.SyncLockMap[string, any]{
+			Map:      make(map[string]any),
 			ReadOnly: atomic.Bool{},
 		},
 	}
@@ -69,7 +69,7 @@ func (ctx *Context) Context() context.Context {
 }
 
 // Set the specific key-value pair
-func (ctx *Context) Set(key string, value interface{}) {
+func (ctx *Context) Set(key string, value any) {
 	_ = ctx.args.Set(key, value)
 }
 
@@ -78,12 +78,12 @@ func (ctx *Context) hasArgs() bool {
 }
 
 // Merge the key-value pairs
-func (ctx *Context) Merge(args map[string]interface{}) {
+func (ctx *Context) Merge(args map[string]any) {
 	_ = ctx.args.Merge(args)
 }
 
 // Add the specific key-value pair
-func (ctx *Context) Add(key string, v interface{}) {
+func (ctx *Context) Add(key string, v any) {
 	values, ok := ctx.args.Get(key)
 	if !ok {
 		ctx.Set(key, v)
@@ -103,7 +103,7 @@ func (ctx *Context) Add(key string, v interface{}) {
 		}
 	default:
 		values, _ := ctx.Get(key)
-		ctx.Set(key, []interface{}{values, v})
+		ctx.Set(key, []any{values, v})
 	}
 }
 
@@ -142,7 +142,7 @@ func (ctx *Context) Port() string {
 }
 
 // Get the value with specific key if exists
-func (ctx *Context) Get(key string) (interface{}, bool) {
+func (ctx *Context) Get(key string) (any, bool) {
 	if !ctx.hasArgs() {
 		return nil, false
 	}
@@ -150,7 +150,7 @@ func (ctx *Context) Get(key string) (interface{}, bool) {
 	return ctx.args.Get(key)
 }
 
-func (ctx *Context) GetAll() map[string]interface{} {
+func (ctx *Context) GetAll() map[string]any {
 	if !ctx.hasArgs() {
 		return nil
 	}
@@ -158,8 +158,8 @@ func (ctx *Context) GetAll() map[string]interface{} {
 	return ctx.args.Clone().Map
 }
 
-func (ctx *Context) ForEach(f func(string, interface{})) {
-	_ = ctx.args.Iterate(func(k string, v interface{}) error {
+func (ctx *Context) ForEach(f func(string, any)) {
+	_ = ctx.args.Iterate(func(k string, v any) error {
 		f(k, v)
 		return nil
 	})

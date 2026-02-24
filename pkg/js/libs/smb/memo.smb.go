@@ -13,7 +13,7 @@ import (
 func memoizedconnectSMBInfoMode(executionId string, host string, port int) (*smb.SMBLog, error) {
 	hash := "connectSMBInfoMode" + ":" + fmt.Sprint(executionId) + ":" + fmt.Sprint(host) + ":" + fmt.Sprint(port)
 
-	v, err, _ := protocolstate.Memoizer.Do(hash, func() (interface{}, error) {
+	v, err, _ := protocolstate.Memoizer.Do(hash, func() (any, error) {
 		return connectSMBInfoMode(executionId, host, port)
 	})
 	if err != nil {
@@ -29,7 +29,7 @@ func memoizedconnectSMBInfoMode(executionId string, host string, port int) (*smb
 func memoizedlistShares(executionId string, host string, port int, user string, password string) ([]string, error) {
 	hash := "listShares" + ":" + fmt.Sprint(executionId) + ":" + fmt.Sprint(host) + ":" + fmt.Sprint(port) + ":" + fmt.Sprint(user) + ":" + fmt.Sprint(password)
 
-	v, err, _ := protocolstate.Memoizer.Do(hash, func() (interface{}, error) {
+	v, err, _ := protocolstate.Memoizer.Do(hash, func() (any, error) {
 		return listShares(executionId, host, port, user, password)
 	})
 	if err != nil {

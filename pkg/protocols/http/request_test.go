@@ -234,7 +234,7 @@ func TestReqURLPattern(t *testing.T) {
 
 	// this is how generated constants are added to template
 	// generated constants are preprocessors that are executed while loading once
-	executerOpts.Constants = map[string]interface{}{
+	executerOpts.Constants = map[string]any{
 		"{{randstr}}": "2eNU2kbrOcUDzhnUL1RGvSo1it7",
 	}
 
@@ -293,7 +293,7 @@ func TestExecuteParallelHTTP_StopAtFirstMatch(t *testing.T) {
 		Method:  HTTPMethodTypeHolder{MethodType: HTTPGet},
 		Path:    []string{"{{BaseURL}}/p?x={{v}}"},
 		Threads: 2,
-		Payloads: map[string]interface{}{
+		Payloads: map[string]any{
 			"v": []string{"1", "2"},
 		},
 		Operators: operators.Operators{
@@ -342,7 +342,7 @@ func TestExecuteParallelHTTP_SkipOnUnresponsiveFromCache(t *testing.T) {
 		Method:  HTTPMethodTypeHolder{MethodType: HTTPGet},
 		Path:    []string{"{{BaseURL}}/p?x={{v}}"},
 		Threads: 2,
-		Payloads: map[string]interface{}{
+		Payloads: map[string]any{
 			"v": []string{"1", "2"},
 		},
 		Operators: operators.Operators{
@@ -410,7 +410,7 @@ func TestExecuteParallelHTTP_GoroutineLeaks(t *testing.T) {
 			Method:  HTTPMethodTypeHolder{MethodType: HTTPGet},
 			Path:    []string{"{{BaseURL}}/test?param={{payload}}"},
 			Threads: 4,
-			Payloads: map[string]interface{}{
+			Payloads: map[string]any{
 				"payload": []string{"1", "2", "3", "4", "5", "6", "7", "8"},
 			},
 			Operators: operators.Operators{
@@ -451,7 +451,7 @@ func TestExecuteParallelHTTP_GoroutineLeaks(t *testing.T) {
 			Method:  HTTPMethodTypeHolder{MethodType: HTTPGet},
 			Path:    []string{"{{BaseURL}}/test?param={{payload}}"},
 			Threads: 3,
-			Payloads: map[string]interface{}{
+			Payloads: map[string]any{
 				"payload": []string{"1", "2", "3", "4", "5"},
 			},
 			Operators: operators.Operators{
@@ -493,7 +493,7 @@ func TestExecuteParallelHTTP_GoroutineLeaks(t *testing.T) {
 			Method:  HTTPMethodTypeHolder{MethodType: HTTPGet},
 			Path:    []string{"{{BaseURL}}/test?param={{payload}}"},
 			Threads: 3,
-			Payloads: map[string]interface{}{
+			Payloads: map[string]any{
 				"payload": []string{"1", "2", "3", "4", "5"},
 			},
 			Operators: operators.Operators{

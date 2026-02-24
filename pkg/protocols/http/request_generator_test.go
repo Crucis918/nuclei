@@ -30,7 +30,7 @@ func TestRequestGeneratorClusterBombSingle(t *testing.T) {
 	var err error
 
 	req := &Request{
-		Payloads:   map[string]interface{}{"username": []string{"admin", "tomcat", "manager"}, "password": []string{"password", "test", "secret"}},
+		Payloads:   map[string]any{"username": []string{"admin", "tomcat", "manager"}, "password": []string{"password", "test", "secret"}},
 		AttackType: generators.AttackTypeHolder{Value: generators.ClusterBombAttack},
 		Raw:        []string{`GET /{{username}}:{{password}} HTTP/1.1`},
 	}
@@ -39,7 +39,7 @@ func TestRequestGeneratorClusterBombSingle(t *testing.T) {
 	require.Nil(t, err, "could not create generator")
 
 	generator := req.newGenerator(false)
-	var payloads []map[string]interface{}
+	var payloads []map[string]any
 	for {
 		_, data, ok := generator.nextValue()
 		if !ok {
@@ -54,7 +54,7 @@ func TestRequestGeneratorClusterBombMultipleRaw(t *testing.T) {
 	var err error
 
 	req := &Request{
-		Payloads:   map[string]interface{}{"username": []string{"admin", "tomcat", "manager"}, "password": []string{"password", "test", "secret"}},
+		Payloads:   map[string]any{"username": []string{"admin", "tomcat", "manager"}, "password": []string{"password", "test", "secret"}},
 		AttackType: generators.AttackTypeHolder{Value: generators.ClusterBombAttack},
 		Raw:        []string{`GET /{{username}}:{{password}} HTTP/1.1`, `GET /{{username}}@{{password}} HTTP/1.1`},
 	}
@@ -63,7 +63,7 @@ func TestRequestGeneratorClusterBombMultipleRaw(t *testing.T) {
 	require.Nil(t, err, "could not create generator")
 
 	generator := req.newGenerator(false)
-	var payloads []map[string]interface{}
+	var payloads []map[string]any
 	for {
 		_, data, ok := generator.nextValue()
 		if !ok {

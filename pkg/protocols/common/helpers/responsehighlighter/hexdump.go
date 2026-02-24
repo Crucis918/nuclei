@@ -33,11 +33,11 @@ func (hexDump HighlightableHexDump) len() int {
 }
 
 func (hexDump HighlightableHexDump) String() string {
-	var result string
+	var result strings.Builder
 	for i := 0; i < hexDump.len(); i++ {
-		result += hexDump.index[i] + hexDump.hex[i] + "|" + hexDump.ascii[i] + "|\n"
+		result.WriteString(hexDump.index[i] + hexDump.hex[i] + "|" + hexDump.ascii[i] + "|\n")
 	}
-	return result
+	return result.String()
 }
 
 func toHighLightedHexDump(hexDump, snippetToHighlight string) (HighlightableHexDump, error) {
@@ -63,12 +63,12 @@ func (hexDump HighlightableHexDump) highlight(snippetToColor string) Highlightab
 }
 
 func highlightHexSection(hexDump HighlightableHexDump, snippetToColor string) HighlightableHexDump {
-	var snippetHexCharactersMatchPattern string
+	var snippetHexCharactersMatchPattern strings.Builder
 	for _, char := range snippetToColor {
-		snippetHexCharactersMatchPattern += fmt.Sprintf(`(%02x[ \n]+)`, char)
+		snippetHexCharactersMatchPattern.WriteString(fmt.Sprintf(`(%02x[ \n]+)`, char))
 	}
 
-	hexDump.hex = highlight(hexDump.hex, snippetHexCharactersMatchPattern, func(v string) string {
+	hexDump.hex = highlight(hexDump.hex, snippetHexCharactersMatchPattern.String(), func(v string) string {
 		return hexValuePattern.ReplaceAllString(v, addColor("$1"))
 	})
 
@@ -76,7 +76,7 @@ func highlightHexSection(hexDump HighlightableHexDump, snippetToColor string) Hi
 }
 
 func highlightAsciiSection(hexDump HighlightableHexDump, snippetToColor string) HighlightableHexDump {
-	var snippetCharactersMatchPattern string
+	var snippetCharactersMatchPattern strings.Builder
 	for _, v := range snippetToColor {
 		var value string
 		if IsASCIIPrintable(v) {
@@ -84,10 +84,10 @@ func highlightAsciiSection(hexDump HighlightableHexDump, snippetToColor string) 
 		} else {
 			value = "."
 		}
-		snippetCharactersMatchPattern += fmt.Sprintf(`(%s\n*)`, value)
+		snippetCharactersMatchPattern.WriteString(fmt.Sprintf(`(%s\n*)`, value))
 	}
 
-	hexDump.ascii = highlight(hexDump.ascii, snippetCharactersMatchPattern, func(v string) string {
+	hexDump.ascii = highlight(hexDump.ascii, snippetCharactersMatchPattern.String(), func(v string) string {
 		if len(v) > 1 {
 			return addColor(string(v[0])) + v[1:] // do not color new line characters
 		}
@@ -101,13 +101,13 @@ func highlight(values []string, snippetCharactersMatchPattern string, replaceToF
 	rows := strings.Join(values, "\n")
 	compiledPattern := regexp.MustCompile(snippetCharactersMatchPattern)
 	for _, submatch := range compiledPattern.FindAllStringSubmatch(rows, -1) {
-		var replaceTo string
-		var replaceFrom string
+		var replaceTo strings.Builder
+		var replaceFrom strings.Builder
 		for _, matchedValueWithSuffix := range submatch[1:] {
-			replaceFrom += matchedValueWithSuffix
-			replaceTo += replaceToFunc(matchedValueWithSuffix)
+			replaceFrom.WriteString(matchedValueWithSuffix)
+			replaceTo.WriteString(replaceToFunc(matchedValueWithSuffix))
 		}
-		rows = strings.ReplaceAll(rows, replaceFrom, replaceTo)
+		rows = strings.ReplaceAll(rows, replaceFrom.String(), replaceTo.String())
 	}
 	return strings.Split(rows, "\n")
 }

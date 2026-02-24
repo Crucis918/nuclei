@@ -47,7 +47,7 @@ func ContainsUnresolvedVariables(items ...string) error {
 
 // ContainsVariablesWithNames returns an error with variable names if the passed
 // input contains unresolved {{<pattern-here>}} variables within the provided list
-func ContainsVariablesWithNames(names map[string]interface{}, items ...string) error {
+func ContainsVariablesWithNames(names map[string]any, items ...string) error {
 	for _, data := range items {
 		matches := unresolvedVariablesRegex.FindAllStringSubmatch(data, -1)
 		if len(matches) == 0 {
@@ -81,7 +81,7 @@ func ContainsVariablesWithNames(names map[string]interface{}, items ...string) e
 
 // ContainsVariablesWithIgnoreList returns an error with variable names if the passed
 // input contains unresolved {{<pattern-here>}} other than the ones listed in the ignore list
-func ContainsVariablesWithIgnoreList(skipNames map[string]interface{}, items ...string) error {
+func ContainsVariablesWithIgnoreList(skipNames map[string]any, items ...string) error {
 	var unresolvedVariables []string
 	for _, data := range items {
 		matches := unresolvedVariablesRegex.FindAllStringSubmatch(data, -1)

@@ -46,8 +46,8 @@ func (p *EntityParser) scrapeAndCreate(typeName string) error {
 	}
 
 	// fmt.Printf("fields %v\n", namedStruct.NumFields())
-	for i := 0; i < namedStruct.NumFields(); i++ {
-		field := namedStruct.Field(i)
+	for field := range namedStruct.Fields() {
+		field := field
 		fieldName := field.Name()
 		if field.Exported() {
 			recursiveScrapeType(nil, fieldName, field.Type(), d)
@@ -117,8 +117,8 @@ func recursiveScrapeType(parentType types.Type, fieldName string, fieldType type
 			nested:  map[string]map[string]*ExtObject{},
 		}
 		extObject.nested[fieldName][fieldType.String()] = nestedExtObject
-		for i := 0; i < t.NumFields(); i++ {
-			field := t.Field(i)
+		for field := range t.Fields() {
+			field := field
 			if field.Exported() {
 				recursiveScrapeType(nil, field.Name(), field.Type(), nestedExtObject)
 			}

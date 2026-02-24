@@ -52,7 +52,7 @@ func TestMemGuardianGoroutineLeak(t *testing.T) {
 
 	t.Run("MultipleStartStop", func(t *testing.T) {
 		// Test multiple start/stop cycles
-		for i := 0; i < 3; i++ {
+		for range 3 {
 			ctx := context.Background()
 			StartActiveMemGuardian(ctx)
 			time.Sleep(5 * time.Millisecond)

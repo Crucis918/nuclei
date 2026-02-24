@@ -208,9 +208,9 @@ func DecodeSID(s string) string {
 	var size = 4
 	var offset = 8
 	var subAuthorities []int
-	for i := 0; i < subAuthorityCount; i++ {
+	for range subAuthorityCount {
 		var subAuthority int
-		for k := 0; k < size; k++ {
+		for k := range size {
 			subAuthority = subAuthority | (int(b[offset+k])&0xFF)<<(8*k)
 		}
 		subAuthorities = append(subAuthorities, subAuthority)

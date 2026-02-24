@@ -7,7 +7,7 @@ import (
 )
 
 func TestMergeMapsMany(t *testing.T) {
-	got := MergeMapsMany(map[string]interface{}{"a": []string{"1", "2"}, "c": "5"}, map[string][]string{"b": {"3", "4"}})
+	got := MergeMapsMany(map[string]any{"a": []string{"1", "2"}, "c": "5"}, map[string][]string{"b": {"3", "4"}})
 	require.Equal(t, map[string][]string{
 		"a": {"1", "2"},
 		"b": {"3", "4"},
@@ -16,8 +16,8 @@ func TestMergeMapsMany(t *testing.T) {
 }
 
 func TestMergeMapsAndExpand(t *testing.T) {
-	m1 := map[string]interface{}{"a": "1"}
-	m2 := map[string]interface{}{"b": "2"}
+	m1 := map[string]any{"a": "1"}
+	m2 := map[string]any{"b": "2"}
 	out := MergeMaps(m1, m2)
 	if out["a"].(string) != "1" || out["b"].(string) != "2" {
 		t.Fatalf("unexpected merge: %#v", out)
@@ -30,7 +30,7 @@ func TestMergeMapsAndExpand(t *testing.T) {
 }
 
 func TestIteratorRemaining(t *testing.T) {
-	g, err := New(map[string]interface{}{"k": []interface{}{"a", "b"}}, BatteringRamAttack, "", nil, "", nil)
+	g, err := New(map[string]any{"k": []any{"a", "b"}}, BatteringRamAttack, "", nil, "", nil)
 	if err != nil {
 		t.Fatalf("new: %v", err)
 	}

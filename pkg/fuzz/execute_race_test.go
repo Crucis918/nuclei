@@ -14,14 +14,14 @@ func TestEvaluateVarsWithInteractsh_RaceCondition(t *testing.T) {
 		Interactsh: &interactsh.Client{},
 	}
 
-	sharedData := map[string]interface{}{
+	sharedData := map[string]any{
 		"var1": "value1",
 		"var2": "{{var1}}_suffix",
 		"var3": "prefix_{{var1}}",
 	}
 
 	var wg sync.WaitGroup
-	for i := 0; i < 10; i++ {
+	for range 10 {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()

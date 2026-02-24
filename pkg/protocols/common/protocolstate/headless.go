@@ -27,7 +27,7 @@ type errorTemplate struct {
 	format string
 }
 
-func (e errorTemplate) Msgf(args ...interface{}) error {
+func (e errorTemplate) Msgf(args ...any) error {
 	return errkit.Newf(e.format, args...)
 }
 

@@ -35,8 +35,8 @@ type Page struct {
 	mutex              *sync.RWMutex
 	History            []HistoryData
 	InteractshURLs     []string
-	payloads           map[string]interface{}
-	variables          map[string]interface{}
+	payloads           map[string]any
+	variables          map[string]any
 	lastActionNavigate *Action
 }
 
@@ -54,7 +54,7 @@ type Options struct {
 }
 
 // Run runs a list of actions by creating a new page in the browser.
-func (i *Instance) Run(ctx *contextargs.Context, actions []*Action, payloads map[string]interface{}, options *Options) (ActionData, *Page, error) {
+func (i *Instance) Run(ctx *contextargs.Context, actions []*Action, payloads map[string]any, options *Options) (ActionData, *Page, error) {
 	page, err := i.engine.Page(proto.TargetCreateTarget{})
 	if err != nil {
 		return nil, nil, err

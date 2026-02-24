@@ -13,7 +13,7 @@ import (
 func memoizedconnectSSHInfoMode(opts *connectOptions) (*ssh.HandshakeLog, error) {
 	hash := "connectSSHInfoMode" + ":" + fmt.Sprint(opts)
 
-	v, err, _ := protocolstate.Memoizer.Do(hash, func() (interface{}, error) {
+	v, err, _ := protocolstate.Memoizer.Do(hash, func() (any, error) {
 		return connectSSHInfoMode(opts)
 	})
 	if err != nil {

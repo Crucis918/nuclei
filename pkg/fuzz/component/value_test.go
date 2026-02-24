@@ -8,16 +8,16 @@ import (
 )
 
 func TestFlatMap_FlattenUnflatten(t *testing.T) {
-	data := map[string]interface{}{
+	data := map[string]any{
 		"foo": "bar",
-		"bar": map[string]interface{}{
+		"bar": map[string]any{
 			"baz": "foo",
 		},
-		"slice": []interface{}{
+		"slice": []any{
 			"foo",
 			"bar",
 		},
-		"with.dot": map[string]interface{}{
+		"with.dot": map[string]any{
 			"foo": "bar",
 		},
 	}

@@ -97,7 +97,7 @@ func (s *ScanEventsCharts) totalRequestsOverTime(c echo.Context) *charts.Line {
 			temp += scanEvent.MaxRequests
 			val := scanEvent.Time.Sub(startTime)
 			lineData = append(lineData, opts.LineData{
-				Value: []interface{}{val.Milliseconds(), temp},
+				Value: []any{val.Milliseconds(), temp},
 				Name:  scanEvent.TemplateID,
 			})
 		}
@@ -173,10 +173,7 @@ func (s *ScanEventsCharts) topSlowTemplates(c echo.Context) *charts.Kline {
 	})
 
 	// Ensure we don't try to access more elements than available
-	limit := TopK
-	if len(data) < TopK {
-		limit = len(data)
-	}
+	limit := min(len(data), TopK)
 
 	x := make([]string, 0)
 	y := make([]opts.KlineData, 0)

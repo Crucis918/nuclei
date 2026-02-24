@@ -232,7 +232,7 @@ func UnmarshalFilter(
 
 	for _, sev := range severities {
 		holder := &severity.Holder{}
-		if err := holder.UnmarshalYAML(func(v interface{}) error {
+		if err := holder.UnmarshalYAML(func(v any) error {
 			*v.(*string) = sev
 			return nil
 		}); err == nil {
@@ -242,7 +242,7 @@ func UnmarshalFilter(
 
 	for _, sev := range excludeSeverities {
 		holder := &severity.Holder{}
-		if err := holder.UnmarshalYAML(func(v interface{}) error {
+		if err := holder.UnmarshalYAML(func(v any) error {
 			*v.(*string) = sev
 			return nil
 		}); err == nil {
@@ -252,7 +252,7 @@ func UnmarshalFilter(
 
 	for _, pt := range protocolTypes {
 		holder := &types.TypeHolder{}
-		if err := holder.UnmarshalYAML(func(v interface{}) error {
+		if err := holder.UnmarshalYAML(func(v any) error {
 			*v.(*string) = pt
 			return nil
 		}); err == nil && holder.ProtocolType != types.InvalidProtocol {
@@ -262,7 +262,7 @@ func UnmarshalFilter(
 
 	for _, pt := range excludeProtocolTypes {
 		holder := &types.TypeHolder{}
-		if err := holder.UnmarshalYAML(func(v interface{}) error {
+		if err := holder.UnmarshalYAML(func(v any) error {
 			*v.(*string) = pt
 			return nil
 		}); err == nil && holder.ProtocolType != types.InvalidProtocol {

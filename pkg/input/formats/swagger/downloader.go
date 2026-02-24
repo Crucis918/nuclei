@@ -70,7 +70,7 @@ func (d *SwaggerDownloader) Download(urlStr, tmpDir string, httpClient *retryabl
 	}
 
 	// Determine format and parse
-	var spec map[string]interface{}
+	var spec map[string]any
 	var isYAML bool
 
 	// Try JSON first

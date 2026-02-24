@@ -33,7 +33,7 @@ type Component interface {
 	// depending on the rule if mode is single
 	// request is rebuilt for each value in this callback
 	// and in case of multiple, request will be rebuilt after iteration of all values
-	Iterate(func(key string, value interface{}) error) error
+	Iterate(func(key string, value any) error) error
 	// SetValue sets a value in the component
 	// for a key
 	//

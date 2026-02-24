@@ -94,7 +94,7 @@ func NewInputProvider(opts InputOptions) (InputProvider, error) {
 		// log error and continue
 		gologger.Error().Msgf("Could not read vars dump file: %s\n", err)
 	}
-	extraVars := make(map[string]interface{})
+	extraVars := make(map[string]any)
 	if val != nil {
 		for _, v := range val.Var {
 			v = strings.TrimSpace(v)

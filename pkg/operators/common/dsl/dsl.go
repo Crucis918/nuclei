@@ -25,7 +25,7 @@ func init() {
 	_ = dsl.AddFunction(dsl.NewWithMultipleSignatures("resolve", []string{
 		"(host string) string",
 		"(format string) string",
-	}, false, func(args ...interface{}) (interface{}, error) {
+	}, false, func(args ...any) (any, error) {
 		argCount := len(args)
 		if argCount == 0 || argCount > 2 {
 			return nil, dsl.ErrInvalidDslFunction
@@ -102,7 +102,7 @@ func init() {
 	_ = dsl.AddFunction(dsl.NewWithMultipleSignatures("getNetworkPort", []string{
 		"(Port string,defaultPort string) string)",
 		"(Port int,defaultPort int) int",
-	}, false, func(args ...interface{}) (interface{}, error) {
+	}, false, func(args ...any) (any, error) {
 		if len(args) != 2 {
 			return nil, dsl.ErrInvalidDslFunction
 		}
@@ -114,7 +114,7 @@ func init() {
 		return port, nil
 	}))
 
-	dsl.PrintDebugCallback = func(args ...interface{}) error {
+	dsl.PrintDebugCallback = func(args ...any) error {
 		gologger.Debug().Msgf("print_debug value: %s", fmt.Sprint(args...))
 		return nil
 	}

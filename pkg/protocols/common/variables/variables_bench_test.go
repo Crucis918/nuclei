@@ -19,7 +19,7 @@ func BenchmarkVariableEvaluate(b *testing.B) {
 	variables.Set("derived3", "prefix_{{derived2}}")
 	variables.Set("final", "{{derived3}}_end")
 
-	inputValues := map[string]interface{}{
+	inputValues := map[string]any{
 		"BaseURL": "http://example.com",
 		"Host":    "example.com",
 		"Path":    "/api/v1",
@@ -46,7 +46,7 @@ func BenchmarkVariableEvaluate(b *testing.B) {
 
 func BenchmarkVariableEvaluateScaling(b *testing.B) {
 	// Test how the optimization scales with different variable counts
-	inputValues := map[string]interface{}{
+	inputValues := map[string]any{
 		"BaseURL": "http://example.com",
 		"Host":    "example.com",
 	}

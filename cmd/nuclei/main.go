@@ -598,7 +598,7 @@ Additional documentation is available at: https://docs.nuclei.sh/getting-started
 			defer func() {
 				_ = file.Close()
 			}()
-			data := make(map[string]interface{})
+			data := make(map[string]any)
 			err = yaml.NewDecoder(file).Decode(&data)
 			if err != nil {
 				gologger.Fatal().Msgf("Could not decode config file: %s\n", err)
@@ -606,7 +606,7 @@ Additional documentation is available at: https://docs.nuclei.sh/getting-started
 
 			variables := data["var"]
 			if variables != nil {
-				if varSlice, ok := variables.([]interface{}); ok {
+				if varSlice, ok := variables.([]any); ok {
 					for _, value := range varSlice {
 						if strVal, ok := value.(string); ok {
 							err = options.Vars.Set(strVal)

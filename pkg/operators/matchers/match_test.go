@@ -85,7 +85,7 @@ func TestMatcher_MatchDSL(t *testing.T) {
 	values := []string{"PING", "pong"}
 
 	for _, value := range values {
-		isMatched := m.MatchDSL(map[string]interface{}{"body": value, "VARIABLE": value})
+		isMatched := m.MatchDSL(map[string]any{"body": value, "VARIABLE": value})
 		require.True(t, isMatched)
 	}
 }
@@ -269,6 +269,6 @@ func TestMatcher_MatchDSL_ErrorHandling(t *testing.T) {
 
 	m := &Matcher{Type: MatcherTypeHolder{MatcherType: DSLMatcher}, Condition: "or", dslCompiled: []*govaluate.EvaluableExpression{bad, good}}
 	require.NoError(t, m.CompileMatchers())
-	ok := m.MatchDSL(map[string]interface{}{})
+	ok := m.MatchDSL(map[string]any{})
 	require.True(t, ok)
 }

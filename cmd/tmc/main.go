@@ -47,8 +47,7 @@ var allTagsRegex []*regexp.Regexp
 var defaultOpts = types.DefaultOptions()
 
 func init() {
-	var tm templates.Template
-	t := reflect.TypeOf(tm)
+	t := reflect.TypeFor[templates.Template]()
 	for i := 0; i < t.NumField(); i++ {
 		tag := t.Field(i).Tag.Get("yaml")
 		if strings.Contains(tag, ",") {
@@ -374,7 +373,7 @@ func parseAndAddMaxRequests(catalog catalog.Catalog, path, data string) (string,
 	}
 	// if metadata is nil, create a new map
 	if infoBlock.Info.Metadata == nil {
-		infoBlock.Info.Metadata = make(map[string]interface{})
+		infoBlock.Info.Metadata = make(map[string]any)
 	}
 	// do not update if it is already present and equal
 	if mr, ok := infoBlock.Info.Metadata["max-request"]; ok && mr.(int) == template.TotalRequests {

@@ -11,7 +11,7 @@ import (
 func memoizedgetServerInfo(executionId string, host string, port int) (string, error) {
 	hash := "getServerInfo" + ":" + fmt.Sprint(executionId) + ":" + fmt.Sprint(host) + ":" + fmt.Sprint(port)
 
-	v, err, _ := protocolstate.Memoizer.Do(hash, func() (interface{}, error) {
+	v, err, _ := protocolstate.Memoizer.Do(hash, func() (any, error) {
 		return getServerInfo(executionId, host, port)
 	})
 	if err != nil {
@@ -27,7 +27,7 @@ func memoizedgetServerInfo(executionId string, host string, port int) (string, e
 func memoizedconnect(executionId string, host string, port int, password string) (bool, error) {
 	hash := "connect" + ":" + fmt.Sprint(executionId) + ":" + fmt.Sprint(host) + ":" + fmt.Sprint(port) + ":" + fmt.Sprint(password)
 
-	v, err, _ := protocolstate.Memoizer.Do(hash, func() (interface{}, error) {
+	v, err, _ := protocolstate.Memoizer.Do(hash, func() (any, error) {
 		return connect(executionId, host, port, password)
 	})
 	if err != nil {
@@ -43,7 +43,7 @@ func memoizedconnect(executionId string, host string, port int, password string)
 func memoizedgetServerInfoAuth(executionId string, host string, port int, password string) (string, error) {
 	hash := "getServerInfoAuth" + ":" + fmt.Sprint(executionId) + ":" + fmt.Sprint(host) + ":" + fmt.Sprint(port) + ":" + fmt.Sprint(password)
 
-	v, err, _ := protocolstate.Memoizer.Do(hash, func() (interface{}, error) {
+	v, err, _ := protocolstate.Memoizer.Do(hash, func() (any, error) {
 		return getServerInfoAuth(executionId, host, port, password)
 	})
 	if err != nil {
@@ -59,7 +59,7 @@ func memoizedgetServerInfoAuth(executionId string, host string, port int, passwo
 func memoizedisAuthenticated(executionId string, host string, port int) (bool, error) {
 	hash := "isAuthenticated" + ":" + fmt.Sprint(executionId) + ":" + fmt.Sprint(host) + ":" + fmt.Sprint(port)
 
-	v, err, _ := protocolstate.Memoizer.Do(hash, func() (interface{}, error) {
+	v, err, _ := protocolstate.Memoizer.Do(hash, func() (any, error) {
 		return isAuthenticated(executionId, host, port)
 	})
 	if err != nil {

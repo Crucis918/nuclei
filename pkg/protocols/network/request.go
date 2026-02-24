@@ -196,8 +196,8 @@ func (request *Request) executeOnTarget(input *contextargs.Context, visited maps
 }
 
 // executeAddress executes the request for an address
-func (request *Request) executeAddress(variables map[string]interface{}, actualAddress, address string, input *contextargs.Context, shouldUseTLS bool, previous output.InternalEvent, callback protocols.OutputEventCallback) error {
-	variables = generators.MergeMaps(variables, map[string]interface{}{"Hostname": address})
+func (request *Request) executeAddress(variables map[string]any, actualAddress, address string, input *contextargs.Context, shouldUseTLS bool, previous output.InternalEvent, callback protocols.OutputEventCallback) error {
+	variables = generators.MergeMaps(variables, map[string]any{"Hostname": address})
 	payloads := generators.BuildPayloadFromOptions(request.options.Options)
 
 	if !strings.Contains(actualAddress, ":") {
@@ -248,7 +248,7 @@ func (request *Request) executeAddress(variables map[string]interface{}, actualA
 
 			value = generators.MergeMaps(value, payloads)
 			swg.Add()
-			go func(vars map[string]interface{}) {
+			go func(vars map[string]any) {
 				defer swg.Done()
 				if request.isUnresponsiveAddress(updatedTarget) {
 					// skip on unresponsive address no need to continue
@@ -274,7 +274,7 @@ func (request *Request) executeAddress(variables map[string]interface{}, actualA
 	return nil
 }
 
-func (request *Request) executeRequestWithPayloads(variables map[string]interface{}, actualAddress, address string, input *contextargs.Context, shouldUseTLS bool, payloads map[string]interface{}, previous output.InternalEvent, callback protocols.OutputEventCallback) error {
+func (request *Request) executeRequestWithPayloads(variables map[string]any, actualAddress, address string, input *contextargs.Context, shouldUseTLS bool, payloads map[string]any, previous output.InternalEvent, callback protocols.OutputEventCallback) error {
 	var (
 		hostname string
 		conn     net.Conn
@@ -318,7 +318,7 @@ func (request *Request) executeRequestWithPayloads(variables map[string]interfac
 		gologger.Debug().Msgf("Network Protocol request variables: %s\n", vardump.DumpVariables(interimValues))
 	}
 
-	inputEvents := make(map[string]interface{})
+	inputEvents := make(map[string]any)
 
 	for _, input := range request.Inputs {
 		dataInBytes := []byte(input.Data)
@@ -375,7 +375,7 @@ func (request *Request) executeRequestWithPayloads(variables map[string]interfac
 
 			// Run any internal extractors for the request here and add found values to map.
 			if request.CompiledOperators != nil {
-				values := request.CompiledOperators.ExecuteInternalExtractors(map[string]interface{}{input.Name: bufferStr}, request.Extract)
+				values := request.CompiledOperators.ExecuteInternalExtractors(map[string]any{input.Name: bufferStr}, request.Extract)
 				maps0.Copy(payloads, values)
 			}
 		}

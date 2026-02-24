@@ -109,7 +109,7 @@ func (i *Integration) CreateIssue(event *output.ResultEvent) (*filters.CreateIss
 				StateID string `json:"stateId"`
 			}
 			issueUpdateInput.StateID = i.options.OpenStateID
-			variables := map[string]interface{}{
+			variables := map[string]any{
 				"issueUpdateInput": issueUpdateInput,
 				"issueID":          types.ToString(existingIssue.ID),
 			}
@@ -124,11 +124,11 @@ func (i *Integration) CreateIssue(event *output.ResultEvent) (*filters.CreateIss
 			}
 		}
 
-		commentInput := map[string]interface{}{
+		commentInput := map[string]any{
 			"issueId": types.ToString(existingIssue.ID),
 			"body":    description,
 		}
-		variables := map[string]interface{}{
+		variables := map[string]any{
 			"commentCreateInput": commentInput,
 		}
 		var resp struct {
@@ -227,7 +227,7 @@ const (
 
 func (i *Integration) createIssueLinear(ctx context.Context, title, description string, priority float64) (*linearIssue, error) {
 	var mutation createIssueMutation
-	input := map[string]interface{}{
+	input := map[string]any{
 		"title":       title,
 		"description": description,
 		"priority":    priority,
@@ -239,7 +239,7 @@ func (i *Integration) createIssueLinear(ctx context.Context, title, description 
 		input["projectId"] = i.options.ProjectID
 	}
 
-	variables := map[string]interface{}{
+	variables := map[string]any{
 		"input": input,
 	}
 
@@ -263,7 +263,7 @@ func (i *Integration) createIssueLinear(ctx context.Context, title, description 
 
 func (i *Integration) findIssueByTitle(ctx context.Context, title string) (*linearIssue, error) {
 	var query findExistingIssuesSearch
-	variables := map[string]interface{}{
+	variables := map[string]any{
 		"title": graphql.String(title),
 	}
 	if i.options.TeamID != "" {

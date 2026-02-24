@@ -58,8 +58,8 @@ func toTsTypes(t string) string {
 	case "time.Time":
 		return "Date"
 	default:
-		if strings.HasPrefix(t, "[]") {
-			return toTsTypes(strings.TrimPrefix(t, "[]")) + "[]"
+		if after, ok := strings.CutPrefix(t, "[]"); ok {
+			return toTsTypes(after) + "[]"
 		}
 		return t
 	}

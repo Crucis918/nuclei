@@ -203,7 +203,7 @@ func (c *Client) processInteractionForRequest(interaction *server.Interaction, d
 	// ensure payload values are preserved for interactsh-only matches
 	data.Event.Lock()
 	if data.Event.OperatorsResult != nil && len(data.Event.OperatorsResult.PayloadValues) == 0 {
-		if payloads, ok := data.Event.InternalEvent["payloads"].(map[string]interface{}); ok {
+		if payloads, ok := data.Event.InternalEvent["payloads"].(map[string]any); ok {
 			data.Event.OperatorsResult.PayloadValues = payloads
 		}
 	}
@@ -309,7 +309,7 @@ func (c *Client) NewURLWithData(data string) (string, error) {
 }
 
 // MakePlaceholders does placeholders for interact URLs and other data to a map
-func (c *Client) MakePlaceholders(urls []string, data map[string]interface{}) {
+func (c *Client) MakePlaceholders(urls []string, data map[string]any) {
 	data["interactsh-server"] = c.getHostname()
 	for _, url := range urls {
 		if interactshURLMarker, err := c.interactshURLs.Get(url); interactshURLMarker != "" && err == nil {
@@ -318,11 +318,11 @@ func (c *Client) MakePlaceholders(urls []string, data map[string]interface{}) {
 			c.interactshURLs.Remove(url)
 
 			data[interactshMarker] = url
-			urlIndex := strings.Index(url, ".")
-			if urlIndex == -1 {
+			before, _, ok := strings.Cut(url, ".")
+			if !ok {
 				continue
 			}
-			data[strings.Replace(interactshMarker, "url", "id", 1)] = url[:urlIndex]
+			data[strings.Replace(interactshMarker, "url", "id", 1)] = before
 		}
 	}
 }

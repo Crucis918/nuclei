@@ -66,7 +66,7 @@ func TestHTTPVariables(t *testing.T) {
 
 func TestGenerateDNSVariables(t *testing.T) {
 	vars := GenerateDNSVariables("www.projectdiscovery.io")
-	require.Equal(t, map[string]interface{}{
+	require.Equal(t, map[string]any{
 		"FQDN": "www.projectdiscovery.io",
 		"RDN":  "projectdiscovery.io",
 		"DN":   "projectdiscovery",
@@ -77,7 +77,7 @@ func TestGenerateDNSVariables(t *testing.T) {
 
 func TestGenerateVariablesForDNS(t *testing.T) {
 	vars := GenerateVariables("www.projectdiscovery.io", false, nil)
-	expected := map[string]interface{}{
+	expected := map[string]any{
 		"FQDN": "www.projectdiscovery.io",
 		"RDN":  "projectdiscovery.io",
 		"DN":   "projectdiscovery",
@@ -89,7 +89,7 @@ func TestGenerateVariablesForDNS(t *testing.T) {
 
 func TestGenerateVariablesForTCP(t *testing.T) {
 	vars := GenerateVariables("127.0.0.1:5431", false, nil)
-	expected := map[string]interface{}{
+	expected := map[string]any{
 		"Host":     "127.0.0.1",
 		"Port":     "5431",
 		"Hostname": "127.0.0.1:5431",
@@ -97,7 +97,7 @@ func TestGenerateVariablesForTCP(t *testing.T) {
 	checkResults(t, vars, expected)
 
 	vars = GenerateVariables("127.0.0.1", false, nil)
-	expected = map[string]interface{}{
+	expected = map[string]any{
 		"Host":     "127.0.0.1",
 		"Hostname": "127.0.0.1",
 	}
@@ -106,13 +106,13 @@ func TestGenerateVariablesForTCP(t *testing.T) {
 
 func TestGenerateWhoISVariables(t *testing.T) {
 	vars := GenerateVariables("https://example.com", false, nil)
-	expected := map[string]interface{}{
+	expected := map[string]any{
 		"Host": "example.com", "Hostname": "example.com", "Input": "https://example.com",
 	}
 	checkResults(t, vars, expected)
 
 	vars = GenerateVariables("https://example.com:8080", false, nil)
-	expected = map[string]interface{}{
+	expected = map[string]any{
 		"Host": "example.com", "Hostname": "example.com:8080", "Input": "https://example.com:8080",
 	}
 	checkResults(t, vars, expected)
@@ -122,7 +122,7 @@ func TestGetWebsocketVariables(t *testing.T) {
 	baseURL := "ws://127.0.0.1:40221"
 	parsed, _ := urlutil.Parse(baseURL)
 	vars := GenerateVariables(parsed, false, nil)
-	expected := map[string]interface{}{
+	expected := map[string]any{
 		"Host":     "127.0.0.1",
 		"Hostname": "127.0.0.1:40221",
 		"Scheme":   "ws",
@@ -133,7 +133,7 @@ func TestGetWebsocketVariables(t *testing.T) {
 	baseURL = "ws://127.0.0.1:40221/test?var=test"
 	parsed, _ = urlutil.Parse(baseURL)
 	vars = GenerateVariables(parsed, false, nil)
-	expected = map[string]interface{}{
+	expected = map[string]any{
 		"Host":     "127.0.0.1",
 		"Hostname": "127.0.0.1:40221",
 		"Scheme":   "ws",
@@ -143,7 +143,7 @@ func TestGetWebsocketVariables(t *testing.T) {
 }
 
 // checkResults returns true if mapSubset is a subset of mapSet otherwise false
-func checkResults(t *testing.T, mapSet interface{}, mapSubset interface{}) {
+func checkResults(t *testing.T, mapSet any, mapSubset any) {
 
 	got := reflect.ValueOf(mapSet)
 	expected := reflect.ValueOf(mapSubset)

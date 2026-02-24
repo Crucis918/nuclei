@@ -11,7 +11,7 @@ import (
 func memoizedisRDP(executionId string, host string, port int) (IsRDPResponse, error) {
 	hash := "isRDP" + ":" + fmt.Sprint(executionId) + ":" + fmt.Sprint(host) + ":" + fmt.Sprint(port)
 
-	v, err, _ := protocolstate.Memoizer.Do(hash, func() (interface{}, error) {
+	v, err, _ := protocolstate.Memoizer.Do(hash, func() (any, error) {
 		return isRDP(executionId, host, port)
 	})
 	if err != nil {
@@ -27,7 +27,7 @@ func memoizedisRDP(executionId string, host string, port int) (IsRDPResponse, er
 func memoizedcheckRDPAuth(executionId string, host string, port int) (CheckRDPAuthResponse, error) {
 	hash := "checkRDPAuth" + ":" + fmt.Sprint(executionId) + ":" + fmt.Sprint(host) + ":" + fmt.Sprint(port)
 
-	v, err, _ := protocolstate.Memoizer.Do(hash, func() (interface{}, error) {
+	v, err, _ := protocolstate.Memoizer.Do(hash, func() (any, error) {
 		return checkRDPAuth(executionId, host, port)
 	})
 	if err != nil {
@@ -43,7 +43,7 @@ func memoizedcheckRDPAuth(executionId string, host string, port int) (CheckRDPAu
 func memoizedcheckRDPEncryption(executionId string, host string, port int) (RDPEncryptionResponse, error) {
 	hash := "checkRDPEncryption" + ":" + fmt.Sprint(executionId) + ":" + fmt.Sprint(host) + ":" + fmt.Sprint(port)
 
-	v, err, _ := protocolstate.Memoizer.Do(hash, func() (interface{}, error) {
+	v, err, _ := protocolstate.Memoizer.Do(hash, func() (any, error) {
 		return checkRDPEncryption(executionId, host, port)
 	})
 	if err != nil {

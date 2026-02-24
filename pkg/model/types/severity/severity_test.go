@@ -29,7 +29,7 @@ func TestGetSupportedSeverities(t *testing.T) {
 	require.Equal(t, severities, Severities{Info, Low, Medium, High, Critical, Unknown})
 }
 
-func testUnmarshal(t *testing.T, unmarshaller func(data []byte, v interface{}) error, payloadCreator func(value string) string) {
+func testUnmarshal(t *testing.T, unmarshaller func(data []byte, v any) error, payloadCreator func(value string) string) {
 	t.Helper()
 	payloads := [...]string{
 		payloadCreator("Info"),
@@ -48,12 +48,12 @@ func testUnmarshal(t *testing.T, unmarshaller func(data []byte, v interface{}) e
 	}
 }
 
-func testUnmarshalFail(t *testing.T, unmarshaller func(data []byte, v interface{}) error, payloadCreator func(value string) string) {
+func testUnmarshalFail(t *testing.T, unmarshaller func(data []byte, v any) error, payloadCreator func(value string) string) {
 	t.Helper()
 	require.Panics(t, func() { unmarshal(payloadCreator("invalid"), unmarshaller) })
 }
 
-func unmarshal(value string, unmarshaller func(data []byte, v interface{}) error) Holder {
+func unmarshal(value string, unmarshaller func(data []byte, v any) error) Holder {
 	severityStruct := Holder{}
 	var err = unmarshaller([]byte(value), &severityStruct)
 	if err != nil {

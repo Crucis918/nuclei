@@ -19,7 +19,7 @@ import (
 
 // Match matches a generic data response again a given matcher
 // TODO: Try to consolidate this in protocols.MakeDefaultMatchFunc to avoid any inconsistencies
-func (request *Request) Match(data map[string]interface{}, matcher *matchers.Matcher) (bool, []string) {
+func (request *Request) Match(data map[string]any, matcher *matchers.Matcher) (bool, []string) {
 	item, ok := request.getMatchPart(matcher.Part, data)
 	if !ok && matcher.Type.MatcherType != matchers.DSLMatcher {
 		return false, []string{}
@@ -48,7 +48,7 @@ func (request *Request) Match(data map[string]interface{}, matcher *matchers.Mat
 	return false, []string{}
 }
 
-func getStatusCode(data map[string]interface{}) (int, bool) {
+func getStatusCode(data map[string]any) (int, bool) {
 	statusCodeValue, ok := data["status_code"]
 	if !ok {
 		return 0, false
@@ -61,7 +61,7 @@ func getStatusCode(data map[string]interface{}) (int, bool) {
 }
 
 // Extract performs extracting operation for an extractor on model and returns true or false.
-func (request *Request) Extract(data map[string]interface{}, extractor *extractors.Extractor) map[string]struct{} {
+func (request *Request) Extract(data map[string]any, extractor *extractors.Extractor) map[string]struct{} {
 	item, ok := request.getMatchPart(extractor.Part, data)
 	if !ok && !extractors.SupportsMap(extractor) {
 		return nil
@@ -107,7 +107,7 @@ func (request *Request) getMatchPart(part string, data output.InternalEvent) (st
 }
 
 // responseToDSLMap converts an HTTP response to a map for use in DSL matching
-func (request *Request) responseToDSLMap(resp *http.Response, host, matched, rawReq, rawResp, body, headers string, duration time.Duration, extra map[string]interface{}) output.InternalEvent {
+func (request *Request) responseToDSLMap(resp *http.Response, host, matched, rawReq, rawResp, body, headers string, duration time.Duration, extra map[string]any) output.InternalEvent {
 	data := make(output.InternalEvent, 12+len(extra)+len(resp.Header)+len(resp.Cookies()))
 	maps.Copy(data, extra)
 	for _, cookie := range resp.Cookies() {
@@ -208,7 +208,7 @@ func (request *Request) MakeResultEventItem(wrapped *output.InternalWrappedEvent
 	return data
 }
 
-func (request *Request) truncateResponse(response interface{}) string {
+func (request *Request) truncateResponse(response any) string {
 	responseString := types.ToString(response)
 	if len(responseString) > request.options.Options.ResponseSaveSize {
 		return responseString[:request.options.Options.ResponseSaveSize]

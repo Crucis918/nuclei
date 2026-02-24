@@ -12,7 +12,7 @@ import (
 var validate *validator.Validate
 
 // DecodeAndValidate is a wrapper for yaml Decode adding struct validation
-func DecodeAndValidate(r io.Reader, v interface{}) error {
+func DecodeAndValidate(r io.Reader, v any) error {
 	if err := yaml.NewDecoder(r).Decode(v); err != nil {
 		return err
 	}

@@ -77,7 +77,7 @@ func initBuiltInFunc(runtime *goja.Runtime) {
 			switch value := arg.(type) {
 			case string:
 				gologger.DefaultLogger.Print().Msgf("[%v] %v", aurora.BrightCyan("JS"), value)
-			case map[string]interface{}:
+			case map[string]any:
 				gologger.DefaultLogger.Print().Msgf("[%v] %v", aurora.BrightCyan("JS"), vardump.DumpVariables(value))
 			default:
 				gologger.DefaultLogger.Print().Msgf("[%v] %v", aurora.BrightCyan("JS"), value)

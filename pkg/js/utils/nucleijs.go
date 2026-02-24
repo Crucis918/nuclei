@@ -72,7 +72,7 @@ func (j *NucleiJS) HandleError(err error, msg ...string) {
 }
 
 // Throw throws an error in goja runtime
-func (j *NucleiJS) Throw(format string, args ...interface{}) {
+func (j *NucleiJS) Throw(format string, args ...any) {
 	if len(args) > 0 {
 		panic(j.runtime().ToValue(fmt.Sprintf(format, args...)))
 	}

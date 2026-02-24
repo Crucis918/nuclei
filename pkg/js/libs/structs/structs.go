@@ -16,7 +16,7 @@ import (
 // const structs = require('nuclei/structs');
 // const result = structs.Unpack('H', [0]);
 // ```
-func Unpack(format string, msg []byte) ([]interface{}, error) {
+func Unpack(format string, msg []byte) ([]any, error) {
 	return gostruct.UnPack(buildFormatSliceFromStringFormat(format), msg)
 }
 
@@ -28,13 +28,13 @@ func Unpack(format string, msg []byte) ([]interface{}, error) {
 // const structs = require('nuclei/structs');
 // const packed = structs.Pack('H', [0]);
 // ```
-func Pack(formatStr string, msg interface{}) ([]byte, error) {
-	var args []interface{}
+func Pack(formatStr string, msg any) ([]byte, error) {
+	var args []any
 	switch v := msg.(type) {
-	case []interface{}:
+	case []any:
 		args = v
 	default:
-		args = []interface{}{v}
+		args = []any{v}
 	}
 	format := buildFormatSliceFromStringFormat(formatStr)
 

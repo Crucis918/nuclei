@@ -22,9 +22,9 @@ a6: "123456"`
 	err := yaml.Unmarshal([]byte(data), &variables)
 	require.NoError(t, err, "could not unmarshal variables")
 
-	result := variables.Evaluate(map[string]interface{}{"hostname": "google.com"})
+	result := variables.Evaluate(map[string]any{"hostname": "google.com"})
 	a4 := time.Now().Format("2006-01-02")
-	require.Equal(t, map[string]interface{}{"a2": "098f6bcd4621d373cade4e832627b4f6", "a3": "this_is_random_text", "a4": a4, "a5": "moc.elgoog", "a6": "123456"}, result, "could not get correct elements")
+	require.Equal(t, map[string]any{"a2": "098f6bcd4621d373cade4e832627b4f6", "a3": "this_is_random_text", "a4": a4, "a5": "moc.elgoog", "a6": "123456"}, result, "could not get correct elements")
 
 	// json
 	data = `{
@@ -38,9 +38,9 @@ a6: "123456"`
 	err = json.Unmarshal([]byte(data), &variables)
 	require.NoError(t, err, "could not unmarshal json variables")
 
-	result = variables.Evaluate(map[string]interface{}{"hostname": "google.com"})
+	result = variables.Evaluate(map[string]any{"hostname": "google.com"})
 	a4 = time.Now().Format("2006-01-02")
-	require.Equal(t, map[string]interface{}{"a2": "098f6bcd4621d373cade4e832627b4f6", "a3": "this_is_random_text", "a4": a4, "a5": "moc.elgoog", "a6": "123456"}, result, "could not get correct elements")
+	require.Equal(t, map[string]any{"a2": "098f6bcd4621d373cade4e832627b4f6", "a3": "this_is_random_text", "a4": a4, "a5": "moc.elgoog", "a6": "123456"}, result, "could not get correct elements")
 
 }
 
@@ -162,7 +162,7 @@ func TestVariablesEvaluateChained(t *testing.T) {
 		variables.Set("b", "{{a}} world")
 		variables.Set("c", "{{b}}!")
 
-		inputValues := map[string]interface{}{
+		inputValues := map[string]any{
 			"BaseURL": "http://example.com",
 			"Host":    "example.com",
 		}
@@ -189,7 +189,7 @@ func TestVariablesEvaluateChained(t *testing.T) {
 		variables.Set("api_url", "{{BaseURL}}/api/v1")
 		variables.Set("full_path", "{{api_url}}/users")
 
-		inputValues := map[string]interface{}{
+		inputValues := map[string]any{
 			"BaseURL": "http://example.com",
 		}
 
@@ -211,7 +211,7 @@ func TestVariablesEvaluateChained(t *testing.T) {
 		variables.Set("hashed", "{{md5(token)}}")
 		variables.Set("header", "X-Auth: {{hashed}}")
 
-		result := variables.Evaluate(map[string]interface{}{})
+		result := variables.Evaluate(map[string]any{})
 
 		require.Equal(t, "secret123", result["token"])
 		require.Equal(t, "5d7845ac6ee7cfffafc5fe5f35cf666d", result["hashed"]) // md5("secret123")
@@ -230,7 +230,7 @@ func TestVariablesEvaluateChained(t *testing.T) {
 		variables.Set("step3", "{{step2}}C")
 		variables.Set("step4", "{{step3}}D")
 
-		result := variables.Evaluate(map[string]interface{}{})
+		result := variables.Evaluate(map[string]any{})
 
 		require.Equal(t, "A", result["step1"])
 		require.Equal(t, "AB", result["step2"])
@@ -260,7 +260,7 @@ func TestEvaluateWithInteractshOverrideOrder(t *testing.T) {
 		variables.Set("callback", "{{interactsh-url}}")
 
 		// Input provides an override that also contains interactsh-url
-		inputValues := map[string]interface{}{
+		inputValues := map[string]any{
 			"callback": "https://custom.{{interactsh-url}}/path",
 		}
 
@@ -296,7 +296,7 @@ func TestEvaluateWithInteractshOverrideOrder(t *testing.T) {
 		variables.Set("callback", "{{interactsh-url}}")
 
 		// No input override for "callback"
-		inputValues := map[string]interface{}{
+		inputValues := map[string]any{
 			"other_key": "other_value",
 		}
 

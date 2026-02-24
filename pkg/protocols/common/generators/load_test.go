@@ -39,7 +39,7 @@ func newTestGenerator() *PayloadGenerator {
 
 func TestLoadPayloads_FastPathFile(t *testing.T) {
 	g := newTestGenerator()
-	out, err := g.loadPayloads(map[string]interface{}{"A": "fileA.txt"}, "")
+	out, err := g.loadPayloads(map[string]any{"A": "fileA.txt"}, "")
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}
@@ -52,7 +52,7 @@ func TestLoadPayloads_FastPathFile(t *testing.T) {
 func TestLoadPayloads_InlineMultiline(t *testing.T) {
 	g := newTestGenerator()
 	inline := "a\nb\n"
-	out, err := g.loadPayloads(map[string]interface{}{"B": inline}, "")
+	out, err := g.loadPayloads(map[string]any{"B": inline}, "")
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}
@@ -65,7 +65,7 @@ func TestLoadPayloads_InlineMultiline(t *testing.T) {
 func TestLoadPayloads_SingleLineFallsBackToFile(t *testing.T) {
 	g := newTestGenerator()
 	inline := "fileA.txt" // single line, should be treated as file path
-	out, err := g.loadPayloads(map[string]interface{}{"C": inline}, "")
+	out, err := g.loadPayloads(map[string]any{"C": inline}, "")
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}
@@ -77,7 +77,7 @@ func TestLoadPayloads_SingleLineFallsBackToFile(t *testing.T) {
 
 func TestLoadPayloads_InterfaceSlice(t *testing.T) {
 	g := newTestGenerator()
-	out, err := g.loadPayloads(map[string]interface{}{"D": []interface{}{"p", "q"}}, "")
+	out, err := g.loadPayloads(map[string]any{"D": []any{"p", "q"}}, "")
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}
@@ -102,7 +102,7 @@ func TestLoadPayloadsFromFile_SkipsEmpty(t *testing.T) {
 func TestValidate_AllowsInlineMultiline(t *testing.T) {
 	g := newTestGenerator()
 	inline := "x\ny\n"
-	if err := g.validate(map[string]interface{}{"E": inline}, ""); err != nil {
+	if err := g.validate(map[string]any{"E": inline}, ""); err != nil {
 		t.Fatalf("validate rejected inline multiline: %v", err)
 	}
 }

@@ -8,9 +8,9 @@ import (
 //
 // It contains the count of rows, the columns present, and the actual row data.
 type SQLResult struct {
-	Count   int           // Count is the number of rows returned.
-	Columns []string      // Columns is the slice of column names.
-	Rows    []interface{} // Rows is a slice of row data, where each row is a map of column name to value.
+	Count   int      // Count is the number of rows returned.
+	Columns []string // Columns is the slice of column names.
+	Rows    []any    // Rows is a slice of row data, where each row is a map of column name to value.
 }
 
 // UnmarshalSQLRows converts sql.Rows into a more structured SQLResult.
@@ -37,7 +37,7 @@ func UnmarshalSQLRows(rows *sql.Rows) (*SQLResult, error) {
 	count := len(columnTypes)
 	for rows.Next() {
 		result.Count++
-		scanArgs := make([]interface{}, count)
+		scanArgs := make([]any, count)
 		for i, v := range columnTypes {
 			switch v.DatabaseTypeName() {
 			case "VARCHAR", "TEXT", "UUID", "TIMESTAMP":
@@ -55,7 +55,7 @@ func UnmarshalSQLRows(rows *sql.Rows) (*SQLResult, error) {
 			// Return the result accumulated so far along with the error.
 			return result, err
 		}
-		masterData := make(map[string]interface{})
+		masterData := make(map[string]any)
 		for i, v := range columnTypes {
 			if z, ok := (scanArgs[i]).(*sql.NullBool); ok {
 				masterData[v.Name()] = z.Bool

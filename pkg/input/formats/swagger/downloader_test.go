@@ -30,15 +30,15 @@ func TestSwaggerDownloader_SupportedExtensions(t *testing.T) {
 
 func TestSwaggerDownloader_Download_JSON_Success(t *testing.T) {
 	// Create a mock Swagger spec (JSON)
-	mockSpec := map[string]interface{}{
+	mockSpec := map[string]any{
 		"swagger": "2.0",
-		"info": map[string]interface{}{
+		"info": map[string]any{
 			"title":   "Test API",
 			"version": "1.0.0",
 		},
-		"paths": map[string]interface{}{
-			"/test": map[string]interface{}{
-				"get": map[string]interface{}{
+		"paths": map[string]any{
+			"/test": map[string]any{
+				"get": map[string]any{
 					"summary": "Test endpoint",
 				},
 			},
@@ -84,7 +84,7 @@ func TestSwaggerDownloader_Download_JSON_Success(t *testing.T) {
 		t.Fatalf("Failed to read downloaded file: %v", err)
 	}
 
-	var downloadedSpec map[string]interface{}
+	var downloadedSpec map[string]any
 	if err := json.Unmarshal(content, &downloadedSpec); err != nil {
 		t.Fatalf("Failed to parse downloaded JSON: %v", err)
 	}
@@ -149,7 +149,7 @@ paths:
 		t.Fatalf("Failed to read downloaded file: %v", err)
 	}
 
-	var downloadedSpec map[string]interface{}
+	var downloadedSpec map[string]any
 	if err := yaml.Unmarshal(content, &downloadedSpec); err != nil {
 		t.Fatalf("Failed to parse downloaded YAML: %v", err)
 	}
@@ -269,7 +269,7 @@ func TestSwaggerDownloader_Download_Timeout(t *testing.T) {
 	// Create mock server with delay
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		time.Sleep(35 * time.Second) // Longer than 30 second timeout
-		if err := json.NewEncoder(w).Encode(map[string]interface{}{"test": "data"}); err != nil {
+		if err := json.NewEncoder(w).Encode(map[string]any{"test": "data"}); err != nil {
 			http.Error(w, "failed to encode response", http.StatusInternalServerError)
 		}
 	}))
@@ -295,14 +295,14 @@ func TestSwaggerDownloader_Download_Timeout(t *testing.T) {
 
 func TestSwaggerDownloader_Download_WithExistingHost(t *testing.T) {
 	// Create a mock Swagger spec with existing host
-	mockSpec := map[string]interface{}{
+	mockSpec := map[string]any{
 		"swagger": "2.0",
-		"info": map[string]interface{}{
+		"info": map[string]any{
 			"title":   "Test API",
 			"version": "1.0.0",
 		},
 		"host":  "existing-host.com",
-		"paths": map[string]interface{}{},
+		"paths": map[string]any{},
 	}
 
 	// Create mock server
@@ -337,7 +337,7 @@ func TestSwaggerDownloader_Download_WithExistingHost(t *testing.T) {
 		t.Fatalf("Failed to read downloaded file: %v", err)
 	}
 
-	var downloadedSpec map[string]interface{}
+	var downloadedSpec map[string]any
 	if err := json.Unmarshal(content, &downloadedSpec); err != nil {
 		t.Fatalf("Failed to parse downloaded JSON: %v", err)
 	}

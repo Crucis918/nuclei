@@ -359,7 +359,7 @@ func (template *Template) compileProtocolRequests(options *protocols.ExecutorOpt
 // convertRequestToProtocolsRequest is a convenience wrapper to convert
 // arbitrary interfaces which are slices of requests from the template to a
 // slice of protocols.Request interface items.
-func (template *Template) convertRequestToProtocolsRequest(requests interface{}) []protocols.Request {
+func (template *Template) convertRequestToProtocolsRequest(requests any) []protocols.Request {
 	switch reflect.TypeOf(requests).Kind() {
 	case reflect.Slice:
 		s := reflect.ValueOf(requests)
@@ -445,12 +445,12 @@ func ParseTemplateFromReader(reader io.Reader, preprocessor Preprocessor, option
 
 	// if preprocessor is required / exists in this template
 	// expand all preprocessors, parse once, then verify against original data
-	generatedConstants := map[string]interface{}{}
+	generatedConstants := map[string]any{}
 
 	// ==== execute preprocessors ======
 	processedData := data
 	for _, v := range allPreprocessors {
-		var replaced map[string]interface{}
+		var replaced map[string]any
 		processedData, replaced = v.ProcessNReturnData(processedData)
 		// preprocess kind of act like a constant and are generated while loading
 		// and stay constant for the template lifecycle

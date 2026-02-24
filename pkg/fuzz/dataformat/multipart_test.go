@@ -227,14 +227,14 @@ Python
 	// Verify file fields
 	profilePicture := decoded.Get("profile_picture")
 	require.NotNil(t, profilePicture)
-	profileArray, ok := profilePicture.([]interface{})
+	profileArray, ok := profilePicture.([]any)
 	require.True(t, ok, "Expected []interface{} for profile_picture")
 	require.Len(t, profileArray, 1)
 	assert.Equal(t, "fake_jpeg_binary_data_here", profileArray[0])
 
 	documents := decoded.Get("documents")
 	require.NotNil(t, documents)
-	documentsArray, ok := documents.([]interface{})
+	documentsArray, ok := documents.([]any)
 	require.True(t, ok, "Expected []interface{} for documents")
 	require.Len(t, documentsArray, 2)
 	assert.Contains(t, documentsArray, "fake_pdf_content_1")
@@ -332,7 +332,7 @@ content2
 	// Verify files are decoded correctly
 	documents := decoded.Get("documents")
 	require.NotNil(t, documents)
-	documentsArray, ok := documents.([]interface{})
+	documentsArray, ok := documents.([]any)
 	require.True(t, ok)
 	require.Len(t, documentsArray, 2)
 	assert.Contains(t, documentsArray, "content1")

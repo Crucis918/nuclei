@@ -49,7 +49,7 @@ func TestCacheCheck(t *testing.T) {
 func TestTrackErrors(t *testing.T) {
 	cache := New(3, DefaultMaxHostsCount, []string{"custom error"})
 
-	for i := 0; i < 100; i++ {
+	for i := range 100 {
 		cache.MarkFailed(protoType, newCtxArgs("custom"), errors.New("got: nested: custom error"))
 		got := cache.Check(protoType, newCtxArgs("custom"))
 		if i < 2 {
@@ -71,7 +71,7 @@ func TestCacheItemDo(t *testing.T) {
 	)
 
 	wg := sync.WaitGroup{}
-	for i := 0; i < 100; i++ {
+	for range 100 {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
@@ -91,7 +91,7 @@ func TestRemove(t *testing.T) {
 	ctx := newCtxArgs(t.Name())
 	err := errors.New("net/http: timeout awaiting response headers")
 
-	for i := 0; i < 100; i++ {
+	for range 100 {
 		cache.MarkFailed(protoType, ctx, err)
 	}
 
@@ -148,7 +148,7 @@ func TestCacheMarkFailedConcurrent(t *testing.T) {
 	wg := sync.WaitGroup{}
 	for _, test := range tests {
 		currentTest := test
-		for i := 0; i < 100; i++ {
+		for range 100 {
 			wg.Add(1)
 			go func() {
 				defer wg.Done()

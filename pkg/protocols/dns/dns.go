@@ -33,7 +33,7 @@ type Request struct {
 	Name string `yaml:"name,omitempty" json:"name,omitempty" jsonschema:"title=hostname to make dns request for,description=Name is the Hostname to make DNS request for"`
 	// description: |
 	//   RequestType is the type of DNS request to make.
-	RequestType DNSRequestTypeHolder `yaml:"type,omitempty" json:"type,omitempty" jsonschema:"title=type of dns request to make,description=Type is the type of DNS request to make,enum=A,enum=NS,enum=DS,enum=CNAME,enum=SOA,enum=PTR,enum=MX,enum=TXT,enum=AAAA"`
+	RequestType DNSRequestTypeHolder `yaml:"type,omitempty" json:"type" jsonschema:"title=type of dns request to make,description=Type is the type of DNS request to make,enum=A,enum=NS,enum=DS,enum=CNAME,enum=SOA,enum=PTR,enum=MX,enum=TXT,enum=AAAA"`
 	// description: |
 	//   Class is the class of the DNS request.
 	//
@@ -67,14 +67,14 @@ type Request struct {
 	//
 	//   Batteringram is inserts the same payload into all defined payload positions at once, pitchfork combines multiple payload sets and clusterbomb generates
 	//   permutations and combinations for all payloads.
-	AttackType generators.AttackTypeHolder `yaml:"attack,omitempty" json:"attack,omitempty" jsonschema:"title=attack is the payload combination,description=Attack is the type of payload combinations to perform,enum=batteringram,enum=pitchfork,enum=clusterbomb"`
+	AttackType generators.AttackTypeHolder `yaml:"attack,omitempty" json:"attack" jsonschema:"title=attack is the payload combination,description=Attack is the type of payload combinations to perform,enum=batteringram,enum=pitchfork,enum=clusterbomb"`
 	// description: |
 	//   Payloads contains any payloads for the current request.
 	//
 	//   Payloads support both key-values combinations where a list
 	//   of payloads is provided, or optionally a single file can also
 	//   be provided as payload which will be read on run-time.
-	Payloads map[string]interface{} `yaml:"payloads,omitempty" json:"payloads,omitempty" jsonschema:"title=payloads for the network request,description=Payloads contains any payloads for the current request"`
+	Payloads map[string]any `yaml:"payloads,omitempty" json:"payloads,omitempty" jsonschema:"title=payloads for the network request,description=Payloads contains any payloads for the current request"`
 	// description: |
 	//    Threads to use when sending iterating over payloads
 	// examples:
@@ -165,7 +165,7 @@ func (request *Request) Compile(options *protocols.ExecutorOptions) error {
 		// check if inputs contains the payload
 		if ok && fileutil.FileExists(payloadStr) {
 			if request.Payloads == nil {
-				request.Payloads = make(map[string]interface{})
+				request.Payloads = make(map[string]any)
 			}
 			request.Payloads[name] = payloadStr
 		}
@@ -182,7 +182,7 @@ func (request *Request) Compile(options *protocols.ExecutorOptions) error {
 	return nil
 }
 
-func (request *Request) getDnsClient(options *protocols.ExecutorOptions, metadata map[string]interface{}) (*retryabledns.Client, error) {
+func (request *Request) getDnsClient(options *protocols.ExecutorOptions, metadata map[string]any) (*retryabledns.Client, error) {
 	dnsClientOptions := &dnsclientpool.Configuration{
 		Retries: request.Retries,
 		Proxy:   options.Options.AliveSocksProxy,
@@ -216,7 +216,7 @@ func (request *Request) Requests() int {
 }
 
 // Make returns the request to be sent for the protocol
-func (request *Request) Make(host string, vars map[string]interface{}) (*dns.Msg, error) {
+func (request *Request) Make(host string, vars map[string]any) (*dns.Msg, error) {
 	// Build a request on the specified URL
 	req := new(dns.Msg)
 	req.Id = dns.Id()

@@ -6,21 +6,21 @@ import (
 )
 
 func BenchmarkMergeMaps(b *testing.B) {
-	map1 := map[string]interface{}{
+	map1 := map[string]any{
 		"key1": "value1",
 		"key2": "value2",
 		"key3": "value3",
 		"key4": "value4",
 		"key5": "value5",
 	}
-	map2 := map[string]interface{}{
+	map2 := map[string]any{
 		"key6":  "value6",
 		"key7":  "value7",
 		"key8":  "value8",
 		"key9":  "value9",
 		"key10": "value10",
 	}
-	map3 := map[string]interface{}{
+	map3 := map[string]any{
 		"key11": "value11",
 		"key12": "value12",
 		"key13": "value13",
@@ -44,7 +44,7 @@ func BenchmarkMergeMaps(b *testing.B) {
 }
 
 func BenchmarkCopyMap(b *testing.B) {
-	map1 := map[string]interface{}{
+	map1 := map[string]any{
 		"key1": "value1",
 		"key2": "value2",
 		"key3": "value3",
@@ -66,26 +66,26 @@ func BenchmarkCopyMap(b *testing.B) {
 }
 
 func BenchmarkMergeMapsInto(b *testing.B) {
-	map1 := map[string]interface{}{
+	map1 := map[string]any{
 		"key1": "value1",
 		"key2": "value2",
 		"key3": "value3",
 		"key4": "value4",
 		"key5": "value5",
 	}
-	map2 := map[string]interface{}{
+	map2 := map[string]any{
 		"key6":  "value6",
 		"key7":  "value7",
 		"key8":  "value8",
 		"key9":  "value9",
 		"key10": "value10",
 	}
-	map3 := map[string]interface{}{
+	map3 := map[string]any{
 		"key11": "value11",
 		"key12": "value12",
 		"key13": "value13",
 	}
-	map4 := map[string]interface{}{
+	map4 := map[string]any{
 		"key14": "value14",
 		"key15": "value15",
 		"key16": "value16",

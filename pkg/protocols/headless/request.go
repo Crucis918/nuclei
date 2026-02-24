@@ -111,7 +111,7 @@ func extractBaseURLFromActions(steps []*engine.Action) (string, error) {
 	return "", errors.New("no navigation action found")
 }
 
-func (request *Request) executeRequestWithPayloads(input *contextargs.Context, payloads map[string]interface{}, previous output.InternalEvent, callback protocols.OutputEventCallback) error {
+func (request *Request) executeRequestWithPayloads(input *contextargs.Context, payloads map[string]any, previous output.InternalEvent, callback protocols.OutputEventCallback) error {
 	instance, err := request.options.Browser.NewInstance()
 	if err != nil {
 		request.options.Output.Request(request.options.TemplatePath, input.MetaInput.Input, request.Type().String(), err)
@@ -236,7 +236,7 @@ func dumpResponse(event *output.InternalWrappedEvent, requestOptions *protocols.
 }
 
 // executeFuzzingRule executes a fuzzing rule in the template request
-func (request *Request) executeFuzzingRule(input *contextargs.Context, payloads map[string]interface{}, previous output.InternalEvent, callback protocols.OutputEventCallback) error {
+func (request *Request) executeFuzzingRule(input *contextargs.Context, payloads map[string]any, previous output.InternalEvent, callback protocols.OutputEventCallback) error {
 	// check for operator matches by wrapping callback
 	gotmatches := false
 	fuzzRequestCallback := func(gr fuzz.GeneratedRequest) bool {

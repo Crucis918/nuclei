@@ -47,7 +47,7 @@ func (a *Analyzer) Name() string {
 //
 // It also applies the payload transformations to the payload
 // which includes [RANDNUM] and [RANDSTR]
-func (a *Analyzer) ApplyInitialTransformation(data string, params map[string]interface{}) string {
+func (a *Analyzer) ApplyInitialTransformation(data string, params map[string]any) string {
 	duration := DefaultSleepDuration
 	if len(params) > 0 {
 		if v, ok := params["sleep_duration"]; ok {
@@ -69,7 +69,7 @@ func (a *Analyzer) ApplyInitialTransformation(data string, params map[string]int
 	return data
 }
 
-func (a *Analyzer) parseAnalyzerParameters(params map[string]interface{}) (int, int, float64, float64, error) {
+func (a *Analyzer) parseAnalyzerParameters(params map[string]any) (int, int, float64, float64, error) {
 	requestsLimit := DefaultRequestsLimit
 	sleepDuration := DefaultSleepDuration
 	timeCorrelationErrorRange := DefaultTimeCorrelationErrorRange
@@ -158,7 +158,7 @@ func (a *Analyzer) Analyze(options *analyzers.Options) (bool, string, error) {
 func getBaselineDelay(reqSender timeDelayRequestSender) (float64, error) {
 	var delays []float64
 	// Use zero or a very small delay to measure baseline
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		delay, err := reqSender(0)
 		if err != nil {
 			return 0, errors.Wrap(err, "could not get baseline delay")

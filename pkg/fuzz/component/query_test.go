@@ -22,7 +22,7 @@ func TestQueryComponent(t *testing.T) {
 
 	var keys []string
 	var values []string
-	_ = query.Iterate(func(key string, value interface{}) error {
+	_ = query.Iterate(func(key string, value any) error {
 		keys = append(keys, key)
 		values = append(values, value.(string))
 		return nil

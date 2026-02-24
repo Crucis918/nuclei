@@ -6,7 +6,7 @@ import (
 )
 
 // MergeMapsMany merges many maps into a new map
-func MergeMapsMany(maps ...interface{}) map[string][]string {
+func MergeMapsMany(maps ...any) map[string][]string {
 	m := make(map[string][]string)
 	for _, gotMap := range maps {
 		val := reflect.ValueOf(gotMap)
@@ -48,13 +48,13 @@ func MergeMapsMany(maps ...interface{}) map[string][]string {
 //
 // Use [CopyMap] if you need to copy a single map.
 // Use [MergeMapsInto] to merge into an existing map.
-func MergeMaps(maps ...map[string]interface{}) map[string]interface{} {
+func MergeMaps(maps ...map[string]any) map[string]any {
 	mapsLen := 0
 	for _, m := range maps {
 		mapsLen += len(m)
 	}
 
-	merged := make(map[string]interface{}, mapsLen)
+	merged := make(map[string]any, mapsLen)
 	for _, m := range maps {
 		maps0.Copy(merged, m)
 	}
@@ -63,12 +63,12 @@ func MergeMaps(maps ...map[string]interface{}) map[string]interface{} {
 }
 
 // CopyMap creates a shallow copy of a single map.
-func CopyMap(m map[string]interface{}) map[string]interface{} {
+func CopyMap(m map[string]any) map[string]any {
 	if m == nil {
 		return nil
 	}
 
-	result := make(map[string]interface{}, len(m))
+	result := make(map[string]any, len(m))
 	maps0.Copy(result, m)
 
 	return result
@@ -77,7 +77,7 @@ func CopyMap(m map[string]interface{}) map[string]interface{} {
 // MergeMapsInto copies all entries from src maps into dst (mutating dst).
 //
 // Use when dst is a fresh map the caller owns and wants to avoid allocation.
-func MergeMapsInto(dst map[string]interface{}, srcs ...map[string]interface{}) {
+func MergeMapsInto(dst map[string]any, srcs ...map[string]any) {
 	for _, src := range srcs {
 		maps0.Copy(dst, src)
 	}

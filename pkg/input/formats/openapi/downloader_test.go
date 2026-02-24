@@ -28,15 +28,15 @@ func TestOpenAPIDownloader_SupportedExtensions(t *testing.T) {
 
 func TestOpenAPIDownloader_Download_Success(t *testing.T) {
 	// Create a mock OpenAPI spec
-	mockSpec := map[string]interface{}{
+	mockSpec := map[string]any{
 		"openapi": "3.0.0",
-		"info": map[string]interface{}{
+		"info": map[string]any{
 			"title":   "Test API",
 			"version": "1.0.0",
 		},
-		"paths": map[string]interface{}{
-			"/test": map[string]interface{}{
-				"get": map[string]interface{}{
+		"paths": map[string]any{
+			"/test": map[string]any{
+				"get": map[string]any{
 					"summary": "Test endpoint",
 				},
 			},
@@ -82,7 +82,7 @@ func TestOpenAPIDownloader_Download_Success(t *testing.T) {
 		t.Fatalf("Failed to read downloaded file: %v", err)
 	}
 
-	var downloadedSpec map[string]interface{}
+	var downloadedSpec map[string]any
 	if err := json.Unmarshal(content, &downloadedSpec); err != nil {
 		t.Fatalf("Failed to parse downloaded JSON: %v", err)
 	}
@@ -93,7 +93,7 @@ func TestOpenAPIDownloader_Download_Success(t *testing.T) {
 		t.Error("Servers field was not added to the spec")
 	}
 
-	if serversList, ok := servers.([]interface{}); ok {
+	if serversList, ok := servers.([]any); ok {
 		if len(serversList) == 0 {
 			t.Error("Servers list is empty")
 		}
@@ -182,7 +182,7 @@ func TestOpenAPIDownloader_Download_Timeout(t *testing.T) {
 	// Create mock server with delay
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		time.Sleep(35 * time.Second) // Longer than 30 second timeout
-		if err := json.NewEncoder(w).Encode(map[string]interface{}{"test": "data"}); err != nil {
+		if err := json.NewEncoder(w).Encode(map[string]any{"test": "data"}); err != nil {
 			http.Error(w, "failed to encode response", http.StatusInternalServerError)
 		}
 	}))
@@ -208,18 +208,18 @@ func TestOpenAPIDownloader_Download_Timeout(t *testing.T) {
 
 func TestOpenAPIDownloader_Download_WithExistingServers(t *testing.T) {
 	// Create a mock OpenAPI spec with existing servers
-	mockSpec := map[string]interface{}{
+	mockSpec := map[string]any{
 		"openapi": "3.0.0",
-		"info": map[string]interface{}{
+		"info": map[string]any{
 			"title":   "Test API",
 			"version": "1.0.0",
 		},
-		"servers": []interface{}{
-			map[string]interface{}{
+		"servers": []any{
+			map[string]any{
 				"url": "https://existing-server.com",
 			},
 		},
-		"paths": map[string]interface{}{},
+		"paths": map[string]any{},
 	}
 
 	// Create mock server
@@ -254,7 +254,7 @@ func TestOpenAPIDownloader_Download_WithExistingServers(t *testing.T) {
 		t.Fatalf("Failed to read downloaded file: %v", err)
 	}
 
-	var downloadedSpec map[string]interface{}
+	var downloadedSpec map[string]any
 	if err := json.Unmarshal(content, &downloadedSpec); err != nil {
 		t.Fatalf("Failed to parse downloaded JSON: %v", err)
 	}
@@ -264,7 +264,7 @@ func TestOpenAPIDownloader_Download_WithExistingServers(t *testing.T) {
 		t.Error("Servers field was removed from the spec")
 	}
 
-	if serversList, ok := servers.([]interface{}); ok {
+	if serversList, ok := servers.([]any); ok {
 		if len(serversList) != 1 {
 			t.Errorf("Expected 1 server, got %d", len(serversList))
 		}

@@ -46,13 +46,13 @@ func (kv *KV) Set(key string, value any) {
 		return
 	}
 	if kv.Map == nil {
-		kv.Map = make(map[string]interface{})
+		kv.Map = make(map[string]any)
 	}
 	kv.Map[key] = value
 }
 
 // Get gets a value from the KV struct
-func (kv *KV) Get(key string) interface{} {
+func (kv *KV) Get(key string) any {
 	if kv.OrderedMap != nil {
 		value, ok := kv.OrderedMap.Get(key)
 		if !ok {
@@ -97,7 +97,7 @@ func (kv *KV) Delete(key string) bool {
 }
 
 // KVMap returns a new KV struct with the given map
-func KVMap(data map[string]interface{}) KV {
+func KVMap(data map[string]any) KV {
 	return KV{Map: data}
 }
 
@@ -107,8 +107,8 @@ func KVOrderedMap(data *mapsutil.OrderedMap[string, any]) KV {
 }
 
 // ToMap converts the ordered map to a map
-func ToMap(m *mapsutil.OrderedMap[string, any]) map[string]interface{} {
-	data := make(map[string]interface{})
+func ToMap(m *mapsutil.OrderedMap[string, any]) map[string]any {
+	data := make(map[string]any)
 	m.Iterate(func(key string, value any) bool {
 		data[key] = value
 		return true
@@ -117,7 +117,7 @@ func ToMap(m *mapsutil.OrderedMap[string, any]) map[string]interface{} {
 }
 
 // ToOrderedMap converts the map to an ordered map
-func ToOrderedMap(data map[string]interface{}) *mapsutil.OrderedMap[string, any] {
+func ToOrderedMap(data map[string]any) *mapsutil.OrderedMap[string, any] {
 	m := mapsutil.NewOrderedMap[string, any]()
 	for key, value := range data {
 		m.Set(key, value)

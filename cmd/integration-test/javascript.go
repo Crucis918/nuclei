@@ -59,7 +59,7 @@ func (j *javascriptRedisPassBrute) Execute(filePath string) error {
 	finalURL := "localhost:" + tempPort
 	defer purge(redisResource)
 	errs := []error{}
-	for i := 0; i < defaultRetry; i++ {
+	for range defaultRetry {
 		results := []string{}
 		var err error
 		_ = pool.Retry(func() error {
@@ -91,7 +91,7 @@ func (j *javascriptSSHServerFingerprint) Execute(filePath string) error {
 	finalURL := "localhost:" + tempPort
 	defer purge(sshResource)
 	errs := []error{}
-	for i := 0; i < defaultRetry; i++ {
+	for range defaultRetry {
 		results := []string{}
 		var err error
 		_ = pool.Retry(func() error {
@@ -124,7 +124,7 @@ func (j *javascriptOracleAuthTest) Execute(filePath string) error {
 	defer purge(oracleResource)
 
 	errs := []error{}
-	for i := 0; i < defaultRetry; i++ {
+	for range defaultRetry {
 		results := []string{}
 		var err error
 		_ = pool.Retry(func() error {
@@ -156,7 +156,7 @@ func (j *javascriptVncPassBrute) Execute(filePath string) error {
 	finalURL := "localhost:" + tempPort
 	defer purge(vncResource)
 	errs := []error{}
-	for i := 0; i < defaultRetry; i++ {
+	for range defaultRetry {
 		results := []string{}
 		var err error
 		_ = pool.Retry(func() error {
@@ -188,7 +188,7 @@ func (j *javascriptPostgresPassBrute) Execute(filePath string) error {
 	finalURL := "localhost:" + tempPort
 	defer purge(postgresResource)
 	errs := []error{}
-	for i := 0; i < defaultRetry; i++ {
+	for range defaultRetry {
 		results := []string{}
 		var err error
 		_ = pool.Retry(func() error {
@@ -220,7 +220,7 @@ func (j *javascriptMySQLConnect) Execute(filePath string) error {
 	finalURL := "localhost:" + tempPort
 	defer purge(mysqlResource)
 	errs := []error{}
-	for i := 0; i < defaultRetry; i++ {
+	for range defaultRetry {
 		results := []string{}
 		var err error
 		_ = pool.Retry(func() error {
@@ -273,7 +273,7 @@ func (j *javascriptRsyncTest) Execute(filePath string) error {
 	finalURL := "localhost:" + tempPort
 	defer purge(rsyncResource)
 	errs := []error{}
-	for i := 0; i < defaultRetry; i++ {
+	for range defaultRetry {
 		results := []string{}
 		var err error
 		_ = pool.Retry(func() error {
@@ -305,7 +305,7 @@ func (j *javascriptTelnetAuthTest) Execute(filePath string) error {
 	finalURL := "localhost:" + tempPort
 	defer purge(telnetResource)
 	errs := []error{}
-	for i := 0; i < defaultRetry; i++ {
+	for range defaultRetry {
 		results := []string{}
 		var err error
 		_ = pool.Retry(func() error {

@@ -73,7 +73,7 @@ func (holder AttackTypeHolder) JSONSchema() *jsonschema.Schema {
 	return gotType
 }
 
-func (holder *AttackTypeHolder) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (holder *AttackTypeHolder) UnmarshalYAML(unmarshal func(any) error) error {
 	var marshalledTypes string
 	if err := unmarshal(&marshalledTypes); err != nil {
 		return err
@@ -106,6 +106,6 @@ func (holder *AttackTypeHolder) MarshalJSON() ([]byte, error) {
 	return json.Marshal(holder.Value.String())
 }
 
-func (holder AttackTypeHolder) MarshalYAML() (interface{}, error) {
+func (holder AttackTypeHolder) MarshalYAML() (any, error) {
 	return holder.Value.String(), nil
 }

@@ -987,9 +987,9 @@ type WalkFunc func(reflect.Value, reflect.StructField)
 // The interface{} passed to the function should be a pointer to a struct or a struct.
 // WalkFunc is the callback function used for each value in the struct. It is passed the
 // reflect.Value and reflect.Type properties of the value in the struct.
-func Walk(s interface{}, callback WalkFunc) {
+func Walk(s any, callback WalkFunc) {
 	structValue := reflect.ValueOf(s)
-	if structValue.Kind() == reflect.Ptr {
+	if structValue.Kind() == reflect.Pointer {
 		structValue = structValue.Elem()
 	}
 	if structValue.Kind() != reflect.Struct {
@@ -1003,7 +1003,7 @@ func Walk(s interface{}, callback WalkFunc) {
 		}
 		if field.Kind() == reflect.Struct {
 			Walk(field.Addr().Interface(), callback)
-		} else if field.Kind() == reflect.Ptr && field.Elem().Kind() == reflect.Struct {
+		} else if field.Kind() == reflect.Pointer && field.Elem().Kind() == reflect.Struct {
 			Walk(field.Interface(), callback)
 		} else {
 			callback(field, fieldType)
@@ -1020,8 +1020,8 @@ func expandEndVars(f reflect.Value, fieldType reflect.StructField) {
 	}
 	if f.Kind() == reflect.String {
 		str := f.String()
-		if strings.HasPrefix(str, "$") {
-			env := strings.TrimPrefix(str, "$")
+		if after, ok := strings.CutPrefix(str, "$"); ok {
+			env := after
 			retrievedEnv := os.Getenv(env)
 			if retrievedEnv != "" {
 				f.SetString(os.Getenv(env))

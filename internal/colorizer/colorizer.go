@@ -13,7 +13,7 @@ const (
 )
 
 func GetColor(colorizer aurora.Aurora, templateSeverity fmt.Stringer) string {
-	var method func(arg interface{}) aurora.Value
+	var method func(arg any) aurora.Value
 	switch templateSeverity {
 	case severity.Info:
 		method = colorizer.Blue
@@ -22,7 +22,7 @@ func GetColor(colorizer aurora.Aurora, templateSeverity fmt.Stringer) string {
 	case severity.Medium:
 		method = colorizer.Yellow
 	case severity.High:
-		method = func(stringValue interface{}) aurora.Value { return colorizer.Index(fgOrange, stringValue) }
+		method = func(stringValue any) aurora.Value { return colorizer.Index(fgOrange, stringValue) }
 	case severity.Critical:
 		method = colorizer.Red
 	default:

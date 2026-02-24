@@ -107,7 +107,7 @@ func (holder DNSRequestTypeHolder) JSONSchema() *jsonschema.Schema {
 	return gotType
 }
 
-func (holder *DNSRequestTypeHolder) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (holder *DNSRequestTypeHolder) UnmarshalYAML(unmarshal func(any) error) error {
 	var marshalledTypes string
 	if err := unmarshal(&marshalledTypes); err != nil {
 		return err
@@ -140,6 +140,6 @@ func (holder *DNSRequestTypeHolder) MarshalJSON() ([]byte, error) {
 	return json.Marshal(holder.DNSRequestType.String())
 }
 
-func (holder DNSRequestTypeHolder) MarshalYAML() (interface{}, error) {
+func (holder DNSRequestTypeHolder) MarshalYAML() (any, error) {
 	return holder.DNSRequestType.String(), nil
 }

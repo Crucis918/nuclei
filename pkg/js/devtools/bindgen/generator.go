@@ -187,7 +187,7 @@ func (d *TemplateData) InitNativeScripts() {
 	if exportsObj == nil {
 		return
 	}
-	for v := range exportsObj.(map[string]interface{}) {
+	for v := range exportsObj.(map[string]any) {
 		d.NativeScripts = append(d.NativeScripts, v)
 	}
 }
@@ -396,8 +396,8 @@ func (d *TemplateData) collectTypeFromExternal(pkg *types.Package, pkgName, name
 		if !ok {
 			continue
 		}
-		for i := 0; i < underlying.NumFields(); i++ {
-			field := underlying.Field(i)
+		for field := range underlying.Fields() {
+			field := field
 			fieldType := field.Type().String()
 
 			if val, ok := field.Type().Underlying().(*types.Pointer); ok {

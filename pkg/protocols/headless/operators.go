@@ -15,7 +15,7 @@ import (
 )
 
 // Match matches a generic data response again a given matcher
-func (request *Request) Match(data map[string]interface{}, matcher *matchers.Matcher) (bool, []string) {
+func (request *Request) Match(data map[string]any, matcher *matchers.Matcher) (bool, []string) {
 	itemStr, ok := request.getMatchPart(matcher.Part, data)
 	if !ok && matcher.Type.MatcherType != matchers.DSLMatcher {
 		return false, []string{}
@@ -44,7 +44,7 @@ func (request *Request) Match(data map[string]interface{}, matcher *matchers.Mat
 	return false, []string{}
 }
 
-func getStatusCode(data map[string]interface{}) (int, bool) {
+func getStatusCode(data map[string]any) (int, bool) {
 	statusCodeValue, ok := data["status_code"]
 	if !ok {
 		return 0, false
@@ -63,7 +63,7 @@ func getStatusCode(data map[string]interface{}) (int, bool) {
 }
 
 // Extract performs extracting operation for an extractor on model and returns true or false.
-func (request *Request) Extract(data map[string]interface{}, extractor *extractors.Extractor) map[string]struct{} {
+func (request *Request) Extract(data map[string]any, extractor *extractors.Extractor) map[string]struct{} {
 	itemStr, ok := request.getMatchPart(extractor.Part, data)
 	if !ok && !extractors.SupportsMap(extractor) {
 		return nil

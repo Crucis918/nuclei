@@ -116,7 +116,7 @@ func (holder TypeHolder) JSONSchema() *jsonschema.Schema {
 	return gotType
 }
 
-func (holder *TypeHolder) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (holder *TypeHolder) UnmarshalYAML(unmarshal func(any) error) error {
 	var marshalledTypes string
 	if err := unmarshal(&marshalledTypes); err != nil {
 		return err
@@ -135,7 +135,7 @@ func (holder *TypeHolder) MarshalJSON() ([]byte, error) {
 	return json.Marshal(holder.ProtocolType.String())
 }
 
-func (holder TypeHolder) MarshalYAML() (interface{}, error) {
+func (holder TypeHolder) MarshalYAML() (any, error) {
 	return holder.ProtocolType.String(), nil
 }
 
@@ -155,7 +155,7 @@ func (protocolTypes *ProtocolTypes) Set(values string) error {
 	return nil
 }
 
-func (protocolTypes *ProtocolTypes) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (protocolTypes *ProtocolTypes) UnmarshalYAML(unmarshal func(any) error) error {
 	var stringSliceValue stringslice.StringSlice
 	if err := unmarshal(&stringSliceValue); err != nil {
 		return err

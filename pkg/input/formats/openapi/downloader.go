@@ -61,7 +61,7 @@ func (d *OpenAPIDownloader) Download(urlStr, tmpDir string, httpClient *retryabl
 	}
 
 	// Validate it's a valid JSON and has OpenAPI structure
-	var spec map[string]interface{}
+	var spec map[string]any
 	if err := json.Unmarshal(bodyBytes, &spec); err != nil {
 		return "", fmt.Errorf("downloaded content is not valid JSON: %w", err)
 	}
@@ -91,9 +91,9 @@ func (d *OpenAPIDownloader) Download(urlStr, tmpDir string, httpClient *retryabl
 	// Add servers section if missing or empty
 	servers, exists := spec["servers"]
 	if !exists || servers == nil {
-		spec["servers"] = []map[string]interface{}{{"url": scheme + "://" + host}}
-	} else if serverList, ok := servers.([]interface{}); ok && len(serverList) == 0 {
-		spec["servers"] = []map[string]interface{}{{"url": scheme + "://" + host}}
+		spec["servers"] = []map[string]any{{"url": scheme + "://" + host}}
+	} else if serverList, ok := servers.([]any); ok && len(serverList) == 0 {
+		spec["servers"] = []map[string]any{{"url": scheme + "://" + host}}
 	}
 
 	// Marshal back to JSON

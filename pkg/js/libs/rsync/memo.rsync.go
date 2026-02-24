@@ -11,7 +11,7 @@ import (
 func memoizedisRsync(executionId string, host string, port int) (IsRsyncResponse, error) {
 	hash := "isRsync" + ":" + fmt.Sprint(executionId) + ":" + fmt.Sprint(host) + ":" + fmt.Sprint(port)
 
-	v, err, _ := protocolstate.Memoizer.Do(hash, func() (interface{}, error) {
+	v, err, _ := protocolstate.Memoizer.Do(hash, func() (any, error) {
 		return isRsync(executionId, host, port)
 	})
 	if err != nil {

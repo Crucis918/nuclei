@@ -15,7 +15,7 @@ import (
 
 // JSONScalarToString converts an interface coming from json to string
 // Inspired from: https://github.com/cli/cli/blob/09b09810dd812e3ede54b59ad9d6912b946ac6c5/pkg/export/template.go#L72
-func JSONScalarToString(input interface{}) (string, error) {
+func JSONScalarToString(input any) (string, error) {
 	switch tt := input.(type) {
 	case string:
 		return ToString(tt), nil
@@ -31,7 +31,7 @@ func JSONScalarToString(input interface{}) (string, error) {
 }
 
 // ToString converts an interface to string in a quick way
-func ToString(data interface{}) string {
+func ToString(data any) string {
 	switch s := data.(type) {
 	case nil:
 		return ""
@@ -80,9 +80,9 @@ func ToString(data interface{}) string {
 
 // ToStringNSlice converts an interface to string in a quick way or to a slice with strings
 // if the input is a slice of interfaces.
-func ToStringNSlice(data interface{}) interface{} {
+func ToStringNSlice(data any) any {
 	switch s := data.(type) {
-	case []interface{}:
+	case []any:
 		var a []string
 		for _, v := range s {
 			a = append(a, ToString(v))
@@ -93,7 +93,7 @@ func ToStringNSlice(data interface{}) interface{} {
 	}
 }
 
-func ToHexOrString(data interface{}) string {
+func ToHexOrString(data any) string {
 	switch s := data.(type) {
 	case string:
 		if govalidator.IsASCII(s) {
@@ -108,11 +108,11 @@ func ToHexOrString(data interface{}) string {
 }
 
 // ToStringSlice casts an interface to a []string type.
-func ToStringSlice(i interface{}) []string {
+func ToStringSlice(i any) []string {
 	var a []string
 
 	switch v := i.(type) {
-	case []interface{}:
+	case []any:
 		for _, u := range v {
 			a = append(a, ToString(u))
 		}
@@ -127,7 +127,7 @@ func ToStringSlice(i interface{}) []string {
 }
 
 // ToByteSlice casts an interface to a []byte type.
-func ToByteSlice(i interface{}) []byte {
+func ToByteSlice(i any) []byte {
 	switch v := i.(type) {
 	case []byte:
 		return v
@@ -135,7 +135,7 @@ func ToByteSlice(i interface{}) []byte {
 		return []byte(strings.Join(v, ""))
 	case string:
 		return []byte(v)
-	case []interface{}:
+	case []any:
 		var buff bytes.Buffer
 		for _, u := range v {
 			buff.WriteString(ToString(u))
@@ -148,16 +148,16 @@ func ToByteSlice(i interface{}) []byte {
 }
 
 // ToStringMap casts an interface to a map[string]interface{} type.
-func ToStringMap(i interface{}) map[string]interface{} {
-	var m = map[string]interface{}{}
+func ToStringMap(i any) map[string]any {
+	var m = map[string]any{}
 
 	switch v := i.(type) {
-	case map[interface{}]interface{}:
+	case map[any]any:
 		for k, val := range v {
 			m[ToString(k)] = val
 		}
 		return m
-	case map[string]interface{}:
+	case map[string]any:
 		return v
 	default:
 		return nil

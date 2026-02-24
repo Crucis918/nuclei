@@ -37,7 +37,7 @@ func (j *JSON) Encode(data KV) (string, error) {
 
 // Decode decodes the data from JSON format
 func (j *JSON) Decode(data string) (KV, error) {
-	var decoded map[string]interface{}
+	var decoded map[string]any
 	err := jsoniter.Unmarshal([]byte(data), &decoded)
 	return KVMap(decoded), err
 }

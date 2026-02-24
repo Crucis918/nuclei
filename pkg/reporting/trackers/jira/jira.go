@@ -98,15 +98,15 @@ func evaluateTemplate(templateStr string, ctx *TemplateContext) (string, error) 
 }
 
 // evaluateCustomFieldValue evaluates a custom field value, supporting both new template syntax and legacy $variable syntax
-func (i *Integration) evaluateCustomFieldValue(value string, templateCtx *TemplateContext, event *output.ResultEvent) (interface{}, error) {
+func (i *Integration) evaluateCustomFieldValue(value string, templateCtx *TemplateContext, event *output.ResultEvent) (any, error) {
 	// Try template evaluation first (supports {{...}} syntax)
 	if strings.Contains(value, "{{") {
 		return evaluateTemplate(value, templateCtx)
 	}
 
 	// Handle legacy $variable syntax for backward compatibility
-	if strings.HasPrefix(value, "$") {
-		variableName := strings.TrimPrefix(value, "$")
+	if after, ok := strings.CutPrefix(value, "$"); ok {
+		variableName := after
 		switch variableName {
 		case "CVSSMetrics":
 			if event.Info.Classification != nil {
@@ -217,9 +217,9 @@ type Options struct {
 	// for each customfield specified in the configuration options
 	// we will create a map of customfield name to the value
 	// that will be used to create the issue
-	CustomFields map[string]interface{} `yaml:"custom-fields" json:"custom_fields"`
-	StatusNot    string                 `yaml:"status-not" json:"status_not"`
-	OmitRaw      bool                   `yaml:"-"`
+	CustomFields map[string]any `yaml:"custom-fields" json:"custom_fields"`
+	StatusNot    string         `yaml:"status-not" json:"status_not"`
+	OmitRaw      bool           `yaml:"-"`
 }
 
 // New creates a new issue tracker integration client based on options.
@@ -282,7 +282,7 @@ func (i *Integration) CreateNewIssue(event *output.ResultEvent) (*filters.Create
 	// Process custom fields with template evaluation support
 	customFields := tcontainer.NewMarshalMap()
 	for name, value := range i.options.CustomFields {
-		if valueMap, ok := value.(map[interface{}]interface{}); ok {
+		if valueMap, ok := value.(map[any]any); ok {
 			// Iterate over nested map
 			for nestedName, nestedValue := range valueMap {
 				fmtNestedValue, ok := nestedValue.(string)
@@ -299,9 +299,9 @@ func (i *Integration) CreateNewIssue(event *output.ResultEvent) (*filters.Create
 
 				switch nestedName {
 				case "id":
-					customFields[name] = map[string]interface{}{"id": evaluatedValue}
+					customFields[name] = map[string]any{"id": evaluatedValue}
 				case "name":
-					customFields[name] = map[string]interface{}{"value": evaluatedValue}
+					customFields[name] = map[string]any{"value": evaluatedValue}
 				case "freeform":
 					customFields[name] = evaluatedValue
 				}

@@ -20,16 +20,16 @@ type PayloadGenerator struct {
 }
 
 // New creates a new generator structure for payload generation
-func New(payloads map[string]interface{}, attackType AttackType, templatePath string, catalog catalog.Catalog, customAttackType string, opts *types.Options) (*PayloadGenerator, error) {
+func New(payloads map[string]any, attackType AttackType, templatePath string, catalog catalog.Catalog, customAttackType string, opts *types.Options) (*PayloadGenerator, error) {
 	if attackType.String() == "" {
 		attackType = BatteringRamAttack
 	}
 
 	// Resolve payload paths if they are files.
-	payloadsFinal := make(map[string]interface{})
+	payloadsFinal := make(map[string]any)
 	for payloadName, v := range payloads {
 		switch value := v.(type) {
-		case map[interface{}]interface{}:
+		case map[any]any:
 			values, err := parsePayloadsWithAggression(payloadName, value, opts.FuzzAggressionLevel)
 			if err != nil {
 				return nil, errors.Wrap(err, "could not parse payloads with aggression")
@@ -69,9 +69,9 @@ func New(payloads map[string]interface{}, attackType AttackType, templatePath st
 }
 
 type aggressionLevelToPayloads struct {
-	Low    []interface{}
-	Medium []interface{}
-	High   []interface{}
+	Low    []any
+	Medium []any
+	High   []any
 }
 
 // parsePayloadsWithAggression parses the payloads with the aggression level
@@ -84,21 +84,21 @@ type aggressionLevelToPayloads struct {
 // low is the default level. If medium is specified, all templates from
 // low and medium are executed. Similarly with high, including all templates
 // from low, medium, high.
-func parsePayloadsWithAggression(name string, v map[interface{}]interface{}, aggression string) (map[string]interface{}, error) {
+func parsePayloadsWithAggression(name string, v map[any]any, aggression string) (map[string]any, error) {
 	payloadsLevels := &aggressionLevelToPayloads{}
 
 	for k, v := range v {
-		if _, ok := v.([]interface{}); !ok {
+		if _, ok := v.([]any); !ok {
 			return nil, errors.Errorf("only lists are supported for aggression levels payloads")
 		}
 		var ok bool
 		switch k {
 		case "low":
-			payloadsLevels.Low, ok = v.([]interface{})
+			payloadsLevels.Low, ok = v.([]any)
 		case "medium":
-			payloadsLevels.Medium, ok = v.([]interface{})
+			payloadsLevels.Medium, ok = v.([]any)
 		case "high":
-			payloadsLevels.High, ok = v.([]interface{})
+			payloadsLevels.High, ok = v.([]any)
 		default:
 			return nil, errors.Errorf("invalid aggression level %s specified for %s", k, name)
 		}
@@ -107,7 +107,7 @@ func parsePayloadsWithAggression(name string, v map[interface{}]interface{}, agg
 		}
 	}
 
-	payloads := make(map[string]interface{})
+	payloads := make(map[string]any)
 	switch aggression {
 	case "low":
 		payloads[name] = payloadsLevels.Low
@@ -115,7 +115,7 @@ func parsePayloadsWithAggression(name string, v map[interface{}]interface{}, agg
 		payloads[name] = append(payloadsLevels.Low, payloadsLevels.Medium...)
 	case "high":
 		payloads[name] = append(payloadsLevels.Low, payloadsLevels.Medium...)
-		payloads[name] = append(payloads[name].([]interface{}), payloadsLevels.High...)
+		payloads[name] = append(payloads[name].([]any), payloadsLevels.High...)
 	default:
 		return nil, errors.Errorf("invalid aggression level %s specified for %s", aggression, name)
 	}
@@ -186,7 +186,7 @@ func (i *Iterator) Total() int {
 }
 
 // Value returns the next value for an iterator
-func (i *Iterator) Value() (map[string]interface{}, bool) {
+func (i *Iterator) Value() (map[string]any, bool) {
 	switch i.Type {
 	case BatteringRamAttack:
 		return i.batteringRamValue()
@@ -200,8 +200,8 @@ func (i *Iterator) Value() (map[string]interface{}, bool) {
 }
 
 // batteringRamValue returns a list of all payloads for the iterator
-func (i *Iterator) batteringRamValue() (map[string]interface{}, bool) {
-	values := make(map[string]interface{}, 1)
+func (i *Iterator) batteringRamValue() (map[string]any, bool) {
+	values := make(map[string]any, 1)
 
 	currentIndex := i.msbIterator
 	payload := i.payloads[currentIndex]
@@ -219,8 +219,8 @@ func (i *Iterator) batteringRamValue() (map[string]interface{}, bool) {
 }
 
 // pitchforkValue returns a map of keyword:value pairs in same index
-func (i *Iterator) pitchforkValue() (map[string]interface{}, bool) {
-	values := make(map[string]interface{}, len(i.payloads))
+func (i *Iterator) pitchforkValue() (map[string]any, bool) {
+	values := make(map[string]any, len(i.payloads))
 
 	for _, p := range i.payloads {
 		if !p.next() {
@@ -234,11 +234,11 @@ func (i *Iterator) pitchforkValue() (map[string]interface{}, bool) {
 }
 
 // clusterbombValue returns a combination of all input pairs in key:value format.
-func (i *Iterator) clusterbombValue() (map[string]interface{}, bool) {
+func (i *Iterator) clusterbombValue() (map[string]any, bool) {
 	if i.position >= i.total {
 		return nil, false
 	}
-	values := make(map[string]interface{}, len(i.payloads))
+	values := make(map[string]any, len(i.payloads))
 
 	// Should we signal the next InputProvider in the slice to increment
 	signalNext := false

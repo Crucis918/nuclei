@@ -20,7 +20,7 @@ var jsOnce sync.Once
 
 // js runtime pool using sync.Pool
 var gojapool = &sync.Pool{
-	New: func() interface{} {
+	New: func() any {
 		runtime := protocolstate.NewJSRuntime()
 		registerBuiltins(runtime)
 		return runtime
@@ -65,7 +65,7 @@ func registerBuiltins(runtime *goja.Runtime) {
 			switch value := arg.(type) {
 			case string:
 				gologger.DefaultLogger.Print().Msgf("[%v] %v", aurora.BrightCyan("JS"), value)
-			case map[string]interface{}:
+			case map[string]any:
 				gologger.DefaultLogger.Print().Msgf("[%v] %v", aurora.BrightCyan("JS"), vardump.DumpVariables(value))
 			default:
 				gologger.DefaultLogger.Print().Msgf("[%v] %v", aurora.BrightCyan("JS"), value)

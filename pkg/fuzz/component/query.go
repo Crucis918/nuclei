@@ -47,8 +47,8 @@ func (q *Query) Parse(req *retryablehttp.Request) (bool, error) {
 }
 
 // Iterate iterates through the component
-func (q *Query) Iterate(callback func(key string, value interface{}) error) (errx error) {
-	q.value.parsed.Iterate(func(key string, value interface{}) bool {
+func (q *Query) Iterate(callback func(key string, value any) error) (errx error) {
+	q.value.parsed.Iterate(func(key string, value any) bool {
 		if err := callback(key, value); err != nil {
 			errx = err
 			return false

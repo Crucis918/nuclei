@@ -174,7 +174,7 @@ func (n *nucleiExecutor) ExecuteScan(target PostRequestsHandlerRequest) error {
 		InputContents: string(marshalledYaml),
 		InputMode:     "yaml",
 		Options: formats.InputFormatOptions{
-			Variables: make(map[string]interface{}),
+			Variables: make(map[string]any),
 		},
 	})
 	if err != nil {

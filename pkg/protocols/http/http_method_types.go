@@ -101,7 +101,7 @@ func (holder HTTPMethodTypeHolder) JSONSchema() *jsonschema.Schema {
 	return gotType
 }
 
-func (holder *HTTPMethodTypeHolder) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (holder *HTTPMethodTypeHolder) UnmarshalYAML(unmarshal func(any) error) error {
 	var marshalledTypes string
 	if err := unmarshal(&marshalledTypes); err != nil {
 		return err
@@ -134,6 +134,6 @@ func (holder *HTTPMethodTypeHolder) MarshalJSON() ([]byte, error) {
 	return json.Marshal(holder.MethodType.String())
 }
 
-func (holder HTTPMethodTypeHolder) MarshalYAML() (interface{}, error) {
+func (holder HTTPMethodTypeHolder) MarshalYAML() (any, error) {
 	return holder.MethodType.String(), nil
 }

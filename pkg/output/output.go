@@ -90,9 +90,9 @@ var _ Writer = &StandardWriter{}
 var decolorizerRegex = regexp.MustCompile(`\x1B\[[0-9;]*[a-zA-Z]`)
 
 // InternalEvent is an internal output generation structure for nuclei.
-type InternalEvent map[string]interface{}
+type InternalEvent map[string]any
 
-func (ie InternalEvent) Set(k string, v interface{}) {
+func (ie InternalEvent) Set(k string, v any) {
 	ie[k] = v
 }
 
@@ -182,7 +182,7 @@ type ResultEvent struct {
 	// Response is the optional, dumped response for the match.
 	Response string `json:"response,omitempty"`
 	// Metadata contains any optional metadata for the event
-	Metadata map[string]interface{} `json:"meta,omitempty"`
+	Metadata map[string]any `json:"meta,omitempty"`
 	// IP is the IP address for the found result event.
 	IP string `json:"ip,omitempty"`
 	// Timestamp is the time the result was found at.
@@ -360,14 +360,14 @@ func redactKeys(data string, keysToRedact []string) string {
 
 // JSONLogRequest is a trace/error log request written to file
 type JSONLogRequest struct {
-	Template  string      `json:"template"`
-	Type      string      `json:"type"`
-	Input     string      `json:"input"`
-	Timestamp *time.Time  `json:"timestamp,omitempty"`
-	Address   string      `json:"address"`
-	Error     string      `json:"error"`
-	Kind      string      `json:"kind,omitempty"`
-	Attrs     interface{} `json:"attrs,omitempty"`
+	Template  string     `json:"template"`
+	Type      string     `json:"type"`
+	Input     string     `json:"input"`
+	Timestamp *time.Time `json:"timestamp,omitempty"`
+	Address   string     `json:"address"`
+	Error     string     `json:"error"`
+	Kind      string     `json:"kind,omitempty"`
+	Attrs     any        `json:"attrs,omitempty"`
 }
 
 // Request writes a log the requests trace log

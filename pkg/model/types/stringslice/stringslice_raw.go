@@ -4,7 +4,7 @@ type RawStringSlice struct {
 	StringSlice
 }
 
-func NewRawStringSlice(value interface{}) *RawStringSlice {
+func NewRawStringSlice(value any) *RawStringSlice {
 	return &RawStringSlice{StringSlice: StringSlice{Value: value}}
 }
 
@@ -12,7 +12,7 @@ func (rawStringSlice *RawStringSlice) Normalize(value string) string {
 	return value
 }
 
-func (rawStringSlice *RawStringSlice) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (rawStringSlice *RawStringSlice) UnmarshalYAML(unmarshal func(any) error) error {
 	marshalledSlice, err := marshalStringToSlice(unmarshal)
 	if err != nil {
 		return err

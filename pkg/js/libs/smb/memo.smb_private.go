@@ -15,7 +15,7 @@ import (
 func memoizedcollectSMBv2Metadata(executionId string, host string, port int, timeout time.Duration) (*plugins.ServiceSMB, error) {
 	hash := "collectSMBv2Metadata" + ":" + fmt.Sprint(executionId) + ":" + fmt.Sprint(host) + ":" + fmt.Sprint(port) + ":" + fmt.Sprint(timeout)
 
-	v, err, _ := protocolstate.Memoizer.Do(hash, func() (interface{}, error) {
+	v, err, _ := protocolstate.Memoizer.Do(hash, func() (any, error) {
 		return collectSMBv2Metadata(executionId, host, port, timeout)
 	})
 	if err != nil {

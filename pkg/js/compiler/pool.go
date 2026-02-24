@@ -68,7 +68,7 @@ var (
 )
 
 var gojapool = &sync.Pool{
-	New: func() interface{} {
+	New: func() any {
 		return createNewRuntime()
 	},
 }
@@ -144,7 +144,7 @@ func executeWithPoolingProgram(p *goja.Program, args *ExecuteArgs, opts *Execute
 	runtime := gojapool.Get().(*goja.Runtime)
 	defer gojapool.Put(runtime)
 	var buff bytes.Buffer
-	opts.exports = make(map[string]interface{})
+	opts.exports = make(map[string]any)
 
 	defer func() {
 		// remove below functions from runtime
@@ -229,7 +229,7 @@ func stringify(gojaValue goja.Value, runtime *goja.Runtime) string {
 		return ""
 	}
 	kind := reflect.TypeOf(value).Kind()
-	if kind == reflect.Struct || kind == reflect.Ptr && reflect.ValueOf(value).Elem().Kind() == reflect.Struct {
+	if kind == reflect.Struct || kind == reflect.Pointer && reflect.ValueOf(value).Elem().Kind() == reflect.Struct {
 		// in this case we must use JSON.stringify to convert to string
 		// because json.Marshal() utilizes json tags when marshalling
 		// but goja has custom implementation of json.Marshal() which does not
@@ -244,7 +244,7 @@ func stringify(gojaValue goja.Value, runtime *goja.Runtime) string {
 		}
 		// unlikely but if to_json threw some error use native json.Marshal
 		val := value
-		if kind == reflect.Ptr {
+		if kind == reflect.Pointer {
 			val = reflect.ValueOf(value).Elem().Interface()
 		}
 		bin, err := json.Marshal(val)

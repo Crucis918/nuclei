@@ -91,7 +91,7 @@ func (m *mongoExporter) Execute(filepath string) error {
 
 	collection := client.Database(dbName).Collection(opts.CollectionName)
 	var actualRes output.ResultEvent
-	err = collection.FindOne(ctx, map[string]interface{}{"request": res.Request}).Decode(&actualRes)
+	err = collection.FindOne(ctx, map[string]any{"request": res.Request}).Decode(&actualRes)
 	if err != nil {
 		return fmt.Errorf("failed to find document in MongoDB: %s", err)
 	}

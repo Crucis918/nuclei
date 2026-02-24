@@ -74,14 +74,14 @@ func GetLazyAuthFetchCallback(opts *AuthLazyFetchOptions) authx.LazyFetchSecret 
 		if len(tmpls) > 1 {
 			return fmt.Errorf("multiple templates found for path: %s", d.TemplatePath)
 		}
-		data := map[string]interface{}{}
+		data := map[string]any{}
 		tmpl := tmpls[0]
 		// add args to tmpl here
-		vars := map[string]interface{}{}
+		vars := map[string]any{}
 		mainCtx := context.Background()
 		ctx := scan.NewScanContext(mainCtx, contextargs.NewWithInput(mainCtx, d.Input))
 
-		cliVars := map[string]interface{}{}
+		cliVars := map[string]any{}
 		if opts.ExecOpts.Options != nil {
 			// gets variables passed from cli -v and -env-vars
 			cliVars = generators.BuildPayloadFromOptions(opts.ExecOpts.Options)

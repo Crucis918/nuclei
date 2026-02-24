@@ -13,7 +13,7 @@ import (
 func memoizedconnect(executionId string, host string, port int, username string, password string, dbName string) (bool, error) {
 	hash := "connect" + ":" + fmt.Sprint(executionId) + ":" + fmt.Sprint(host) + ":" + fmt.Sprint(port) + ":" + fmt.Sprint(username) + ":" + fmt.Sprint(password) + ":" + fmt.Sprint(dbName)
 
-	v, err, _ := protocolstate.Memoizer.Do(hash, func() (interface{}, error) {
+	v, err, _ := protocolstate.Memoizer.Do(hash, func() (any, error) {
 		return connect(executionId, host, port, username, password, dbName)
 	})
 	if err != nil {
@@ -29,7 +29,7 @@ func memoizedconnect(executionId string, host string, port int, username string,
 func memoizedisMssql(executionId string, host string, port int) (bool, error) {
 	hash := "isMssql" + ":" + fmt.Sprint(executionId) + ":" + fmt.Sprint(host) + ":" + fmt.Sprint(port)
 
-	v, err, _ := protocolstate.Memoizer.Do(hash, func() (interface{}, error) {
+	v, err, _ := protocolstate.Memoizer.Do(hash, func() (any, error) {
 		return isMssql(executionId, host, port)
 	})
 	if err != nil {

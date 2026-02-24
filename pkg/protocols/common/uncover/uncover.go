@@ -86,7 +86,7 @@ func GetUncoverTargetsFromMetadata(ctx context.Context, templates []*templates.T
 				queriesMap[engine] = []string{}
 			}
 			switch v := v.(type) {
-			case []interface{}:
+			case []any:
 				qs := queriesMap[engine]
 				for _, vv := range v {
 					qs = append(qs, fmt.Sprint(vv))

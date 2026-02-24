@@ -142,8 +142,8 @@ func (d *TemplateData) WriteMarkdownLibraryDocumentation(outputDirectory string,
 }
 
 // templateFuncs returns the template functions for the generator
-func templateFuncs() map[string]interface{} {
-	return map[string]interface{}{
+func templateFuncs() map[string]any {
+	return map[string]any{
 		"exist": func(v map[string]string, key string) bool {
 			_, exist := v[key]
 			return exist

@@ -63,7 +63,7 @@ func (holder SignatureTypeHolder) JSONSchema() *jsonschema.Schema {
 	return gotType
 }
 
-func (holder *SignatureTypeHolder) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (holder *SignatureTypeHolder) UnmarshalYAML(unmarshal func(any) error) error {
 	var marshalledTypes string
 	if err := unmarshal(&marshalledTypes); err != nil {
 		return err
@@ -96,14 +96,14 @@ func (holder SignatureTypeHolder) MarshalJSON() ([]byte, error) {
 	return json.Marshal(holder.Value.String())
 }
 
-func (holder SignatureTypeHolder) MarshalYAML() (interface{}, error) {
+func (holder SignatureTypeHolder) MarshalYAML() (any, error) {
 	return holder.Value.String(), nil
 }
 
 var ErrNoIgnoreList = errors.New("unknown signature types")
 
 // GetVariablesNamesSkipList depending on the signature type
-func GetVariablesNamesSkipList(signature SignatureType) map[string]interface{} {
+func GetVariablesNamesSkipList(signature SignatureType) map[string]any {
 	switch signature {
 	case AWSSignature:
 		return signer.AwsSkipList
@@ -113,9 +113,9 @@ func GetVariablesNamesSkipList(signature SignatureType) map[string]interface{} {
 }
 
 // GetDefaultSignerVars returns the default signer variables
-func GetDefaultSignerVars(signatureType SignatureType) map[string]interface{} {
+func GetDefaultSignerVars(signatureType SignatureType) map[string]any {
 	if signatureType == AWSSignature {
 		return signer.AwsDefaultVars
 	}
-	return map[string]interface{}{}
+	return map[string]any{}
 }

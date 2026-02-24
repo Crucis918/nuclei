@@ -46,7 +46,7 @@ func TestYamlFormatterParseWithVariables(t *testing.T) {
 
 	format.SetOptions(formats.InputFormatOptions{
 		VarsTextTemplating: true,
-		Variables: map[string]interface{}{
+		Variables: map[string]any{
 			"foo": "catalog",
 			"bar": "product",
 		},

@@ -192,10 +192,10 @@ func isIdMatch(tagFilter *TagFilter, templateId string) bool {
 	return included && !excluded
 }
 
-func tryCollectConditionsMatchinfo(template *Template) map[string]interface{} {
+func tryCollectConditionsMatchinfo(template *Template) map[string]any {
 	// attempts to unwrap fields to their basic types
 	// mapping must be manual because of various abstraction layers, custom marshaling and forceful validation
-	parameters := map[string]interface{}{
+	parameters := map[string]any{
 		"id":          template.ID,
 		"name":        template.Info.Name,
 		"description": template.Info.Description,

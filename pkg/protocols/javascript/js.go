@@ -44,7 +44,7 @@ import (
 // Request is a request for the javascript protocol
 type Request struct {
 	// Operators for the current request go here.
-	operators.Operators `yaml:",inline,omitempty" json:",inline,omitempty"`
+	operators.Operators `yaml:",inline,omitempty" json:",inline"`
 	CompiledOperators   *operators.Operators `yaml:"-" json:"-"`
 
 	// description: |
@@ -62,7 +62,7 @@ type Request struct {
 
 	// description: |
 	//   Args contains the arguments to pass to the javascript code.
-	Args map[string]interface{} `yaml:"args,omitempty" json:"args,omitempty"`
+	Args map[string]any `yaml:"args,omitempty" json:"args,omitempty"`
 	// description: |
 	//   Code contains code to execute for the javascript request.
 	Code string `yaml:"code,omitempty" json:"code,omitempty" jsonschema:"title=code to execute in javascript,description=Executes inline javascript code for the request"`
@@ -74,7 +74,7 @@ type Request struct {
 	//
 	//   Sniper is each payload once, pitchfork combines multiple payload sets and clusterbomb generates
 	//   permutations and combinations for all payloads.
-	AttackType generators.AttackTypeHolder `yaml:"attack,omitempty" json:"attack,omitempty" jsonschema:"title=attack is the payload combination,description=Attack is the type of payload combinations to perform,enum=sniper,enum=pitchfork,enum=clusterbomb"`
+	AttackType generators.AttackTypeHolder `yaml:"attack,omitempty" json:"attack" jsonschema:"title=attack is the payload combination,description=Attack is the type of payload combinations to perform,enum=sniper,enum=pitchfork,enum=clusterbomb"`
 	// description: |
 	//   Payload concurrency i.e threads for sending requests.
 	// examples:
@@ -87,7 +87,7 @@ type Request struct {
 	//   Payloads support both key-values combinations where a list
 	//   of payloads is provided, or optionally a single file can also
 	//   be provided as payload which will be read on run-time.
-	Payloads map[string]interface{} `yaml:"payloads,omitempty" json:"payloads,omitempty" jsonschema:"title=payloads for the webosocket request,description=Payloads contains any payloads for the current request"`
+	Payloads map[string]any `yaml:"payloads,omitempty" json:"payloads,omitempty" jsonschema:"title=payloads for the webosocket request,description=Payloads contains any payloads for the current request"`
 
 	generator *generators.PayloadGenerator
 
@@ -177,7 +177,7 @@ func (request *Request) Compile(options *protocols.ExecutorOptions) error {
 						return fmt.Errorf("variable value cannot be empty")
 					}
 					if request.Args == nil {
-						request.Args = make(map[string]interface{})
+						request.Args = make(map[string]any)
 					}
 					request.Args[varname] = value
 					return nil
@@ -195,7 +195,7 @@ func (request *Request) Compile(options *protocols.ExecutorOptions) error {
 				Description: "update/override any payload from init code. this function is available in init code block only",
 				FuncDecl: func(varname string, Value any) error {
 					if request.Payloads == nil {
-						request.Payloads = make(map[string]interface{})
+						request.Payloads = make(map[string]any)
 					}
 					if request.generator != nil {
 						request.Payloads[varname] = Value
@@ -398,7 +398,7 @@ func (request *Request) executeWithResults(port string, target *contextargs.Cont
 				// execution successful but pre-condition returned false
 				outError = errkit.New("pre-condition not satisfied skipping template execution")
 			}
-			results := map[string]interface{}(result)
+			results := map[string]any(result)
 			results["error"] = outError.Error()
 			// generate and return failed event
 			data := request.generateEventData(input, results, hostPort)
@@ -456,7 +456,7 @@ func (request *Request) executeWithResults(port string, target *contextargs.Cont
 	return request.executeRequestWithPayloads(hostPort, input, hostname, nil, payloadValues, callback, requestOptions, interactshURLs)
 }
 
-func (request *Request) executeRequestParallel(ctxParent context.Context, hostPort, hostname string, input *contextargs.Context, payloadValues map[string]interface{}, callback protocols.OutputEventCallback) {
+func (request *Request) executeRequestParallel(ctxParent context.Context, hostPort, hostname string, input *contextargs.Context, payloadValues map[string]any, callback protocols.OutputEventCallback) {
 	threads := request.Threads
 	if threads == 0 {
 		threads = 1
@@ -526,7 +526,7 @@ func (request *Request) executeRequestParallel(ctxParent context.Context, hostPo
 	}
 }
 
-func (request *Request) executeRequestWithPayloads(hostPort string, input *contextargs.Context, _ string, payload map[string]interface{}, previous output.InternalEvent, callback protocols.OutputEventCallback, requestOptions *protocols.ExecutorOptions, interactshURLs []string) error {
+func (request *Request) executeRequestWithPayloads(hostPort string, input *contextargs.Context, _ string, payload map[string]any, previous output.InternalEvent, callback protocols.OutputEventCallback, requestOptions *protocols.ExecutorOptions, interactshURLs []string) error {
 	payloadValues := generators.MergeMaps(payload, previous)
 	argsCopy, err := request.getArgsCopy(input, payloadValues, requestOptions, false)
 	if err != nil {
@@ -535,7 +535,7 @@ func (request *Request) executeRequestWithPayloads(hostPort string, input *conte
 	if request.options.HasTemplateCtx(input.MetaInput) {
 		argsCopy.TemplateCtx = request.options.GetTemplateCtx(input.MetaInput).GetAll()
 	} else {
-		argsCopy.TemplateCtx = map[string]interface{}{}
+		argsCopy.TemplateCtx = map[string]any{}
 	}
 
 	if request.options.Interactsh != nil {
@@ -634,13 +634,13 @@ func (request *Request) executeRequestWithPayloads(hostPort string, input *conte
 }
 
 // generateEventData generates event data for the request
-func (request *Request) generateEventData(input *contextargs.Context, values map[string]interface{}, matched string) map[string]interface{} {
+func (request *Request) generateEventData(input *contextargs.Context, values map[string]any, matched string) map[string]any {
 	dialers := protocolstate.GetDialersWithId(request.options.Options.ExecutionId)
 	if dialers == nil {
 		panic(fmt.Sprintf("dialers not initialized for %s", request.options.Options.ExecutionId))
 	}
 
-	data := make(map[string]interface{})
+	data := make(map[string]any)
 	maps.Copy(data, values)
 	data["type"] = request.Type().String()
 	data["request-pre-condition"] = beautifyJavascript(request.PreCondition)
@@ -695,7 +695,7 @@ func (request *Request) generateEventData(input *contextargs.Context, values map
 	return data
 }
 
-func (request *Request) getArgsCopy(input *contextargs.Context, payloadValues map[string]interface{}, requestOptions *protocols.ExecutorOptions, ignoreErrors bool) (*compiler.ExecuteArgs, error) {
+func (request *Request) getArgsCopy(input *contextargs.Context, payloadValues map[string]any, requestOptions *protocols.ExecutorOptions, ignoreErrors bool) (*compiler.ExecuteArgs, error) {
 	// Template args from payloads
 	argsCopy, err := request.evaluateArgs(payloadValues, requestOptions, ignoreErrors)
 	if err != nil {
@@ -710,8 +710,8 @@ func (request *Request) getArgsCopy(input *contextargs.Context, payloadValues ma
 }
 
 // evaluateArgs evaluates arguments using available payload values and returns a copy of args
-func (request *Request) evaluateArgs(payloadValues map[string]interface{}, _ *protocols.ExecutorOptions, ignoreErrors bool) (map[string]interface{}, error) {
-	argsCopy := make(map[string]interface{})
+func (request *Request) evaluateArgs(payloadValues map[string]any, _ *protocols.ExecutorOptions, ignoreErrors bool) (map[string]any, error) {
+	argsCopy := make(map[string]any)
 mainLoop:
 	for k, v := range request.Args {
 		if vVal, ok := v.(string); ok && strings.Contains(vVal, "{") {
@@ -754,12 +754,12 @@ func getAddress(toTest string) (string, error) {
 // Match performs matching operation for a matcher on model and returns:
 // true and a list of matched snippets if the matcher type is supports it
 // otherwise false and an empty string slice
-func (request *Request) Match(data map[string]interface{}, matcher *matchers.Matcher) (bool, []string) {
+func (request *Request) Match(data map[string]any, matcher *matchers.Matcher) (bool, []string) {
 	return protocols.MakeDefaultMatchFunc(data, matcher)
 }
 
 // Extract performs extracting operation for an extractor on model and returns true or false.
-func (request *Request) Extract(data map[string]interface{}, matcher *extractors.Extractor) map[string]struct{} {
+func (request *Request) Extract(data map[string]any, matcher *extractors.Extractor) map[string]struct{} {
 	return protocols.MakeDefaultExtractFunc(data, matcher)
 }
 
@@ -783,7 +783,7 @@ func (request *Request) getPorts() []string {
 		if strings.EqualFold(k, "Port") {
 			portStr := types.ToString(v)
 			ports := []string{}
-			for _, p := range strings.Split(portStr, ",") {
+			for p := range strings.SplitSeq(portStr, ",") {
 				trimmed := strings.TrimSpace(p)
 				if trimmed != "" {
 					ports = append(ports, trimmed)

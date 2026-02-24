@@ -93,7 +93,7 @@ func (b *Body) parseBody(decoderName string, req *retryablehttp.Request) (bool, 
 }
 
 // Iterate iterates through the component
-func (b *Body) Iterate(callback func(key string, value interface{}) error) (errx error) {
+func (b *Body) Iterate(callback func(key string, value any) error) (errx error) {
 	b.value.parsed.Iterate(func(key string, value any) bool {
 		if strings.HasPrefix(key, "#_") {
 			return true

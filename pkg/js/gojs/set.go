@@ -17,7 +17,7 @@ type FuncOpts struct {
 	Name        string
 	Signatures  []string
 	Description string
-	FuncDecl    interface{}
+	FuncDecl    any
 }
 
 // valid checks if the function options are valid
@@ -27,7 +27,7 @@ func (f *FuncOpts) valid() bool {
 
 // wrapWithContext wraps a Go function with context injection
 // nolint
-func wrapWithContext(runtime *goja.Runtime, fn interface{}) interface{} {
+func wrapWithContext(runtime *goja.Runtime, fn any) any {
 	fnType := reflect.TypeOf(fn)
 	if fnType.Kind() != reflect.Func {
 		return fn

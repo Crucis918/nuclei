@@ -121,7 +121,7 @@ func (request *Request) addHeadersToRequest(baseRequest *retryablehttp.Request) 
 }
 
 // executeAllFuzzingRules executes all fuzzing rules defined in template for a given base request
-func (request *Request) executeAllFuzzingRules(input *contextargs.Context, values map[string]interface{}, baseRequest *retryablehttp.Request, callback protocols.OutputEventCallback) error {
+func (request *Request) executeAllFuzzingRules(input *contextargs.Context, values map[string]any, baseRequest *retryablehttp.Request, callback protocols.OutputEventCallback) error {
 	applicable := false
 	values = generators.MergeMaps(request.filterDataMap(input), values)
 	for _, rule := range request.Fuzzing {
@@ -281,8 +281,8 @@ func (request *Request) ShouldFuzzTarget(input *contextargs.Context) bool {
 }
 
 // input data map returns map[string]interface{} from input
-func (request *Request) filterDataMap(input *contextargs.Context) map[string]interface{} {
-	m := make(map[string]interface{})
+func (request *Request) filterDataMap(input *contextargs.Context) map[string]any {
+	m := make(map[string]any)
 	parsed, err := input.MetaInput.URL()
 	if err != nil {
 		m["host"] = input.MetaInput.Input

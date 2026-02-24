@@ -158,7 +158,7 @@ func isDebugMode() bool {
 // intended for flaky tests like interactsh
 func executeWithRetry(testCase testutils.TestCase, templatePath string, retryCount int) (string, error) {
 	var err error
-	for i := 0; i < retryCount; i++ {
+	for range retryCount {
 		err = testCase.Execute(templatePath)
 		if err == nil {
 			fmt.Printf("%s Test \"%s\" passed!\n", success, templatePath)

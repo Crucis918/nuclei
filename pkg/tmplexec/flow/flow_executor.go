@@ -189,7 +189,7 @@ func (f *FlowExecutor) ExecuteWithResults(ctx *scan.ScanContext) error {
 	// -----Load all types of variables-----
 	// add all input args to template context
 	if f.ctx.Input != nil && f.ctx.Input.HasArgs() {
-		f.ctx.Input.ForEach(func(key string, value interface{}) {
+		f.ctx.Input.ForEach(func(key string, value any) {
 			f.options.GetTemplateCtx(f.ctx.Input.MetaInput).Set(key, value)
 		})
 	}
@@ -243,7 +243,7 @@ func (f *FlowExecutor) ExecuteWithResults(ctx *scan.ScanContext) error {
 	// register template object
 	tmplObj := f.options.GetTemplateCtx(f.ctx.Input.MetaInput).GetAll()
 	if tmplObj == nil {
-		tmplObj = map[string]interface{}{}
+		tmplObj = map[string]any{}
 	}
 	if err := runtime.Set("template", tmplObj); err != nil {
 		return err
@@ -303,7 +303,7 @@ func (f *FlowExecutor) ReadDataFromFile(payload string) ([]string, error) {
 	if err != nil {
 		return values, err
 	}
-	for _, line := range strings.Split(string(bin), "\n") {
+	for line := range strings.SplitSeq(string(bin), "\n") {
 		line = strings.TrimSpace(line)
 		if line != "" {
 			values = append(values, line)

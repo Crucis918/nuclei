@@ -84,7 +84,7 @@ func (holder ExtractorTypeHolder) JSONSchema() *jsonschema.Schema {
 	return gotType
 }
 
-func (holder *ExtractorTypeHolder) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (holder *ExtractorTypeHolder) UnmarshalYAML(unmarshal func(any) error) error {
 	var marshalledTypes string
 	if err := unmarshal(&marshalledTypes); err != nil {
 		return err
@@ -117,6 +117,6 @@ func (holder *ExtractorTypeHolder) MarshalJSON() ([]byte, error) {
 	return json.Marshal(holder.ExtractorType.String())
 }
 
-func (holder ExtractorTypeHolder) MarshalYAML() (interface{}, error) {
+func (holder ExtractorTypeHolder) MarshalYAML() (any, error) {
 	return holder.ExtractorType.String(), nil
 }

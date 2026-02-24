@@ -23,7 +23,7 @@ func TestHeaderComponent(t *testing.T) {
 
 	var keys []string
 	var values []string
-	_ = header.Iterate(func(key string, value interface{}) error {
+	_ = header.Iterate(func(key string, value any) error {
 		keys = append(keys, key)
 		switch v := value.(type) {
 		case string:

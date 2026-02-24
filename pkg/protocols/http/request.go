@@ -275,7 +275,7 @@ func (request *Request) executeParallelHTTP(input *contextargs.Context, dynamicV
 				case <-spmHandler.Done():
 					spmHandler.Release()
 					continue
-				case spmHandler.ResultChan <- request.executeRequest(t.updatedInput, t.req, make(map[string]interface{}), hasInteractMatchers, func(event *output.InternalWrappedEvent) {
+				case spmHandler.ResultChan <- request.executeRequest(t.updatedInput, t.req, make(map[string]any), hasInteractMatchers, func(event *output.InternalWrappedEvent) {
 					if (t.hasInteractMarkers || needsRequestEvent) && request.options.Interactsh != nil {
 						requestData := &interactsh.RequestData{
 							MakeResultFunc: request.MakeResultEvent,
@@ -530,7 +530,7 @@ func (request *Request) ExecuteWithResults(input *contextargs.Context, dynamicVa
 
 	for {
 		// returns two values, error and skip, which skips the execution for the request instance.
-		executeFunc := func(data string, payloads, dynamicValue map[string]interface{}) (bool, error) {
+		executeFunc := func(data string, payloads, dynamicValue map[string]any) (bool, error) {
 			hasInteractMatchers := interactsh.HasMatchers(request.CompiledOperators)
 
 			request.options.RateLimitTake()
@@ -636,7 +636,7 @@ func (request *Request) ExecuteWithResults(input *contextargs.Context, dynamicVa
 		var gotErr error
 		var skip bool
 		if len(gotDynamicValues) > 0 {
-			operators.MakeDynamicValuesCallback(gotDynamicValues, request.IterateAll, func(data map[string]interface{}) bool {
+			operators.MakeDynamicValuesCallback(gotDynamicValues, request.IterateAll, func(data map[string]any) bool {
 				if skip, gotErr = executeFunc(inputData, payloads, data); skip || gotErr != nil {
 					return true
 				}
@@ -1127,7 +1127,7 @@ func (request *Request) executeRequest(input *contextargs.Context, generatedRequ
 func (request *Request) validateNFixEvent(input *contextargs.Context, gr *generatedRequest, err error, event *output.InternalWrappedEvent) {
 	if event != nil {
 		if event.InternalEvent == nil {
-			event.InternalEvent = make(map[string]interface{})
+			event.InternalEvent = make(map[string]any)
 			event.InternalEvent["template-id"] = request.options.TemplateID
 		}
 		// add the request URL pattern to the event
@@ -1154,7 +1154,7 @@ func (request *Request) validateNFixEvent(input *contextargs.Context, gr *genera
 }
 
 // addCNameIfAvailable adds the cname to the event if available
-func (request *Request) addCNameIfAvailable(hostname string, outputEvent map[string]interface{}) {
+func (request *Request) addCNameIfAvailable(hostname string, outputEvent map[string]any) {
 	if request.dialer == nil {
 		return
 	}
@@ -1270,8 +1270,8 @@ func createResponseHexDump(event *output.InternalWrappedEvent, response string, 
 	}
 }
 
-func (request *Request) pruneSignatureInternalValues(maps ...map[string]interface{}) {
-	var signatureFieldsToSkip map[string]interface{}
+func (request *Request) pruneSignatureInternalValues(maps ...map[string]any) {
+	var signatureFieldsToSkip map[string]any
 	switch request.Signature.Value {
 	case AWSSignature:
 		signatureFieldsToSkip = signer.AwsInternalOnlyVars

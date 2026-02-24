@@ -45,7 +45,7 @@ func (e errorTemplate) Wrap(err error) wrapperError {
 	return wrapperError{template: e, err: err}
 }
 
-func (e errorTemplate) Msgf(args ...interface{}) error {
+func (e errorTemplate) Msgf(args ...any) error {
 	return errkit.Newf(e.format, args...)
 }
 
@@ -58,7 +58,7 @@ func (w wrapperError) WithTag(tag string) error {
 	return errkit.Wrap(w.err, w.template.format)
 }
 
-func (w wrapperError) Msgf(format string, args ...interface{}) error {
+func (w wrapperError) Msgf(format string, args ...any) error {
 	return errkit.Wrapf(w.err, format, args...)
 }
 
@@ -76,10 +76,10 @@ var (
 type generatedRequest struct {
 	original             *Request
 	rawRequest           *raw.Request
-	meta                 map[string]interface{}
+	meta                 map[string]any
 	pipelinedClient      *rawhttp.PipelineClient
 	request              *retryablehttp.Request
-	dynamicValues        map[string]interface{}
+	dynamicValues        map[string]any
 	interactshURLs       []string
 	customCancelFunction context.CancelFunc
 	// requestURLPattern tracks unmodified request url pattern without values ( it is used for constant vuln_hash)
@@ -153,7 +153,7 @@ func (g *generatedRequest) URL() string {
 
 // Make creates a http request for the provided input.
 // It returns ErrNoMoreRequests as error when all the requests have been exhausted.
-func (r *requestGenerator) Make(ctx context.Context, input *contextargs.Context, reqData string, payloads, dynamicValues map[string]interface{}) (gr *generatedRequest, err error) {
+func (r *requestGenerator) Make(ctx context.Context, input *contextargs.Context, reqData string, payloads, dynamicValues map[string]any) (gr *generatedRequest, err error) {
 	origReqData := reqData
 	defer func() {
 		if gr != nil {
@@ -258,7 +258,7 @@ func (r *requestGenerator) Make(ctx context.Context, input *contextargs.Context,
 
 // selfContained templates do not need/use target data and all values i.e {{Hostname}} , {{BaseURL}} etc are already available
 // in template . makeSelfContainedRequest parses and creates variables map and then creates corresponding http request or raw request
-func (r *requestGenerator) makeSelfContainedRequest(ctx context.Context, data string, payloads, dynamicValues map[string]interface{}) (*generatedRequest, error) {
+func (r *requestGenerator) makeSelfContainedRequest(ctx context.Context, data string, payloads, dynamicValues map[string]any) (*generatedRequest, error) {
 	isRawRequest := r.request.isRaw()
 
 	values := generators.MergeMaps(
@@ -337,7 +337,7 @@ func (r *requestGenerator) makeSelfContainedRequest(ctx context.Context, data st
 // generateHttpRequest generates http request from request data from template and variables
 // finalVars = contains all variables including generator and protocol specific variables
 // generatorValues = contains variables used in fuzzing or other generator specific values
-func (r *requestGenerator) generateHttpRequest(ctx context.Context, urlx *urlutil.URL, finalVars, generatorValues map[string]interface{}) (*generatedRequest, error) {
+func (r *requestGenerator) generateHttpRequest(ctx context.Context, urlx *urlutil.URL, finalVars, generatorValues map[string]any) (*generatedRequest, error) {
 	method, err := expressions.Evaluate(r.request.Method.String(), finalVars)
 	if err != nil {
 		return nil, errkit.Wrap(err, "failed to evaluate while generating http request")
@@ -358,7 +358,7 @@ func (r *requestGenerator) generateHttpRequest(ctx context.Context, urlx *urluti
 // generateRawRequest generates Raw Request from request data from template and variables
 // finalVars = contains all variables including generator and protocol specific variables
 // generatorValues = contains variables used in fuzzing or other generator specific values
-func (r *requestGenerator) generateRawRequest(ctx context.Context, rawRequest string, baseURL *urlutil.URL, finalVars, generatorValues map[string]interface{}) (*generatedRequest, error) {
+func (r *requestGenerator) generateRawRequest(ctx context.Context, rawRequest string, baseURL *urlutil.URL, finalVars, generatorValues map[string]any) (*generatedRequest, error) {
 
 	var rawRequestData *raw.Request
 	var err error
@@ -434,7 +434,7 @@ func (r *requestGenerator) generateRawRequest(ctx context.Context, rawRequest st
 }
 
 // fillRequest fills various headers in the request with values
-func (r *requestGenerator) fillRequest(req *retryablehttp.Request, values map[string]interface{}) (*retryablehttp.Request, error) {
+func (r *requestGenerator) fillRequest(req *retryablehttp.Request, values map[string]any) (*retryablehttp.Request, error) {
 	// Set the header values requested
 	for header, value := range r.request.Headers {
 		if r.options.Interactsh != nil {

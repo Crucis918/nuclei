@@ -40,7 +40,7 @@ import (
 // Request is a request for the SSL protocol
 type Request struct {
 	// Operators for the current request go here.
-	operators.Operators `yaml:",inline,omitempty" json:",inline,omitempty"`
+	operators.Operators `yaml:",inline,omitempty" json:",inline"`
 	CompiledOperators   *operators.Operators `yaml:"-" json:"-"`
 
 	// ID is the optional id of the request
@@ -269,7 +269,7 @@ func (request *Request) ExecuteWithResults(input *contextargs.Context, dynamicVa
 	jsonData, _ := jsoniter.Marshal(response)
 	jsonDataString := string(jsonData)
 
-	data := make(map[string]interface{})
+	data := make(map[string]any)
 	maps.Copy(data, payloadValues)
 	data["type"] = request.Type().String()
 	data["response"] = jsonDataString
@@ -379,12 +379,12 @@ var RequestPartDefinitions = map[string]string{
 // Match performs matching operation for a matcher on model and returns:
 // true and a list of matched snippets if the matcher type is supports it
 // otherwise false and an empty string slice
-func (request *Request) Match(data map[string]interface{}, matcher *matchers.Matcher) (bool, []string) {
+func (request *Request) Match(data map[string]any, matcher *matchers.Matcher) (bool, []string) {
 	return protocols.MakeDefaultMatchFunc(data, matcher)
 }
 
 // Extract performs extracting operation for an extractor on model and returns true or false.
-func (request *Request) Extract(data map[string]interface{}, matcher *extractors.Extractor) map[string]struct{} {
+func (request *Request) Extract(data map[string]any, matcher *extractors.Extractor) map[string]struct{} {
 	return protocols.MakeDefaultExtractFunc(data, matcher)
 }
 

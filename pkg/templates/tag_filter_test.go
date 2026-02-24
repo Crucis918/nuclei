@@ -215,7 +215,7 @@ func TestTagBasedFilter(t *testing.T) {
 		// boolean operators
 		testAdvancedFiltering(t, []string{"id!='nothing' && (contains(id, 'te') && id=='test')&& !contains(tags,'no_tag')"}, dummyTemplate, false, true)
 		// create some metadata
-		dummyTemplate.Info.Metadata = make(map[string]interface{})
+		dummyTemplate.Info.Metadata = make(map[string]any)
 		dummyTemplate.Info.Metadata["test_value"] = "test"
 		dummyTemplate.Info.Metadata["bool_value"] = true
 		dummyTemplate.Info.Metadata["number_value"] = 1
@@ -235,7 +235,7 @@ func TestTagBasedFilter(t *testing.T) {
 		// boolean operators with nested negations
 		testAdvancedFiltering(t, []string{"id!='nothing' && !(!contains(id, 'te') && id=='test')&& !contains(tags,'no_tag')"}, dummyTemplate, false, true)
 		// create some metadata
-		dummyTemplate.Info.Metadata = make(map[string]interface{})
+		dummyTemplate.Info.Metadata = make(map[string]any)
 		testAdvancedFiltering(t, []string{"non_existent_value == 'test'"}, dummyTemplate, false, false)
 	})
 	t.Run("template-condition", func(t *testing.T) {

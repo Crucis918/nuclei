@@ -23,7 +23,7 @@ func (r *Raw) Encode(data KV) (string, error) {
 
 // Decode decodes the data from Raw format
 func (r *Raw) Decode(data string) (KV, error) {
-	return KVMap(map[string]interface{}{
+	return KVMap(map[string]any{
 		"value": data,
 	}), nil
 }

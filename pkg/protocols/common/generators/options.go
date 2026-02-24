@@ -16,16 +16,16 @@ var optionsPayloadMap sync.Map // map[*types.Options]map[string]interface{}
 // The result is cached per options pointer since options don't change during a run.
 // Returns a copy of the cached map to prevent concurrent modification issues.
 // Safe for concurrent use with multiple SDK instances.
-func BuildPayloadFromOptions(options *types.Options) map[string]interface{} {
+func BuildPayloadFromOptions(options *types.Options) map[string]any {
 	if options == nil {
-		return make(map[string]interface{})
+		return make(map[string]any)
 	}
 
 	if cached, ok := optionsPayloadMap.Load(options); ok {
-		return CopyMap(cached.(map[string]interface{}))
+		return CopyMap(cached.(map[string]any))
 	}
 
-	m := make(map[string]interface{})
+	m := make(map[string]any)
 
 	// merge with vars
 	if !options.Vars.IsEmpty() {
@@ -40,7 +40,7 @@ func BuildPayloadFromOptions(options *types.Options) map[string]interface{} {
 	actual, _ := optionsPayloadMap.LoadOrStore(options, m)
 
 	// Return a copy to prevent concurrent writes to the cached map
-	return CopyMap(actual.(map[string]interface{}))
+	return CopyMap(actual.(map[string]any))
 }
 
 // ClearOptionsPayloadMap clears the cached options payload.

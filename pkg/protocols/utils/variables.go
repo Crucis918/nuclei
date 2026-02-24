@@ -57,7 +57,7 @@ const (
 )
 
 // GenerateVariablesWithContextArgs will create default variables with context args
-func GenerateVariablesWithContextArgs(input *contextargs.Context, trailingSlash bool) map[string]interface{} {
+func GenerateVariablesWithContextArgs(input *contextargs.Context, trailingSlash bool) map[string]any {
 	parsed, err := urlutil.Parse(input.MetaInput.Input)
 	if err != nil {
 		return nil
@@ -67,14 +67,14 @@ func GenerateVariablesWithContextArgs(input *contextargs.Context, trailingSlash 
 
 // GenerateDNSVariables from a dns name
 // This function is used by dns and ssl protocol to generate variables
-func GenerateDNSVariables(domain string) map[string]interface{} {
+func GenerateDNSVariables(domain string) map[string]any {
 	parsed, err := publicsuffix.Parse(strings.TrimSuffix(domain, "."))
 	if err != nil {
-		return map[string]interface{}{"FQDN": domain}
+		return map[string]any{"FQDN": domain}
 	}
 
 	domainName := strings.Join([]string{parsed.SLD, parsed.TLD}, ".")
-	dnsVariables := make(map[string]interface{})
+	dnsVariables := make(map[string]any)
 	for k, v := range KnownVariables {
 		switch k {
 		case Fqdn:
@@ -95,13 +95,13 @@ func GenerateDNSVariables(domain string) map[string]interface{} {
 // GenerateVariables accepts string or *urlutil.URL object as input
 // Returns the map of KnownVariables keys
 // This function is used by http, headless, websocket, network and whois protocols to generate protocol variables
-func GenerateVariables(input interface{}, removeTrailingSlash bool, additionalVars map[string]interface{}) map[string]interface{} {
-	var vars = make(map[string]interface{})
+func GenerateVariables(input any, removeTrailingSlash bool, additionalVars map[string]any) map[string]any {
+	var vars = make(map[string]any)
 	switch input := input.(type) {
 	case string:
 		parsed, err := urlutil.Parse(input)
 		if err != nil {
-			return map[string]interface{}{KnownVariables[Input]: input, KnownVariables[Hostname]: input}
+			return map[string]any{KnownVariables[Input]: input, KnownVariables[Hostname]: input}
 		}
 		vars = generateVariables(parsed, removeTrailingSlash)
 	case *urlutil.URL:
@@ -115,7 +115,7 @@ func GenerateVariables(input interface{}, removeTrailingSlash bool, additionalVa
 	return generators.MergeMaps(vars, additionalVars)
 }
 
-func generateVariables(inputURL *urlutil.URL, removeTrailingSlash bool) map[string]interface{} {
+func generateVariables(inputURL *urlutil.URL, removeTrailingSlash bool) map[string]any {
 	parsed := inputURL.Clone()
 	parsed.Params = urlutil.NewOrderedParams()
 	port := parsed.Port()
@@ -146,7 +146,7 @@ func generateVariables(inputURL *urlutil.URL, removeTrailingSlash bool) map[stri
 			requestPath = escapedPath + "?" + values.Encode()
 		}
 	}
-	knownVariables := make(map[string]interface{})
+	knownVariables := make(map[string]any)
 	for k, v := range KnownVariables {
 		switch k {
 		case BaseURL:

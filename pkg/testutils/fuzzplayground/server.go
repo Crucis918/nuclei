@@ -161,7 +161,7 @@ func patchUnsanitizedUserHandler(ctx echo.Context) error {
 
 // resetPassword mock
 func resetPasswordHandler(c echo.Context) error {
-	var m map[string]interface{}
+	var m map[string]any
 	if err := c.Bind(&m); err != nil {
 		return c.JSON(500, "Something went wrong")
 	}

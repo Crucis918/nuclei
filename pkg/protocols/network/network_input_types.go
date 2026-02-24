@@ -78,7 +78,7 @@ func (holder NetworkInputTypeHolder) JSONSchema() *jsonschema.Schema {
 	return gotType
 }
 
-func (holder *NetworkInputTypeHolder) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (holder *NetworkInputTypeHolder) UnmarshalYAML(unmarshal func(any) error) error {
 	var marshalledTypes string
 	if err := unmarshal(&marshalledTypes); err != nil {
 		return err
@@ -111,6 +111,6 @@ func (holder *NetworkInputTypeHolder) MarshalJSON() ([]byte, error) {
 	return json.Marshal(holder.NetworkInputType.String())
 }
 
-func (holder NetworkInputTypeHolder) MarshalYAML() (interface{}, error) {
+func (holder NetworkInputTypeHolder) MarshalYAML() (any, error) {
 	return holder.NetworkInputType.String(), nil
 }

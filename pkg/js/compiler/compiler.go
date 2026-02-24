@@ -50,42 +50,42 @@ type ExecuteOptions struct {
 	TimeoutVariants *types.Timeouts
 
 	// Manually exported objects
-	exports map[string]interface{}
+	exports map[string]any
 }
 
 // ExecuteArgs is the arguments to pass to the script.
 type ExecuteArgs struct {
-	Args        map[string]interface{} //these are protocol variables
-	TemplateCtx map[string]interface{} // templateCtx contains template scoped variables
+	Args        map[string]any //these are protocol variables
+	TemplateCtx map[string]any // templateCtx contains template scoped variables
 }
 
 // Map returns a merged map of the TemplateCtx and Args fields.
-func (e *ExecuteArgs) Map() map[string]interface{} {
+func (e *ExecuteArgs) Map() map[string]any {
 	return generators.MergeMaps(e.TemplateCtx, e.Args)
 }
 
 // NewExecuteArgs returns a new execute arguments.
 func NewExecuteArgs() *ExecuteArgs {
 	return &ExecuteArgs{
-		Args:        make(map[string]interface{}),
-		TemplateCtx: make(map[string]interface{}),
+		Args:        make(map[string]any),
+		TemplateCtx: make(map[string]any),
 	}
 }
 
 // ExecuteResult is the result of executing a script.
-type ExecuteResult map[string]interface{}
+type ExecuteResult map[string]any
 
 // Map returns the map representation of the ExecuteResult
-func (e ExecuteResult) Map() map[string]interface{} {
+func (e ExecuteResult) Map() map[string]any {
 	if e == nil {
-		return make(map[string]interface{})
+		return make(map[string]any)
 	}
 	return e
 }
 
 // NewExecuteResult returns a new execute result instance
 func NewExecuteResult() ExecuteResult {
-	return make(map[string]interface{})
+	return make(map[string]any)
 }
 
 // GetSuccess returns whether the script was successful or not.
@@ -110,10 +110,10 @@ func (c *Compiler) ExecuteWithOptions(program *goja.Program, args *ExecuteArgs, 
 	}
 	// handle nil maps
 	if args.TemplateCtx == nil {
-		args.TemplateCtx = make(map[string]interface{})
+		args.TemplateCtx = make(map[string]any)
 	}
 	if args.Args == nil {
-		args.Args = make(map[string]interface{})
+		args.Args = make(map[string]any)
 	}
 	// merge all args into templatectx
 	args.TemplateCtx = generators.MergeMaps(args.TemplateCtx, args.Args)

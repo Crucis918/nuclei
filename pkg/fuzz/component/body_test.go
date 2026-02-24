@@ -27,7 +27,7 @@ func TestBodyComponent(t *testing.T) {
 
 	var keys []string
 	var values []string
-	_ = body.Iterate(func(key string, value interface{}) error {
+	_ = body.Iterate(func(key string, value any) error {
 		keys = append(keys, key)
 		values = append(values, value.(string))
 		return nil
@@ -98,7 +98,7 @@ func TestBodyFormComponent(t *testing.T) {
 
 	var keys []string
 	var values []string
-	_ = body.Iterate(func(key string, value interface{}) error {
+	_ = body.Iterate(func(key string, value any) error {
 		keys = append(keys, key)
 		values = append(values, value.(string))
 		return nil
@@ -146,7 +146,7 @@ func TestMultiPartFormComponent(t *testing.T) {
 
 	var keys []string
 	var values []string
-	_ = body.Iterate(func(key string, value interface{}) error {
+	_ = body.Iterate(func(key string, value any) error {
 		keys = append(keys, key)
 		values = append(values, value.(string))
 		return nil

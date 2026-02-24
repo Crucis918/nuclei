@@ -91,7 +91,7 @@ func (v SliceOrMapSlice) MarshalJSON() ([]byte, error) {
 }
 
 // UnmarshalYAML implements yaml.Unmarshaler interface.
-func (v *SliceOrMapSlice) UnmarshalYAML(callback func(interface{}) error) error {
+func (v *SliceOrMapSlice) UnmarshalYAML(callback func(any) error) error {
 	// try to unmarshal it as a string and fallback to map
 	if err := callback(&v.Value); err == nil {
 		return nil

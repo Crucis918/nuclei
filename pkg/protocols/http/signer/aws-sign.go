@@ -122,16 +122,16 @@ func NewAwsSignerFromConfig(opts *AWSOptions) (*AWSSigner, error) {
 	}, nil
 }
 
-var AwsSkipList = map[string]interface{}{
+var AwsSkipList = map[string]any{
 	"region": struct{}{},
 }
 
-var AwsDefaultVars = map[string]interface{}{
+var AwsDefaultVars = map[string]any{
 	"region":  "us-east-2",
 	"service": "sts",
 }
 
-var AwsInternalOnlyVars = map[string]interface{}{
+var AwsInternalOnlyVars = map[string]any{
 	"aws-id":     struct{}{},
 	"aws-secret": struct{}{},
 }

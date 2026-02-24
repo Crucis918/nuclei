@@ -22,7 +22,7 @@ func TestURLComponent(t *testing.T) {
 
 	var keys []string
 	var values []string
-	_ = urlComponent.Iterate(func(key string, value interface{}) error {
+	_ = urlComponent.Iterate(func(key string, value any) error {
 		keys = append(keys, key)
 		values = append(values, value.(string))
 		return nil
@@ -60,7 +60,7 @@ func TestURLComponent_NestedPaths(t *testing.T) {
 
 	isSet := false
 
-	_ = path.Iterate(func(key string, value interface{}) error {
+	_ = path.Iterate(func(key string, value any) error {
 		t.Logf("Key: %s, Value: %s", key, value.(string))
 		if !isSet && value.(string) == "753" {
 			isSet = true
@@ -97,7 +97,7 @@ func TestPathComponent_SQLInjection(t *testing.T) {
 	t.Logf("Original path: %s", req.Path)
 
 	// Let's see what path segments are available for fuzzing
-	err = path.Iterate(func(key string, value interface{}) error {
+	err = path.Iterate(func(key string, value any) error {
 		t.Logf("Key: %s, Value: %s", key, value.(string))
 
 		// Try fuzzing the "55" segment specifically (which should be key "2")

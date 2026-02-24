@@ -16,7 +16,7 @@ type Analyzer interface {
 	// Name returns the name of the analyzer
 	Name() string
 	// ApplyTransformation applies the transformation to the initial payload.
-	ApplyInitialTransformation(data string, params map[string]interface{}) string
+	ApplyInitialTransformation(data string, params map[string]any) string
 	// Analyze is the main function for the analyzer
 	Analyze(options *Options) (bool, string, error)
 }
@@ -34,7 +34,7 @@ type AnalyzerTemplate struct {
 	//   Parameters are different for each analyzer. For example, you can customize
 	//   time_delay analyzer with sleep_duration, time_slope_error_range, etc. Refer
 	//   to the docs for each analyzer to get an idea about parameters.
-	Parameters map[string]interface{} `json:"parameters" yaml:"parameters"`
+	Parameters map[string]any `json:"parameters" yaml:"parameters"`
 }
 
 var (
@@ -60,7 +60,7 @@ type Options struct {
 	FuzzGenerated      fuzz.GeneratedRequest
 	HttpClient         *retryablehttp.Client
 	ResponseTimeDelay  time.Duration
-	AnalyzerParameters map[string]interface{}
+	AnalyzerParameters map[string]any
 }
 
 var (

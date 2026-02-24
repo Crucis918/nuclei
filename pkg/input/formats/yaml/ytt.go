@@ -56,7 +56,7 @@ func templatesAsInput(tpl ...string) (yttcmd.Input, error) {
 	return yttcmd.Input{Files: files}, nil
 }
 
-func mapToKeyValueSlice(m map[string]interface{}) []string {
+func mapToKeyValueSlice(m map[string]any) []string {
 	var result []string
 	for k, v := range m {
 		y, _ := yaml.Marshal(v)

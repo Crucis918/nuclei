@@ -56,7 +56,7 @@ func TestEvaluateVariables(t *testing.T) {
 		}
 		templateVars.Set("foo_var", "foo_var_value")
 
-		constants := map[string]interface{}{
+		constants := map[string]any{
 			"const_key": "const_value",
 		}
 
@@ -96,7 +96,7 @@ func TestEvaluateVariables(t *testing.T) {
 
 		executorOpts := &protocols.ExecutorOptions{
 			Variables: templateVars,
-			Constants: map[string]interface{}{},
+			Constants: map[string]any{},
 			Options:   &types.Options{},
 		}
 
@@ -123,7 +123,7 @@ func TestEvaluateVariables(t *testing.T) {
 
 		executorOpts := &protocols.ExecutorOptions{
 			Variables: templateVars,
-			Constants: map[string]interface{}{},
+			Constants: map[string]any{},
 			Options:   &types.Options{},
 		}
 
@@ -149,7 +149,7 @@ func TestEvaluateVariables(t *testing.T) {
 		}
 		templateVars.Set("template_var", "template_value")
 
-		constants := map[string]interface{}{
+		constants := map[string]any{
 			"const_key": "const_value",
 		}
 
@@ -190,7 +190,7 @@ func TestEvaluateVariables(t *testing.T) {
 			Variables: variables.Variable{
 				InsertionOrderedStringMap: *utils.NewEmptyInsertionOrderedStringMap(0),
 			},
-			Constants: map[string]interface{}{},
+			Constants: map[string]any{},
 			Options:   &types.Options{},
 		}
 
@@ -211,7 +211,7 @@ func TestEvaluateVariables(t *testing.T) {
 		}
 		templateVars.Set("test_var", "test_value")
 
-		constants := map[string]interface{}{
+		constants := map[string]any{
 			"const_var": "const_value",
 		}
 

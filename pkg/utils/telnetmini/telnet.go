@@ -107,7 +107,7 @@ func DetectEncryption(conn net.Conn, timeout time.Duration) (*EncryptionInfo, er
 	// Process server responses
 	options := make(map[int][]int)
 	supportsEncryption := false
-	banner := ""
+	var banner strings.Builder
 
 	// Read responses until we get encryption info or timeout
 	for {
@@ -124,7 +124,7 @@ func DetectEncryption(conn net.Conn, timeout time.Duration) (*EncryptionInfo, er
 			// Check if this contains banner text (non-IAC bytes)
 			for _, b := range data {
 				if b != IAC {
-					banner += string(b)
+					banner.WriteString(string(b))
 				}
 			}
 
@@ -156,7 +156,7 @@ func DetectEncryption(conn net.Conn, timeout time.Duration) (*EncryptionInfo, er
 
 	return &EncryptionInfo{
 		SupportsEncryption: supportsEncryption,
-		Banner:             banner,
+		Banner:             banner.String(),
 		Options:            options,
 	}, nil
 }

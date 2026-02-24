@@ -86,7 +86,7 @@ func (request *Request) ExecuteWithResults(input *contextargs.Context, metadata,
 
 			value = generators.MergeMaps(vars, value)
 			swg.Add()
-			go func(newVars map[string]interface{}) {
+			go func(newVars map[string]any) {
 				defer swg.Done()
 				if err := request.execute(input, domain, metadata, previous, newVars, callback); err != nil {
 					m.Lock()
@@ -106,7 +106,7 @@ func (request *Request) ExecuteWithResults(input *contextargs.Context, metadata,
 	return nil
 }
 
-func (request *Request) execute(input *contextargs.Context, domain string, metadata, previous output.InternalEvent, vars map[string]interface{}, callback protocols.OutputEventCallback) error {
+func (request *Request) execute(input *contextargs.Context, domain string, metadata, previous output.InternalEvent, vars map[string]any, callback protocols.OutputEventCallback) error {
 	var err error
 	if vardump.EnableVarDump {
 		gologger.Debug().Msgf("DNS Protocol request variables: %s\n", vardump.DumpVariables(vars))

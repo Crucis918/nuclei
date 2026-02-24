@@ -44,10 +44,10 @@ func (e *Extractor) ExtractRegex(corpus string) map[string]struct{} {
 }
 
 // ExtractKval extracts key value pairs from a data map
-func (e *Extractor) ExtractKval(data map[string]interface{}) map[string]struct{} {
+func (e *Extractor) ExtractKval(data map[string]any) map[string]struct{} {
 	if e.CaseInsensitive {
 		inputData := data
-		data = make(map[string]interface{}, len(inputData))
+		data = make(map[string]any, len(inputData))
 		for k, v := range inputData {
 			if s, ok := v.(string); ok {
 				v = strings.ToLower(s)
@@ -141,7 +141,7 @@ func (e *Extractor) ExtractXML(corpus string) map[string]struct{} {
 func (e *Extractor) ExtractJSON(corpus string) map[string]struct{} {
 	results := make(map[string]struct{})
 
-	var jsonObj interface{}
+	var jsonObj any
 
 	if err := json.Unmarshal([]byte(corpus), &jsonObj); err != nil {
 		return results
@@ -174,7 +174,7 @@ func (e *Extractor) ExtractJSON(corpus string) map[string]struct{} {
 }
 
 // ExtractDSL execute the expression and returns the results
-func (e *Extractor) ExtractDSL(data map[string]interface{}) map[string]struct{} {
+func (e *Extractor) ExtractDSL(data map[string]any) map[string]struct{} {
 	results := make(map[string]struct{})
 
 	for _, compiledExpression := range e.dslCompiled {

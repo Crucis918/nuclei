@@ -23,16 +23,16 @@ var (
 // ex: username and password are dynamic secrets, the actual secret is the token obtained
 // after authenticating with the username and password
 type Dynamic struct {
-	*Secret       `yaml:",inline"`       // this is a static secret that will be generated after the dynamic secret is resolved
-	Secrets       []*Secret              `yaml:"secrets"`
-	TemplatePath  string                 `json:"template" yaml:"template"`
-	Variables     []KV                   `json:"variables" yaml:"variables"`
-	Input         string                 `json:"input" yaml:"input"` // (optional) target for the dynamic secret
-	Extracted     map[string]interface{} `json:"-" yaml:"-"`         // extracted values from the dynamic secret
-	fetchCallback LazyFetchSecret        `json:"-" yaml:"-"`
-	fetched       *atomic.Bool           `json:"-" yaml:"-"` // atomic flag to check if the secret has been fetched
-	fetching      *atomic.Bool           `json:"-" yaml:"-"` // atomic flag to prevent recursive fetch calls
-	error         error                  `json:"-" yaml:"-"` // error if any
+	*Secret       `yaml:",inline"` // this is a static secret that will be generated after the dynamic secret is resolved
+	Secrets       []*Secret        `yaml:"secrets"`
+	TemplatePath  string           `json:"template" yaml:"template"`
+	Variables     []KV             `json:"variables" yaml:"variables"`
+	Input         string           `json:"input" yaml:"input"` // (optional) target for the dynamic secret
+	Extracted     map[string]any   `json:"-" yaml:"-"`         // extracted values from the dynamic secret
+	fetchCallback LazyFetchSecret  `json:"-" yaml:"-"`
+	fetched       *atomic.Bool     `json:"-" yaml:"-"` // atomic flag to check if the secret has been fetched
+	fetching      *atomic.Bool     `json:"-" yaml:"-"` // atomic flag to prevent recursive fetch calls
+	error         error            `json:"-" yaml:"-"` // error if any
 }
 
 func (d *Dynamic) GetDomainAndDomainRegex() ([]string, []string) {

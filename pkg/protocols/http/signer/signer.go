@@ -36,7 +36,7 @@ func NewSigner(args SignerArgs) (signer Signer, err error) {
 }
 
 // GetCtxWithArgs creates and returns context with signature args
-func GetCtxWithArgs(maps ...map[string]interface{}) context.Context {
+func GetCtxWithArgs(maps ...map[string]any) context.Context {
 	var region, service string
 	for _, v := range maps {
 		for key, val := range v {

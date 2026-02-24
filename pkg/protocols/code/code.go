@@ -375,12 +375,12 @@ var RequestPartDefinitions = map[string]string{
 // Match performs matching operation for a matcher on model and returns:
 // true and a list of matched snippets if the matcher type is supports it
 // otherwise false and an empty string slice
-func (request *Request) Match(data map[string]interface{}, matcher *matchers.Matcher) (bool, []string) {
+func (request *Request) Match(data map[string]any, matcher *matchers.Matcher) (bool, []string) {
 	return protocols.MakeDefaultMatchFunc(data, matcher)
 }
 
 // Extract performs extracting operation for an extractor on model and returns true or false.
-func (request *Request) Extract(data map[string]interface{}, matcher *extractors.Extractor) map[string]struct{} {
+func (request *Request) Extract(data map[string]any, matcher *extractors.Extractor) map[string]struct{} {
 	return protocols.MakeDefaultExtractFunc(data, matcher)
 }
 
@@ -431,7 +431,7 @@ func fmtStdout(data string) string {
 }
 
 // interpretEnvVars replaces environment variables in the input string
-func interpretEnvVars(source string, vars map[string]interface{}) string {
+func interpretEnvVars(source string, vars map[string]any) string {
 	// bash mode
 	if strings.Contains(source, "$") {
 		for k, v := range vars {

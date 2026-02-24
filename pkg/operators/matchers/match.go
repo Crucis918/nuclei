@@ -52,7 +52,7 @@ func (matcher *Matcher) MatchSize(length int) bool {
 }
 
 // MatchWords matches a word check against a corpus.
-func (matcher *Matcher) MatchWords(corpus string, data map[string]interface{}) (bool, []string) {
+func (matcher *Matcher) MatchWords(corpus string, data map[string]any) (bool, []string) {
 	if matcher.CaseInsensitive {
 		corpus = strings.ToLower(corpus)
 	}
@@ -61,7 +61,7 @@ func (matcher *Matcher) MatchWords(corpus string, data map[string]interface{}) (
 	// Iterate over all the words accepted as valid
 	for i, word := range matcher.Words {
 		if data == nil {
-			data = make(map[string]interface{})
+			data = make(map[string]any)
 		}
 
 		var err error
@@ -187,7 +187,7 @@ func (matcher *Matcher) MatchBinary(corpus string) (bool, []string) {
 }
 
 // MatchDSL matches on a generic map result
-func (matcher *Matcher) MatchDSL(data map[string]interface{}) bool {
+func (matcher *Matcher) MatchDSL(data map[string]any) bool {
 	logExpressionEvaluationFailure := func(matcherName string, err error) {
 		gologger.Warning().Msgf("Could not evaluate expression: %s, error: %s", matcherName, err.Error())
 	}

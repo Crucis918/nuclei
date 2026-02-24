@@ -13,7 +13,7 @@ import (
 )
 
 // Eval compiles the given expression and evaluate it with the given values preserving the return type
-func Eval(expression string, values map[string]interface{}) (interface{}, error) {
+func Eval(expression string, values map[string]any) (any, error) {
 	compiled, err := govaluate.NewEvaluableExpressionWithFunctions(expression, dsl.HelperFunctions)
 	if err != nil {
 		return nil, err
@@ -27,7 +27,7 @@ func Eval(expression string, values map[string]interface{}) (interface{}, error)
 //
 // The provided keys from finalValues will be used as variable names
 // for substitution inside the expression.
-func Evaluate(data string, base map[string]interface{}) (string, error) {
+func Evaluate(data string, base map[string]any) (string, error) {
 	return evaluate(data, base)
 }
 
@@ -37,12 +37,12 @@ func Evaluate(data string, base map[string]interface{}) (string, error) {
 //
 // The provided keys from finalValues will be used as variable names
 // for substitution inside the expression.
-func EvaluateByte(data []byte, base map[string]interface{}) ([]byte, error) {
+func EvaluateByte(data []byte, base map[string]any) ([]byte, error) {
 	finalData, err := evaluate(string(data), base)
 	return []byte(finalData), err
 }
 
-func evaluate(data string, base map[string]interface{}) (string, error) {
+func evaluate(data string, base map[string]any) (string, error) {
 	// replace simple placeholders (key => value) MarkerOpen + key + MarkerClose and General + key + General to value
 	data = replacer.Replace(data, base)
 
@@ -74,7 +74,7 @@ func evaluate(data string, base map[string]interface{}) (string, error) {
 // maxIterations to avoid infinite loop
 const maxIterations = 250
 
-func FindExpressions(data, OpenMarker, CloseMarker string, base map[string]interface{}) []string {
+func FindExpressions(data, OpenMarker, CloseMarker string, base map[string]any) []string {
 	var (
 		iterations int
 		exps       []string
@@ -129,7 +129,7 @@ func FindExpressions(data, OpenMarker, CloseMarker string, base map[string]inter
 	return exps
 }
 
-func isExpression(data string, base map[string]interface{}) bool {
+func isExpression(data string, base map[string]any) bool {
 	if _, err := govaluate.NewEvaluableExpression(data); err == nil {
 		if stringsutil.ContainsAny(data, getFunctionsNames(base)...) {
 			return true
@@ -142,7 +142,7 @@ func isExpression(data string, base map[string]interface{}) bool {
 	return err == nil
 }
 
-func getFunctionsNames(m map[string]interface{}) []string {
+func getFunctionsNames(m map[string]any) []string {
 	keys := make([]string, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)

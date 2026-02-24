@@ -12,7 +12,7 @@ import (
 )
 
 // validate validates the payloads if any.
-func (g *PayloadGenerator) validate(payloads map[string]interface{}, templatePath string) error {
+func (g *PayloadGenerator) validate(payloads map[string]any, templatePath string) error {
 	for name, payload := range payloads {
 		switch payloadType := payload.(type) {
 		case string:
@@ -61,7 +61,7 @@ func (g *PayloadGenerator) validate(payloads map[string]interface{}, templatePat
 			if !changed {
 				return fmt.Errorf("the %s file for payload %s does not exist or does not contain enough elements", payloadType, name)
 			}
-		case interface{}:
+		case any:
 			loadedPayloads := types.ToStringSlice(payloadType)
 			if len(loadedPayloads) == 0 {
 				return fmt.Errorf("the payload %s does not contain enough elements", name)

@@ -31,7 +31,7 @@ func TestDNSCompileMake(t *testing.T) {
 	err := request.Compile(executerOpts)
 	require.Nil(t, err, "could not compile dns request")
 
-	req, err := request.Make("one.one.one.one", map[string]interface{}{"FQDN": "one.one.one.one"})
+	req, err := request.Make("one.one.one.one", map[string]any{"FQDN": "one.one.one.one"})
 	require.Nil(t, err, "could not make dns request")
 	require.Equal(t, "one.one.one.one.", req.Question[0].Name, "could not get correct dns question")
 }
@@ -74,7 +74,7 @@ func TestDNSRequests(t *testing.T) {
 			ID:          templateID,
 			Recursion:   &recursion,
 			Name:        "{{subdomain}}.{{FQDN}}",
-			Payloads:    map[string]interface{}{"subdomain": []string{"a", "b", "c"}},
+			Payloads:    map[string]any{"subdomain": []string{"a", "b", "c"}},
 		}
 		executerOpts := testutils.NewMockExecuterOptions(options, &testutils.TemplateInfo{
 			ID:   templateID,

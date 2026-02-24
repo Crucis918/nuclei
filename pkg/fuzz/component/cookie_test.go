@@ -27,7 +27,7 @@ func TestCookieComponent(t *testing.T) {
 
 	var cookieNames []string
 	var cookieValues []string
-	_ = cookieComponent.Iterate(func(key string, value interface{}) error {
+	_ = cookieComponent.Iterate(func(key string, value any) error {
 		cookieNames = append(cookieNames, key)
 		switch v := value.(type) {
 		case string:

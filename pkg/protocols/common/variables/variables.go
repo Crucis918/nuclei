@@ -36,7 +36,7 @@ func (variables Variable) JSONSchema() *jsonschema.Schema {
 	return gotType
 }
 
-func (variables *Variable) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (variables *Variable) UnmarshalYAML(unmarshal func(any) error) error {
 	variables.InsertionOrderedStringMap = utils.InsertionOrderedStringMap{}
 	if err := unmarshal(&variables.InsertionOrderedStringMap); err != nil {
 		return err
@@ -46,7 +46,7 @@ func (variables *Variable) UnmarshalYAML(unmarshal func(interface{}) error) erro
 		return nil
 	}
 
-	evaluated := variables.Evaluate(map[string]interface{}{})
+	evaluated := variables.Evaluate(map[string]any{})
 
 	for k, v := range evaluated {
 		variables.Set(k, v)
@@ -59,7 +59,7 @@ func (variables *Variable) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &variables.InsertionOrderedStringMap); err != nil {
 		return err
 	}
-	evaluated := variables.Evaluate(map[string]interface{}{})
+	evaluated := variables.Evaluate(map[string]any{})
 
 	for k, v := range evaluated {
 		variables.Set(k, v)
@@ -68,13 +68,13 @@ func (variables *Variable) UnmarshalJSON(data []byte) error {
 }
 
 // Evaluate returns a finished map of variables based on set values
-func (variables *Variable) Evaluate(values map[string]interface{}) map[string]interface{} {
-	result := make(map[string]interface{}, variables.Len())
-	combined := make(map[string]interface{}, len(values)+variables.Len())
+func (variables *Variable) Evaluate(values map[string]any) map[string]any {
+	result := make(map[string]any, variables.Len())
+	combined := make(map[string]any, len(values)+variables.Len())
 	generators.MergeMapsInto(combined, values)
 
-	variables.ForEach(func(key string, value interface{}) {
-		if sliceValue, ok := value.([]interface{}); ok {
+	variables.ForEach(func(key string, value any) {
+		if sliceValue, ok := value.([]any); ok {
 			// slices cannot be evaluated
 			result[key] = sliceValue
 			combined[key] = sliceValue
@@ -92,23 +92,23 @@ func (variables *Variable) Evaluate(values map[string]interface{}) map[string]in
 }
 
 // GetAll returns all variables as a map
-func (variables *Variable) GetAll() map[string]interface{} {
-	result := make(map[string]interface{}, variables.Len())
-	variables.ForEach(func(key string, value interface{}) {
+func (variables *Variable) GetAll() map[string]any {
+	result := make(map[string]any, variables.Len())
+	variables.ForEach(func(key string, value any) {
 		result[key] = value
 	})
 	return result
 }
 
 // EvaluateWithInteractsh returns evaluation results of variables with interactsh
-func (variables *Variable) EvaluateWithInteractsh(values map[string]interface{}, interact *interactsh.Client) (map[string]interface{}, []string) {
-	result := make(map[string]interface{}, variables.Len())
-	combined := make(map[string]interface{}, len(values)+variables.Len())
+func (variables *Variable) EvaluateWithInteractsh(values map[string]any, interact *interactsh.Client) (map[string]any, []string) {
+	result := make(map[string]any, variables.Len())
+	combined := make(map[string]any, len(values)+variables.Len())
 	generators.MergeMapsInto(combined, values)
 
 	var interactURLs []string
-	variables.ForEach(func(key string, value interface{}) {
-		if sliceValue, ok := value.([]interface{}); ok {
+	variables.ForEach(func(key string, value any) {
+		if sliceValue, ok := value.([]any); ok {
 			// slices cannot be evaluated
 			result[key] = sliceValue
 			combined[key] = sliceValue
@@ -132,7 +132,7 @@ func (variables *Variable) EvaluateWithInteractsh(values map[string]interface{},
 //
 // Deprecated: use evaluateVariableValueWithMap instead to avoid repeated map
 // merging overhead.
-func evaluateVariableValue(expression string, values, processing map[string]interface{}) string { // nolint
+func evaluateVariableValue(expression string, values, processing map[string]any) string { // nolint
 	finalMap := generators.MergeMaps(values, processing)
 	result, err := expressions.Evaluate(expression, finalMap)
 	if err != nil {
@@ -143,7 +143,7 @@ func evaluateVariableValue(expression string, values, processing map[string]inte
 }
 
 // evaluateVariableValueWithMap evaluates an expression with a pre-merged map.
-func evaluateVariableValueWithMap(expression string, combinedMap map[string]interface{}) string {
+func evaluateVariableValueWithMap(expression string, combinedMap map[string]any) string {
 	result, err := expressions.Evaluate(expression, combinedMap)
 	if err != nil {
 		return expression
@@ -157,7 +157,7 @@ func evaluateVariableValueWithMap(expression string, combinedMap map[string]inte
 func (variables *Variable) checkForLazyEval() bool {
 	var needsLazy bool
 
-	variables.ForEach(func(key string, value interface{}) {
+	variables.ForEach(func(key string, value any) {
 		if needsLazy {
 			return
 		}
@@ -191,13 +191,13 @@ func (variables *Variable) checkForLazyEval() bool {
 // parameters not defined in the current variable scope, indicating it needs
 // runtime context.
 func hasUndefinedParams(value string, variables *Variable) bool {
-	exprs := expressions.FindExpressions(value, marker.ParenthesisOpen, marker.ParenthesisClose, map[string]interface{}{})
+	exprs := expressions.FindExpressions(value, marker.ParenthesisOpen, marker.ParenthesisClose, map[string]any{})
 	if len(exprs) == 0 {
 		return false
 	}
 
 	definedVars := make(map[string]struct{})
-	variables.ForEach(func(key string, _ interface{}) {
+	variables.ForEach(func(key string, _ any) {
 		definedVars[key] = struct{}{}
 	})
 

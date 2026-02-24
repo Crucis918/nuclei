@@ -41,7 +41,7 @@ func TestDataformatDecodeEncode_XML(t *testing.T) {
 	if fooValue == nil {
 		t.Fatal("key 'foo' not found")
 	}
-	fooMap, ok := fooValue.(map[string]interface{})
+	fooMap, ok := fooValue.(map[string]any)
 	if !ok {
 		t.Fatal("type assertion to map[string]interface{} failed")
 	}

@@ -27,7 +27,7 @@ func (StringOrSlice) JSONSchema() *jsonschema.Schema {
 // StringSlice represents a single (in-lined) or multiple string value(s).
 // The unmarshaller does not automatically convert in-lined strings to []string, hence the interface{} type is required.
 type StringSlice struct {
-	Value interface{}
+	Value any
 }
 
 // Implement alias for stringslice and reuse it everywhere
@@ -35,7 +35,7 @@ func (stringSlice StringSlice) JSONSchemaAlias() any {
 	return StringOrSlice("")
 }
 
-func New(value interface{}) StringSlice {
+func New(value any) StringSlice {
 	return StringSlice{Value: value}
 }
 
@@ -60,7 +60,7 @@ func (stringSlice StringSlice) String() string {
 	return strings.Join(stringSlice.ToSlice(), ", ")
 }
 
-func (stringSlice *StringSlice) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (stringSlice *StringSlice) UnmarshalYAML(unmarshal func(any) error) error {
 	marshalledSlice, err := marshalStringToSlice(unmarshal)
 	if err != nil {
 		return err
@@ -78,7 +78,7 @@ func (stringSlice StringSlice) Normalize(value string) string {
 	return strings.ToLower(strings.TrimSpace(value))
 }
 
-func (stringSlice StringSlice) MarshalYAML() (interface{}, error) {
+func (stringSlice StringSlice) MarshalYAML() (any, error) {
 	return stringSlice.Value, nil
 }
 
@@ -116,7 +116,7 @@ func (stringSlice *StringSlice) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func marshalStringToSlice(unmarshal func(interface{}) error) ([]string, error) {
+func marshalStringToSlice(unmarshal func(any) error) ([]string, error) {
 	var marshalledValueAsString string
 	var marshalledValuesAsSlice []string
 

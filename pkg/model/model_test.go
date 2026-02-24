@@ -19,7 +19,7 @@ func TestInfoJsonMarshal(t *testing.T) {
 		SeverityHolder: severity.Holder{Severity: severity.High},
 		Tags:           stringslice.StringSlice{Value: []string{"cve", "misc"}},
 		Reference:      stringslice.NewRawStringSlice("Reference1"),
-		Metadata: map[string]interface{}{
+		Metadata: map[string]any{
 			"string_key": "string_value",
 			"array_key":  []string{"array_value1", "array_value2"},
 			"map_key": map[string]string{
@@ -43,7 +43,7 @@ func TestInfoYamlMarshal(t *testing.T) {
 		SeverityHolder: severity.Holder{Severity: severity.High},
 		Tags:           stringslice.StringSlice{Value: []string{"cve", "misc"}},
 		Reference:      stringslice.NewRawStringSlice("Reference1"),
-		Metadata: map[string]interface{}{
+		Metadata: map[string]any{
 			"string_key": "string_value",
 			"array_key":  []string{"array_value1", "array_value2"},
 			"map_key": map[string]string{
@@ -85,7 +85,7 @@ func TestUnmarshal(t *testing.T) {
 	dynamicKey1 := "customDynamicKey1"
 	dynamicKey2 := "customDynamicKey2"
 
-	dynamicKeysMap := map[string]interface{}{
+	dynamicKeysMap := map[string]any{
 		dynamicKey1: "customDynamicValue1",
 		dynamicKey2: "customDynamicValue2",
 	}

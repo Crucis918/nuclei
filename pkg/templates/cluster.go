@@ -241,15 +241,15 @@ func (e *ClusterExecuter) Execute(ctx *scan.ScanContext) (bool, error) {
 			return false, nil
 		}
 	}
-	previous := make(map[string]interface{})
-	dynamicValues := make(map[string]interface{})
+	previous := make(map[string]any)
+	dynamicValues := make(map[string]any)
 	err := e.requests.ExecuteWithResults(inputItem, dynamicValues, previous, func(event *output.InternalWrappedEvent) {
 		if event == nil {
 			// unlikely but just in case
 			return
 		}
 		if event.InternalEvent == nil {
-			event.InternalEvent = make(map[string]interface{})
+			event.InternalEvent = make(map[string]any)
 		}
 		for _, operator := range e.operators {
 			clonedEvent := event.CloneShallow()
@@ -283,7 +283,7 @@ func (e *ClusterExecuter) Execute(ctx *scan.ScanContext) (bool, error) {
 // ExecuteWithResults executes the protocol requests and returns results instead of writing them.
 func (e *ClusterExecuter) ExecuteWithResults(ctx *scan.ScanContext) ([]*output.ResultEvent, error) {
 	scanCtx := scan.NewScanContext(ctx.Context(), ctx.Input)
-	dynamicValues := make(map[string]interface{})
+	dynamicValues := make(map[string]any)
 
 	inputItem := ctx.Input.Clone()
 	if e.options.InputHelper != nil && ctx.Input.MetaInput.Input != "" {

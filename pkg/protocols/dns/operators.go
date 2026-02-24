@@ -19,7 +19,7 @@ import (
 )
 
 // Match matches a generic data response against a given matcher
-func (request *Request) Match(data map[string]interface{}, matcher *matchers.Matcher) (bool, []string) {
+func (request *Request) Match(data map[string]any, matcher *matchers.Matcher) (bool, []string) {
 	item, ok := request.getMatchPart(matcher.Part, data)
 	if !ok && matcher.Type.MatcherType != matchers.DSLMatcher {
 		return false, []string{}
@@ -49,7 +49,7 @@ func (request *Request) Match(data map[string]interface{}, matcher *matchers.Mat
 }
 
 // Extract performs extracting operation for an extractor on model and returns true or false.
-func (request *Request) Extract(data map[string]interface{}, extractor *extractors.Extractor) map[string]struct{} {
+func (request *Request) Extract(data map[string]any, extractor *extractors.Extractor) map[string]struct{} {
 	item, ok := request.getMatchPart(extractor.Part, data)
 	if !ok && !extractors.SupportsMap(extractor) {
 		return nil
@@ -66,7 +66,7 @@ func (request *Request) Extract(data map[string]interface{}, extractor *extracto
 	return nil
 }
 
-func (request *Request) getMatchPart(part string, data output.InternalEvent) (interface{}, bool) {
+func (request *Request) getMatchPart(part string, data output.InternalEvent) (any, bool) {
 	switch part {
 	case "body", "all", "":
 		part = "raw"

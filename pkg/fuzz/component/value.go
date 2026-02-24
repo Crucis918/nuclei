@@ -92,7 +92,7 @@ func (v *Value) SetParsedValue(key, value string) bool {
 	// If the value is a list, append to it
 	// otherwise replace it
 	switch v := origValue.(type) {
-	case []interface{}:
+	case []any:
 		// update last value
 		if len(v) > 0 {
 			v[len(v)-1] = value
@@ -165,11 +165,11 @@ func (v *Value) Encode() (string, error) {
 
 // In go, []int, []string are not implictily converted to []interface{}
 // when using type assertion and they need to be handled separately.
-func IsTypedSlice(v interface{}) ([]interface{}, bool) {
+func IsTypedSlice(v any) ([]any, bool) {
 	if reflect.ValueOf(v).Kind() == reflect.Slice {
 		// iterate and convert to []interface{}
 		slice := reflect.ValueOf(v)
-		interfaceSlice := make([]interface{}, slice.Len())
+		interfaceSlice := make([]any, slice.Len())
 		for i := 0; i < slice.Len(); i++ {
 			interfaceSlice[i] = slice.Index(i).Interface()
 		}

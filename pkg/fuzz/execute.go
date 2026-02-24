@@ -48,7 +48,7 @@ type ExecuteRuleInput struct {
 	// InteractURLs contains interact urls for execute call
 	InteractURLs []string
 	// Values contains dynamic values for the rule
-	Values map[string]interface{}
+	Values map[string]any
 	// BaseRequest is the base http request for fuzzing rule
 	BaseRequest *retryablehttp.Request
 	// DisplayFuzzPoints is a flag to display fuzz points
@@ -56,8 +56,8 @@ type ExecuteRuleInput struct {
 
 	// ApplyPayloadInitialTransformation is an optional function
 	// to transform the payload initially based on analyzer rules
-	ApplyPayloadInitialTransformation func(string, map[string]interface{}) string
-	AnalyzerParams                    map[string]interface{}
+	ApplyPayloadInitialTransformation func(string, map[string]any) string
+	AnalyzerParams                    map[string]any
 }
 
 // GeneratedRequest is a single generated request for rule
@@ -67,7 +67,7 @@ type GeneratedRequest struct {
 	// InteractURLs is the list of interactsh urls
 	InteractURLs []string
 	// DynamicValues contains dynamic values map
-	DynamicValues map[string]interface{}
+	DynamicValues map[string]any
 	// Component is the component for the request
 	Component component.Component
 	// Parameter being fuzzed
@@ -120,14 +120,14 @@ func (rule *Rule) Execute(input *ExecuteRuleInput) (err error) {
 		// Debugging display for fuzz points
 		if input.DisplayFuzzPoints {
 			displayDebugFuzzPoints[componentName] = make(map[string]string)
-			_ = component.Iterate(func(key string, value interface{}) error {
+			_ = component.Iterate(func(key string, value any) error {
 				displayDebugFuzzPoints[componentName][key] = fmt.Sprintf("%v", value)
 				return nil
 			})
 		}
 
 		if rule.options.FuzzStatsDB != nil {
-			_ = component.Iterate(func(key string, value interface{}) error {
+			_ = component.Iterate(func(key string, value any) error {
 				rule.options.FuzzStatsDB.RecordComponentEvent(fuzzStats.ComponentEvent{
 					URL:           input.Input.MetaInput.Target(),
 					ComponentType: componentName,
@@ -219,7 +219,7 @@ func (rule *Rule) evaluateVars(input string) (string, error) {
 }
 
 // evaluateVarsWithInteractsh evaluates the variables with Interactsh URLs and updates them accordingly.
-func (rule *Rule) evaluateVarsWithInteractsh(data map[string]interface{}, interactshUrls []string) (map[string]interface{}, []string) {
+func (rule *Rule) evaluateVarsWithInteractsh(data map[string]any, interactshUrls []string) (map[string]any, []string) {
 	// Check if Interactsh options are configured
 	if rule.options.Interactsh != nil {
 		data = maps.Clone(data)

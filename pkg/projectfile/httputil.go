@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-func hash(v interface{}) (string, error) {
+func hash(v any) (string, error) {
 	data, err := marshal(v)
 	if err != nil {
 		return "", err
@@ -24,7 +24,7 @@ func hash(v interface{}) (string, error) {
 	return hex.EncodeToString(sh.Sum(nil)), nil
 }
 
-func marshal(data interface{}) ([]byte, error) {
+func marshal(data any) ([]byte, error) {
 	var b bytes.Buffer
 	enc := gob.NewEncoder(&b)
 	if err := enc.Encode(data); err != nil {
@@ -34,7 +34,7 @@ func marshal(data interface{}) ([]byte, error) {
 	return b.Bytes(), nil
 }
 
-func unmarshal(data []byte, obj interface{}) error {
+func unmarshal(data []byte, obj any) error {
 	dec := gob.NewDecoder(bytes.NewBuffer(data))
 	if err := dec.Decode(obj); err != nil {
 		return err

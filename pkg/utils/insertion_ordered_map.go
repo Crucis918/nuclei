@@ -10,17 +10,17 @@ import (
 
 type InsertionOrderedStringMap struct {
 	keys   []string `yaml:"-"`
-	values map[string]interface{}
+	values map[string]any
 }
 
 func NewEmptyInsertionOrderedStringMap(size int) *InsertionOrderedStringMap {
 	return &InsertionOrderedStringMap{
 		keys:   make([]string, 0, size),
-		values: make(map[string]interface{}, size),
+		values: make(map[string]any, size),
 	}
 }
 
-func NewInsertionOrderedStringMap(stringMap map[string]interface{}) *InsertionOrderedStringMap {
+func NewInsertionOrderedStringMap(stringMap map[string]any) *InsertionOrderedStringMap {
 	result := NewEmptyInsertionOrderedStringMap(len(stringMap))
 
 	for k, v := range stringMap {
@@ -33,12 +33,12 @@ func (insertionOrderedStringMap *InsertionOrderedStringMap) Len() int {
 	return len(insertionOrderedStringMap.values)
 }
 
-func (insertionOrderedStringMap *InsertionOrderedStringMap) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (insertionOrderedStringMap *InsertionOrderedStringMap) UnmarshalYAML(unmarshal func(any) error) error {
 	var data yaml.MapSlice
 	if err := unmarshal(&data); err != nil {
 		return err
 	}
-	insertionOrderedStringMap.values = make(map[string]interface{})
+	insertionOrderedStringMap.values = make(map[string]any)
 	for _, v := range data {
 		if v.Key == nil {
 			continue
@@ -49,11 +49,11 @@ func (insertionOrderedStringMap *InsertionOrderedStringMap) UnmarshalYAML(unmars
 }
 
 func (insertionOrderedStringMap *InsertionOrderedStringMap) UnmarshalJSON(data []byte) error {
-	var dataMap map[string]interface{}
+	var dataMap map[string]any
 	if err := json.Unmarshal(data, &dataMap); err != nil {
 		return err
 	}
-	insertionOrderedStringMap.values = make(map[string]interface{})
+	insertionOrderedStringMap.values = make(map[string]any)
 	for k, v := range dataMap {
 		insertionOrderedStringMap.Set(k, toString(v))
 	}
@@ -61,7 +61,7 @@ func (insertionOrderedStringMap *InsertionOrderedStringMap) UnmarshalJSON(data [
 }
 
 // toString converts an interface to string in a quick way
-func toString(data interface{}) interface{} {
+func toString(data any) any {
 	switch s := data.(type) {
 	case nil:
 		return ""
@@ -95,20 +95,20 @@ func toString(data interface{}) interface{} {
 		return strconv.FormatUint(uint64(s), 10)
 	case []byte:
 		return string(s)
-	case []interface{}:
+	case []any:
 		return data
 	default:
 		return fmt.Sprintf("%v", data)
 	}
 }
 
-func (insertionOrderedStringMap *InsertionOrderedStringMap) ForEach(fn func(key string, data interface{})) {
+func (insertionOrderedStringMap *InsertionOrderedStringMap) ForEach(fn func(key string, data any)) {
 	for _, key := range insertionOrderedStringMap.keys {
 		fn(key, insertionOrderedStringMap.values[key])
 	}
 }
 
-func (insertionOrderedStringMap *InsertionOrderedStringMap) Set(key string, value interface{}) {
+func (insertionOrderedStringMap *InsertionOrderedStringMap) Set(key string, value any) {
 	_, present := insertionOrderedStringMap.values[key]
 	insertionOrderedStringMap.values[key] = value
 	if !present {

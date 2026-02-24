@@ -103,7 +103,7 @@ func (exporter *Exporter) Export(event *output.ResultEvent) error {
 	resultLevel, vulnRating := exporter.getSeverity(severity)
 
 	// Extra metadata if generated sarif is uploaded to GitHub security page
-	ghMeta := map[string]interface{}{}
+	ghMeta := map[string]any{}
 	ghMeta["tags"] = []string{"security"}
 	ghMeta["security-severity"] = vulnRating
 

@@ -36,7 +36,7 @@ func (q *Path) Parse(req *retryablehttp.Request) (bool, error) {
 	q.value = NewValue("")
 
 	splitted := strings.Split(req.Path, "/")
-	values := make(map[string]interface{})
+	values := make(map[string]any)
 	for i, segment := range splitted {
 		if segment == "" && i == 0 {
 			// Skip the first empty segment from leading "/"
@@ -55,7 +55,7 @@ func (q *Path) Parse(req *retryablehttp.Request) (bool, error) {
 }
 
 // Iterate iterates through the component
-func (q *Path) Iterate(callback func(key string, value interface{}) error) (err error) {
+func (q *Path) Iterate(callback func(key string, value any) error) (err error) {
 	q.value.parsed.Iterate(func(key string, value any) bool {
 		if errx := callback(key, value); errx != nil {
 			err = errx

@@ -36,9 +36,9 @@ func (g *Generic) Compile() error {
 
 // ExecuteWithResults executes the template and returns results
 func (g *Generic) ExecuteWithResults(ctx *scan.ScanContext) error {
-	dynamicValues := make(map[string]interface{})
+	dynamicValues := make(map[string]any)
 	if ctx.Input.HasArgs() {
-		ctx.Input.ForEach(func(key string, value interface{}) {
+		ctx.Input.ForEach(func(key string, value any) {
 			dynamicValues[key] = value
 		})
 	}

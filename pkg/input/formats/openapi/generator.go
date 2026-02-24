@@ -195,7 +195,7 @@ func generateRequestsFromOp(opts *generateReqOptions) error {
 		}
 
 		// paramValue or default value to use
-		var paramValue interface{}
+		var paramValue any
 
 		// accept override from global variables
 		if val, ok := opts.opts.Variables[value.Name]; ok {
@@ -254,7 +254,7 @@ func generateRequestsFromOp(opts *generateReqOptions) error {
 		case "header":
 			req.Header.Set(value.Name, types.ToString(paramValue))
 		case "path":
-			opts.requestPath = fasttemplate.ExecuteStringStd(opts.requestPath, "{", "}", map[string]interface{}{
+			opts.requestPath = fasttemplate.ExecuteStringStd(opts.requestPath, "{", "}", map[string]any{
 				value.Name: types.ToString(paramValue),
 			})
 		case "cookie":
@@ -268,7 +268,7 @@ func generateRequestsFromOp(opts *generateReqOptions) error {
 		for content, value := range opts.op.RequestBody.Value.Content {
 			cloned := req.Clone(req.Context())
 
-			var val interface{}
+			var val any
 
 			if value.Schema == nil || value.Schema.Value == nil {
 				val = generateEmptySchemaValue(content)
@@ -291,7 +291,7 @@ func generateRequestsFromOp(opts *generateReqOptions) error {
 					cloned.Header.Set("Content-Type", "application/json")
 				}
 			case "application/xml":
-				values := mxj.Map(val.(map[string]interface{}))
+				values := mxj.Map(val.(map[string]any))
 
 				if marshalled, err := values.Xml(); err == nil {
 					// body = string(marshalled)
@@ -302,7 +302,7 @@ func generateRequestsFromOp(opts *generateReqOptions) error {
 					gologger.Warning().Msgf("openapi: could not encode xml")
 				}
 			case "application/x-www-form-urlencoded":
-				if values, ok := val.(map[string]interface{}); ok {
+				if values, ok := val.(map[string]any); ok {
 					cloned.Form = url.Values{}
 					for k, v := range values {
 						cloned.Form.Set(k, types.ToString(v))
@@ -314,7 +314,7 @@ func generateRequestsFromOp(opts *generateReqOptions) error {
 					cloned.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 				}
 			case "multipart/form-data":
-				if values, ok := val.(map[string]interface{}); ok {
+				if values, ok := val.(map[string]any); ok {
 					buffer := &bytes.Buffer{}
 					multipartWriter := multipart.NewWriter(buffer)
 					for k, v := range values {

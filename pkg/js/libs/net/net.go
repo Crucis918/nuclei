@@ -124,7 +124,7 @@ func (c *NetConn) unsetDeadLine() {
 // const conn = net.Open('tcp', 'acme.com:80');
 // conn.SendArray(['hello', 'world']);
 // ```
-func (c *NetConn) SendArray(data []interface{}) error {
+func (c *NetConn) SendArray(data []any) error {
 	c.setDeadLine()
 	defer c.unsetDeadLine()
 	input := types.ToByteSlice(data)

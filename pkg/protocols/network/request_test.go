@@ -91,7 +91,7 @@ func TestNetworkExecuteWithResults(t *testing.T) {
 	require.Nil(t, finalEvent.Results, "could not get event output from request")
 
 	request.Inputs[0].Type = NetworkInputTypeHolder{NetworkInputType: hexType}
-	request.Inputs[0].Data = hex.EncodeToString([]byte(fmt.Sprintf("GET / HTTP/1.1\r\nHost: %s\r\n\r\n", parsed.Host)))
+	request.Inputs[0].Data = hex.EncodeToString(fmt.Appendf(nil, "GET / HTTP/1.1\r\nHost: %s\r\n\r\n", parsed.Host))
 
 	t.Run("hex-to-string", func(t *testing.T) {
 		metadata := make(output.InternalEvent)

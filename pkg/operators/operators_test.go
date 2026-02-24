@@ -15,7 +15,7 @@ func TestMakeDynamicValuesCallback(t *testing.T) {
 	}
 
 	count := 0
-	MakeDynamicValuesCallback(input, true, func(data map[string]interface{}) bool {
+	MakeDynamicValuesCallback(input, true, func(data map[string]any) bool {
 		count++
 		require.Len(t, data, 3, "could not get correct output length")
 		return false
@@ -30,7 +30,7 @@ func TestMakeDynamicValuesCallback(t *testing.T) {
 		}
 
 		count := 0
-		MakeDynamicValuesCallback(input, true, func(data map[string]interface{}) bool {
+		MakeDynamicValuesCallback(input, true, func(data map[string]any) bool {
 			count++
 			require.Len(t, data, 3, "could not get correct output length")
 			return false
@@ -47,7 +47,7 @@ func TestMakeDynamicValuesCallback(t *testing.T) {
 		}
 
 		count := 0
-		MakeDynamicValuesCallback(input, false, func(data map[string]interface{}) bool {
+		MakeDynamicValuesCallback(input, false, func(data map[string]any) bool {
 			count++
 			require.Len(t, data, 3, "could not get correct output length")
 			return false

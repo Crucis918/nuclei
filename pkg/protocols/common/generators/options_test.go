@@ -24,7 +24,7 @@ func TestBuildPayloadFromOptionsConcurrency(t *testing.T) {
 	wg.Add(numGoroutines)
 
 	// Each goroutine gets a map and modifies it
-	for i := 0; i < numGoroutines; i++ {
+	for i := range numGoroutines {
 		go func(id int) {
 			defer wg.Done()
 

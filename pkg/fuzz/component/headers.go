@@ -33,7 +33,7 @@ func (q *Header) Parse(req *retryablehttp.Request) (bool, error) {
 	q.req = req
 	q.value = NewValue("")
 
-	parsedHeaders := make(map[string]interface{})
+	parsedHeaders := make(map[string]any)
 	for key, value := range req.Header {
 		if len(value) == 1 {
 			parsedHeaders[key] = value[0]
@@ -46,7 +46,7 @@ func (q *Header) Parse(req *retryablehttp.Request) (bool, error) {
 }
 
 // Iterate iterates through the component
-func (q *Header) Iterate(callback func(key string, value interface{}) error) (errx error) {
+func (q *Header) Iterate(callback func(key string, value any) error) (errx error) {
 	q.value.parsed.Iterate(func(key string, value any) bool {
 		// Skip ignored headers
 		if _, ok := defaultIgnoredHeaderKeys[key]; ok {
@@ -93,7 +93,7 @@ func (q *Header) Rebuild() (*retryablehttp.Request, error) {
 			// convert to []interface{}
 			value = vx
 		}
-		if v, ok := value.([]interface{}); ok {
+		if v, ok := value.([]any); ok {
 			for _, vv := range v {
 				cloned.Header.Add(key, vv.(string))
 			}

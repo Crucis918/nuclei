@@ -17,7 +17,7 @@ a3: new`
 	require.NoError(t, err, "could not unmarshal map")
 
 	var items []string
-	value.ForEach(func(key string, value interface{}) {
+	value.ForEach(func(key string, value any) {
 		items = append(items, key)
 	})
 	require.Equal(t, []string{"a1", "a2", "a3"}, items, "could not get ordered keys")

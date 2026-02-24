@@ -73,7 +73,7 @@ func (userAgentHolder UserAgentHolder) JSONSchema() *jsonschema.Schema {
 	return gotType
 }
 
-func (userAgentHolder *UserAgentHolder) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (userAgentHolder *UserAgentHolder) UnmarshalYAML(unmarshal func(any) error) error {
 	var marshalledUserAgent string
 	if err := unmarshal(&marshalledUserAgent); err != nil {
 		return err
@@ -104,6 +104,6 @@ func (userAgentHolder *UserAgentHolder) MarshalJSON() ([]byte, error) {
 	return json.Marshal(userAgentHolder.Value.String())
 }
 
-func (userAgentHolder UserAgentHolder) MarshalYAML() (interface{}, error) {
+func (userAgentHolder UserAgentHolder) MarshalYAML() (any, error) {
 	return userAgentHolder.Value.String(), nil
 }

@@ -73,7 +73,7 @@ type Holder struct {
 
 // Implement a jsonschema for the severity holder
 func (severityHolder Holder) JSONSchema() *jsonschema.Schema {
-	enums := []interface{}{}
+	enums := []any{}
 	for _, severity := range GetSupportedSeverities() {
 		enums = append(enums, severity.String())
 	}
@@ -85,7 +85,7 @@ func (severityHolder Holder) JSONSchema() *jsonschema.Schema {
 	}
 }
 
-func (severityHolder *Holder) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (severityHolder *Holder) UnmarshalYAML(unmarshal func(any) error) error {
 	var marshalledSeverity string
 	if err := unmarshal(&marshalledSeverity); err != nil {
 		return err
@@ -119,6 +119,6 @@ func (severityHolder Holder) MarshalJSON() ([]byte, error) {
 	return json.Marshal(severityHolder.Severity.String())
 }
 
-func (severityHolder Holder) MarshalYAML() (interface{}, error) {
+func (severityHolder Holder) MarshalYAML() (any, error) {
 	return severityHolder.Severity.String(), nil
 }

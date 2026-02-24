@@ -67,10 +67,10 @@ type Request struct {
 	//   - "batteringram"
 	//   - "pitchfork"
 	//   - "clusterbomb"
-	AttackType generators.AttackTypeHolder `yaml:"attack,omitempty" json:"attack,omitempty" jsonschema:"title=attack is the payload combination,description=Attack is the type of payload combinations to perform,enum=batteringram,enum=pitchfork,enum=clusterbomb"`
+	AttackType generators.AttackTypeHolder `yaml:"attack,omitempty" json:"attack" jsonschema:"title=attack is the payload combination,description=Attack is the type of payload combinations to perform,enum=batteringram,enum=pitchfork,enum=clusterbomb"`
 	// description: |
 	//   Method is the HTTP Request Method.
-	Method HTTPMethodTypeHolder `yaml:"method,omitempty" json:"method,omitempty" jsonschema:"title=method is the http request method,description=Method is the HTTP Request Method,enum=GET,enum=HEAD,enum=POST,enum=PUT,enum=DELETE,enum=CONNECT,enum=OPTIONS,enum=TRACE,enum=PATCH,enum=PURGE"`
+	Method HTTPMethodTypeHolder `yaml:"method,omitempty" json:"method" jsonschema:"title=method is the http request method,description=Method is the HTTP Request Method,enum=GET,enum=HEAD,enum=POST,enum=PUT,enum=DELETE,enum=CONNECT,enum=OPTIONS,enum=TRACE,enum=PATCH,enum=PURGE"`
 	// description: |
 	//   Body is an optional parameter which contains HTTP Request body.
 	// examples:
@@ -83,7 +83,7 @@ type Request struct {
 	//   Payloads support both key-values combinations where a list
 	//   of payloads is provided, or optionally a single file can also
 	//   be provided as payload which will be read on run-time.
-	Payloads map[string]interface{} `yaml:"payloads,omitempty" json:"payloads,omitempty" jsonschema:"title=payloads for the http request,description=Payloads contains any payloads for the current request"`
+	Payloads map[string]any `yaml:"payloads,omitempty" json:"payloads,omitempty" jsonschema:"title=payloads for the http request,description=Payloads contains any payloads for the current request"`
 
 	// description: |
 	//   Headers contains HTTP Headers to send with the request.
@@ -156,7 +156,7 @@ type Request struct {
 	//   Signature is the request signature method
 	// values:
 	//   - "AWS"
-	Signature SignatureTypeHolder `yaml:"signature,omitempty" json:"signature,omitempty" jsonschema:"title=signature is the http request signature method,description=Signature is the HTTP Request signature Method,enum=AWS"`
+	Signature SignatureTypeHolder `yaml:"signature,omitempty" json:"signature" jsonschema:"title=signature is the http request signature method,description=Signature is the HTTP Request signature Method,enum=AWS"`
 
 	// description: |
 	//   SkipSecretFile skips the authentication or authorization configured in the secret file.
@@ -427,14 +427,14 @@ func (request *Request) Compile(options *protocols.ExecutorOptions) error {
 		}
 
 		for _, input := range inputs {
-			if expressions.ContainsVariablesWithNames(map[string]interface{}{name: payload}, input) == nil {
+			if expressions.ContainsVariablesWithNames(map[string]any{name: payload}, input) == nil {
 				hasPayloadName = true
 				break
 			}
 		}
 		if ok && hasPayloadName && fileutil.FileExists(payloadStr) {
 			if request.Payloads == nil {
-				request.Payloads = make(map[string]interface{})
+				request.Payloads = make(map[string]any)
 			}
 			request.Payloads[name] = payloadStr
 		}
@@ -442,7 +442,7 @@ func (request *Request) Compile(options *protocols.ExecutorOptions) error {
 
 	// tries to drop unused payloads - by marshaling sections that might contain the payload
 	unusedPayloads := make(map[string]struct{})
-	requestSectionsToCheck := []interface{}{
+	requestSectionsToCheck := []any{
 		request.customHeaders, request.Headers, request.Matchers,
 		request.Extractors, request.Body, request.Path, request.Raw, request.Fuzzing,
 	}

@@ -16,26 +16,26 @@ type Error struct {
 type LintError struct {
 	Name   string `json:"name,omitempty"`
 	Reason string `json:"reason,omitempty"`
-	Mark   Mark   `json:"mark,omitempty"`
+	Mark   Mark   `json:"mark"`
 }
 
 type TemplateLintResp struct {
 	Input     string    `json:"template_input,omitempty"`
 	Lint      bool      `json:"template_lint,omitempty"`
-	LintError LintError `json:"lint_error,omitempty"`
+	LintError LintError `json:"lint_error"`
 }
 
 type ValidateError struct {
-	Location string      `json:"location,omitempty"`
-	Message  string      `json:"message,omitempty"`
-	Name     string      `json:"name,omitempty"`
-	Argument interface{} `json:"argument,omitempty"`
-	Stack    string      `json:"stack,omitempty"`
+	Location string `json:"location,omitempty"`
+	Message  string `json:"message,omitempty"`
+	Name     string `json:"name,omitempty"`
+	Argument any    `json:"argument,omitempty"`
+	Stack    string `json:"stack,omitempty"`
 	Mark     struct {
 		Line   int `json:"line,omitempty"`
 		Column int `json:"column,omitempty"`
 		Pos    int `json:"pos,omitempty"`
-	} `json:"mark,omitempty"`
+	} `json:"mark"`
 }
 
 // TemplateResponse from templateman to be used for enhancing and formatting
@@ -46,11 +46,11 @@ type TemplateResp struct {
 	Enhance            bool            `json:"template_enhance,omitempty"`
 	Enhanced           string          `json:"enhanced_template,omitempty"`
 	Lint               bool            `json:"template_lint,omitempty"`
-	LintError          LintError       `json:"lint_error,omitempty"`
+	LintError          LintError       `json:"lint_error"`
 	Validate           bool            `json:"template_validate,omitempty"`
 	ValidateErrorCount int             `json:"validate_error_count,omitempty"`
 	ValidateError      []ValidateError `json:"validate_error,omitempty"`
-	Error              Error           `json:"error,omitempty"`
+	Error              Error           `json:"error"`
 }
 
 // InfoBlock Cloning struct from nuclei as we don't want any validation
@@ -72,9 +72,9 @@ type TemplateInfo struct {
 	Author         string                 `yaml:"author"`
 	Severity       string                 `yaml:"severity,omitempty"`
 	Description    string                 `yaml:"description,omitempty"`
-	Reference      interface{}            `yaml:"reference,omitempty"`
+	Reference      any                    `yaml:"reference,omitempty"`
 	Remediation    string                 `yaml:"remediation,omitempty"`
 	Classification TemplateClassification `yaml:"classification,omitempty"`
-	Metadata       map[string]interface{} `yaml:"metadata,omitempty"`
+	Metadata       map[string]any         `yaml:"metadata,omitempty"`
 	Tags           string                 `yaml:"tags,omitempty"`
 }

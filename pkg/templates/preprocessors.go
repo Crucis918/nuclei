@@ -11,7 +11,7 @@ import (
 
 type Preprocessor interface {
 	// Process processes the data and returns the processed data.
-	ProcessNReturnData(data []byte) ([]byte, map[string]interface{})
+	ProcessNReturnData(data []byte) ([]byte, map[string]any)
 	// Exists check if the preprocessor exists in the data.
 	Exists(data []byte) bool
 }
@@ -41,9 +41,9 @@ var _ Preprocessor = &randStrPreprocessor{}
 type randStrPreprocessor struct{}
 
 // ProcessNReturnData processes the data and returns the key-value pairs of generated/replaced data.
-func (r *randStrPreprocessor) ProcessNReturnData(data []byte) ([]byte, map[string]interface{}) {
+func (r *randStrPreprocessor) ProcessNReturnData(data []byte) ([]byte, map[string]any) {
 	foundMap := make(map[string]struct{})
-	dataMap := make(map[string]interface{})
+	dataMap := make(map[string]any)
 	for _, expression := range preprocessorRegex.FindAllStringSubmatch(string(data), -1) {
 		if len(expression) != 2 {
 			continue

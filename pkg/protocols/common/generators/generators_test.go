@@ -15,7 +15,7 @@ func TestBatteringRamGenerator(t *testing.T) {
 	usernames := []string{"admin", "password"}
 
 	catalogInstance := disk.NewCatalog("")
-	generator, err := New(map[string]interface{}{"username": usernames}, BatteringRamAttack, "", catalogInstance, "", getOptions(false))
+	generator, err := New(map[string]any{"username": usernames}, BatteringRamAttack, "", catalogInstance, "", getOptions(false))
 	require.Nil(t, err, "could not create generator")
 
 	iterator := generator.NewIterator()
@@ -35,7 +35,7 @@ func TestPitchforkGenerator(t *testing.T) {
 	passwords := []string{"password1", "password2", "password3"}
 
 	catalogInstance := disk.NewCatalog("")
-	generator, err := New(map[string]interface{}{"username": usernames, "password": passwords}, PitchForkAttack, "", catalogInstance, "", getOptions(false))
+	generator, err := New(map[string]any{"username": usernames, "password": passwords}, PitchForkAttack, "", catalogInstance, "", getOptions(false))
 	require.Nil(t, err, "could not create generator")
 
 	iterator := generator.NewIterator()
@@ -57,7 +57,7 @@ func TestClusterbombGenerator(t *testing.T) {
 	passwords := []string{"admin", "password", "token"}
 
 	catalogInstance := disk.NewCatalog("")
-	generator, err := New(map[string]interface{}{"username": usernames, "password": passwords}, ClusterBombAttack, "", catalogInstance, "", getOptions(false))
+	generator, err := New(map[string]any{"username": usernames, "password": passwords}, ClusterBombAttack, "", catalogInstance, "", getOptions(false))
 	require.Nil(t, err, "could not create generator")
 
 	iterator := generator.NewIterator()
@@ -105,7 +105,7 @@ func TestParsePayloadsWithAggression(t *testing.T) {
     - ../../../../etc/passwd
     - ../../../../../etc/passwd`
 
-	var payloads map[string]interface{}
+	var payloads map[string]any
 	err := yaml.NewDecoder(strings.NewReader(testPayload)).Decode(&payloads)
 	require.Nil(t, err, "could not unmarshal yaml")
 
@@ -130,10 +130,10 @@ func TestParsePayloadsWithAggression(t *testing.T) {
 
 	for k, v := range payloads {
 		for aggression, values := range aggressionsToValues {
-			parsed, err := parsePayloadsWithAggression(k, v.(map[interface{}]interface{}), aggression)
+			parsed, err := parsePayloadsWithAggression(k, v.(map[any]any), aggression)
 			require.Nil(t, err, "could not parse payloads with aggression")
 
-			gotValues := parsed[k].([]interface{})
+			gotValues := parsed[k].([]any)
 			require.Equal(t, len(values), len(gotValues), "could not get correct number of values")
 		}
 	}

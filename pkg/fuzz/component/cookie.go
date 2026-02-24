@@ -50,7 +50,7 @@ func (c *Cookie) Parse(req *retryablehttp.Request) (bool, error) {
 }
 
 // Iterate iterates through the component
-func (c *Cookie) Iterate(callback func(key string, value interface{}) error) (err error) {
+func (c *Cookie) Iterate(callback func(key string, value any) error) (err error) {
 	c.value.parsed.Iterate(func(key string, value any) bool {
 		if errx := callback(key, value); errx != nil {
 			err = errx

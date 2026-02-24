@@ -39,7 +39,7 @@ import (
 // Request is a request for the Websocket protocol
 type Request struct {
 	// Operators for the current request go here.
-	operators.Operators `yaml:",inline,omitempty" json:",inline,omitempty"`
+	operators.Operators `yaml:",inline,omitempty" json:",inline"`
 	CompiledOperators   *operators.Operators `yaml:"-" json:"-"`
 
 	// ID is the optional id of the request
@@ -59,14 +59,14 @@ type Request struct {
 	//
 	//   Sniper is each payload once, pitchfork combines multiple payload sets and clusterbomb generates
 	//   permutations and combinations for all payloads.
-	AttackType generators.AttackTypeHolder `yaml:"attack,omitempty" json:"attack,omitempty" jsonschema:"title=attack is the payload combination,description=Attack is the type of payload combinations to perform,enum=sniper,enum=pitchfork,enum=clusterbomb"`
+	AttackType generators.AttackTypeHolder `yaml:"attack,omitempty" json:"attack" jsonschema:"title=attack is the payload combination,description=Attack is the type of payload combinations to perform,enum=sniper,enum=pitchfork,enum=clusterbomb"`
 	// description: |
 	//   Payloads contains any payloads for the current request.
 	//
 	//   Payloads support both key-values combinations where a list
 	//   of payloads is provided, or optionally a single file can also
 	//   be provided as payload which will be read on run-time.
-	Payloads map[string]interface{} `yaml:"payloads,omitempty" json:"payloads,omitempty" jsonschema:"title=payloads for the websocket request,description=Payloads contains any payloads for the current request"`
+	Payloads map[string]any `yaml:"payloads,omitempty" json:"payloads,omitempty" jsonschema:"title=payloads for the websocket request,description=Payloads contains any payloads for the current request"`
 
 	generator *generators.PayloadGenerator
 
@@ -161,7 +161,7 @@ func (request *Request) ExecuteWithResults(input *contextargs.Context, dynamicVa
 			}
 		}
 	} else {
-		value := make(map[string]interface{})
+		value := make(map[string]any)
 		if err := request.executeRequestWithPayloads(input, hostname, value, previous, callback); err != nil {
 			return err
 		}
@@ -261,7 +261,7 @@ func (request *Request) executeRequestWithPayloads(target *contextargs.Context, 
 	requestOptions.Output.Request(requestOptions.TemplateID, input, request.Type().String(), err)
 	gologger.Verbose().Msgf("Sent Websocket request to %s", input)
 
-	data := make(map[string]interface{})
+	data := make(map[string]any)
 
 	data["type"] = request.Type().String()
 	data["success"] = "true"
@@ -291,9 +291,9 @@ func (request *Request) executeRequestWithPayloads(target *contextargs.Context, 
 	return nil
 }
 
-func (request *Request) readWriteInputWebsocket(conn net.Conn, payloadValues map[string]interface{}, input string, respBuilder *strings.Builder) (events map[string]interface{}, req string, err error) {
+func (request *Request) readWriteInputWebsocket(conn net.Conn, payloadValues map[string]any, input string, respBuilder *strings.Builder) (events map[string]any, req string, err error) {
 	reqBuilder := &strings.Builder{}
-	inputEvents := make(map[string]interface{})
+	inputEvents := make(map[string]any)
 
 	requestOptions := request.options
 	for _, req := range request.Inputs {
@@ -333,7 +333,7 @@ func (request *Request) readWriteInputWebsocket(conn net.Conn, payloadValues map
 
 			// Run any internal extractors for the request here and add found values to map.
 			if request.CompiledOperators != nil {
-				values := request.CompiledOperators.ExecuteInternalExtractors(map[string]interface{}{req.Name: bufferStr}, protocols.MakeDefaultExtractFunc)
+				values := request.CompiledOperators.ExecuteInternalExtractors(map[string]any{req.Name: bufferStr}, protocols.MakeDefaultExtractFunc)
 				maps.Copy(inputEvents, values)
 			}
 		}
@@ -361,12 +361,12 @@ func getAddress(toTest string) (string, error) {
 // Match performs matching operation for a matcher on model and returns:
 // true and a list of matched snippets if the matcher type is supports it
 // otherwise false and an empty string slice
-func (request *Request) Match(data map[string]interface{}, matcher *matchers.Matcher) (bool, []string) {
+func (request *Request) Match(data map[string]any, matcher *matchers.Matcher) (bool, []string) {
 	return protocols.MakeDefaultMatchFunc(data, matcher)
 }
 
 // Extract performs extracting operation for an extractor on model and returns true or false.
-func (request *Request) Extract(data map[string]interface{}, matcher *extractors.Extractor) map[string]struct{} {
+func (request *Request) Extract(data map[string]any, matcher *extractors.Extractor) map[string]struct{} {
 	return protocols.MakeDefaultExtractFunc(data, matcher)
 }
 

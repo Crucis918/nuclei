@@ -140,8 +140,8 @@ func (p *StatsTicker) IncrementFailedRequestsBy(count int64) {
 	p.stats.IncrementCounter("errors", int(count))
 }
 
-func (p *StatsTicker) makePrintCallback() func(stats clistats.StatisticsClient) interface{} {
-	return func(stats clistats.StatisticsClient) interface{} {
+func (p *StatsTicker) makePrintCallback() func(stats clistats.StatisticsClient) any {
+	return func(stats clistats.StatisticsClient) any {
 		builder := &strings.Builder{}
 
 		var duration time.Duration
@@ -208,7 +208,7 @@ func (p *StatsTicker) makePrintCallback() func(stats clistats.StatisticsClient) 
 	}
 }
 
-func printCallbackJSON(stats clistats.StatisticsClient) interface{} {
+func printCallbackJSON(stats clistats.StatisticsClient) any {
 	builder := &strings.Builder{}
 	if err := json.NewEncoder(builder).Encode(metricsMap(stats)); err == nil {
 		_, _ = fmt.Fprintf(os.Stderr, "%s", builder.String())
@@ -216,8 +216,8 @@ func printCallbackJSON(stats clistats.StatisticsClient) interface{} {
 	return builder.String()
 }
 
-func metricsMap(stats clistats.StatisticsClient) map[string]interface{} {
-	results := make(map[string]interface{})
+func metricsMap(stats clistats.StatisticsClient) map[string]any {
+	results := make(map[string]any)
 
 	var (
 		startedAt time.Time

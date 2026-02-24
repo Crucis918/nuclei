@@ -11,7 +11,7 @@ import (
 )
 
 // loadPayloads loads the input payloads from a map to a data map
-func (generator *PayloadGenerator) loadPayloads(payloads map[string]interface{}, templatePath string) (map[string][]string, error) {
+func (generator *PayloadGenerator) loadPayloads(payloads map[string]any, templatePath string) (map[string][]string, error) {
 	loadedPayloads := make(map[string][]string)
 
 	for name, payload := range payloads {
@@ -46,7 +46,7 @@ func (generator *PayloadGenerator) loadPayloads(payloads map[string]interface{},
 				}
 				loadedPayloads[name] = payloads
 			}
-		case interface{}:
+		case any:
 			loadedPayloads[name] = cast.ToStringSlice(pt)
 		}
 	}

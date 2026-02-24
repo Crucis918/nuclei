@@ -6,11 +6,11 @@ import (
 	stringsutil "github.com/projectdiscovery/utils/strings"
 )
 
-var envVars map[string]interface{}
+var envVars map[string]any
 
-func parseEnvVars() map[string]interface{} {
+func parseEnvVars() map[string]any {
 	sliceEnvVars := os.Environ()
-	parsedEnvVars := make(map[string]interface{}, len(sliceEnvVars))
+	parsedEnvVars := make(map[string]any, len(sliceEnvVars))
 	for _, envVar := range sliceEnvVars {
 		key, _ := stringsutil.Before(envVar, "=")
 		val, _ := stringsutil.After(envVar, "=")
@@ -20,7 +20,7 @@ func parseEnvVars() map[string]interface{} {
 }
 
 // EnvVars returns a map with all environment variables into a map
-func EnvVars() map[string]interface{} {
+func EnvVars() map[string]any {
 	if envVars == nil {
 		envVars = parseEnvVars()
 	}

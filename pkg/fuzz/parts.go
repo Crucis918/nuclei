@@ -24,7 +24,7 @@ func (rule *Rule) checkRuleApplicableOnComponent(component component.Component) 
 		return false
 	}
 	foundAny := false
-	_ = component.Iterate(func(key string, value interface{}) error {
+	_ = component.Iterate(func(key string, value any) error {
 		if rule.matchKeyOrValue(key, types.ToString(value)) {
 			foundAny = true
 			return io.EOF
@@ -50,7 +50,7 @@ func (rule *Rule) executePartComponent(input *ExecuteRuleInput, payload ValueOrK
 // this supports both single and multiple [ruleType] modes
 // i.e if component has multiple values, they can be replaced once or all depending on mode
 func (rule *Rule) executePartComponentOnValues(input *ExecuteRuleInput, payloadStr, originalPayload string, ruleComponent component.Component) error {
-	finalErr := ruleComponent.Iterate(func(key string, value interface{}) error {
+	finalErr := ruleComponent.Iterate(func(key string, value any) error {
 		valueStr := types.ToString(value)
 		if !rule.matchKeyOrValue(key, valueStr) {
 			// ignore non-matching keys
@@ -109,10 +109,10 @@ func (rule *Rule) executePartComponentOnValues(input *ExecuteRuleInput, payloadS
 // currently only supports single mode
 func (rule *Rule) executePartComponentOnKV(input *ExecuteRuleInput, payload ValueOrKeyValue, ruleComponent component.Component) error {
 	var origKey string
-	var origValue interface{}
+	var origValue any
 	// when we have a key-value pair, iterate over only 1 value of the component
 	// multiple values (aka multiple mode) not supported for this yet
-	_ = ruleComponent.Iterate(func(key string, value interface{}) error {
+	_ = ruleComponent.Iterate(func(key string, value any) error {
 		if key == payload.Key {
 			origKey = key
 			origValue = value
@@ -191,7 +191,7 @@ func (rule *Rule) execWithInput(input *ExecuteRuleInput, httpReq *retryablehttp.
 // for fuzzing.
 func (rule *Rule) executeEvaluate(input *ExecuteRuleInput, _, value, payload string, interactshURLs []string) (string, []string) {
 	// TODO: Handle errors
-	values := generators.MergeMaps(rule.options.Variables.GetAll(), map[string]interface{}{
+	values := generators.MergeMaps(rule.options.Variables.GetAll(), map[string]any{
 		"value": value,
 	}, rule.options.Options.Vars.AsMap(), input.Values)
 	firstpass, _ := expressions.Evaluate(payload, values)

@@ -67,8 +67,8 @@ func IsOutdatedVersion(current, latest string) bool {
 
 // trimDevIfExists trims `-dev` suffix from version string if it exists
 func trimDevIfExists(version string) string {
-	if strings.HasSuffix(version, "-dev") {
-		return strings.TrimSuffix(version, "-dev")
+	if before, ok := strings.CutSuffix(version, "-dev"); ok {
+		return before
 	}
 	return version
 }

@@ -103,7 +103,7 @@ type Result struct {
 	// DynamicValues contains any dynamic values to be templated
 	DynamicValues map[string][]string
 	// PayloadValues contains payload values provided by user. (Optional)
-	PayloadValues map[string]interface{}
+	PayloadValues map[string]any
 
 	// Optional lineCounts for file protocol
 	LineCount string
@@ -131,8 +131,8 @@ func (result *Result) hasItem(name string, m map[string][]string) bool {
 // MakeDynamicValuesCallback takes an input dynamic values map and calls
 // the callback function with all variations of the data in input in form
 // of map[string]string (interface{}).
-func MakeDynamicValuesCallback(input map[string][]string, iterateAllValues bool, callback func(map[string]interface{}) bool) {
-	output := make(map[string]interface{}, len(input))
+func MakeDynamicValuesCallback(input map[string][]string, iterateAllValues bool, callback func(map[string]any) bool) {
+	output := make(map[string]any, len(input))
 
 	if !iterateAllValues {
 		for k, v := range input {
@@ -223,13 +223,13 @@ func (r *Result) Merge(result *Result) {
 }
 
 // MatchFunc performs matching operation for a matcher on model and returns true or false.
-type MatchFunc func(data map[string]interface{}, matcher *matchers.Matcher) (bool, []string)
+type MatchFunc func(data map[string]any, matcher *matchers.Matcher) (bool, []string)
 
 // ExtractFunc performs extracting operation for an extractor on model and returns true or false.
-type ExtractFunc func(data map[string]interface{}, matcher *extractors.Extractor) map[string]struct{}
+type ExtractFunc func(data map[string]any, matcher *extractors.Extractor) map[string]struct{}
 
 // Execute executes the operators on data and returns a result structure
-func (operators *Operators) Execute(data map[string]interface{}, match MatchFunc, extract ExtractFunc, isDebug bool) (*Result, bool) {
+func (operators *Operators) Execute(data map[string]any, match MatchFunc, extract ExtractFunc, isDebug bool) (*Result, bool) {
 	matcherCondition := operators.GetMatchersCondition()
 
 	var matches bool
@@ -277,7 +277,7 @@ func (operators *Operators) Execute(data map[string]interface{}, match MatchFunc
 
 	// expose dynamic values to same request matchers
 	if len(result.DynamicValues) > 0 {
-		dataDynamicValues := make(map[string]interface{})
+		dataDynamicValues := make(map[string]any)
 		for dynName, dynValues := range result.DynamicValues {
 			if len(dynValues) > 1 {
 				for dynIndex, dynValue := range dynValues {
@@ -356,8 +356,8 @@ func GetMatcherName(matcher *matchers.Matcher, matcherIndex int) string {
 }
 
 // ExecuteInternalExtractors executes internal dynamic extractors
-func (operators *Operators) ExecuteInternalExtractors(data map[string]interface{}, extract ExtractFunc) map[string]interface{} {
-	dynamicValues := make(map[string]interface{})
+func (operators *Operators) ExecuteInternalExtractors(data map[string]any, extract ExtractFunc) map[string]any {
+	dynamicValues := make(map[string]any)
 
 	// Start with the extractors first and evaluate them.
 	for _, extractor := range operators.Extractors {

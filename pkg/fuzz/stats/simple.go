@@ -107,7 +107,7 @@ type SimpleStatsResponse struct {
 
 func (s *simpleStats) GetStatistics() SimpleStatsResponse {
 	statusStats := make(map[string]int64)
-	s.statusCodes.Range(func(key, value interface{}) bool {
+	s.statusCodes.Range(func(key, value any) bool {
 		if count, ok := value.(*atomic.Int64); ok {
 			statusStats[formatStatusCode(key.(int))] = count.Load()
 		}
@@ -115,7 +115,7 @@ func (s *simpleStats) GetStatistics() SimpleStatsResponse {
 	})
 
 	severityStats := make(map[string]int64)
-	s.severityCounts.Range(func(key, value interface{}) bool {
+	s.severityCounts.Range(func(key, value any) bool {
 		if count, ok := value.(*atomic.Int64); ok {
 			severityStats[key.(string)] = count.Load()
 		}
@@ -123,7 +123,7 @@ func (s *simpleStats) GetStatistics() SimpleStatsResponse {
 	})
 
 	errorStats := make(map[string]int64)
-	s.errorGroupedStats.Range(func(key, value interface{}) bool {
+	s.errorGroupedStats.Range(func(key, value any) bool {
 		if count, ok := value.(*atomic.Int64); ok {
 			errorStats[key.(string)] = count.Load()
 		}

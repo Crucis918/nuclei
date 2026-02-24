@@ -15,9 +15,9 @@ var commonExpectedFields = []string{"Type", "Condition", "Name", "MatchAll", "Ne
 // Validate perform initial validation on the matcher structure
 func (matcher *Matcher) Validate() error {
 	// Build a map of YAML‐tag names that are actually set (non-zero) in the matcher.
-	matcherMap := make(map[string]interface{})
+	matcherMap := make(map[string]any)
 	val := reflect.ValueOf(*matcher)
-	typ := reflect.TypeOf(*matcher)
+	typ := reflect.TypeFor[Matcher]()
 	for i := 0; i < typ.NumField(); i++ {
 		field := typ.Field(i)
 		// skip internal / unexported or opt-out fields
@@ -65,7 +65,7 @@ func (matcher *Matcher) Validate() error {
 	return nil
 }
 
-func checkFields(m *Matcher, matcherMap map[string]interface{}, expectedFields ...string) error {
+func checkFields(m *Matcher, matcherMap map[string]any, expectedFields ...string) error {
 	var foundUnexpectedFields []string
 	for marshaledFieldName := range matcherMap {
 		// revert back the marshaled name to the original field
@@ -83,7 +83,7 @@ func checkFields(m *Matcher, matcherMap map[string]interface{}, expectedFields .
 	return nil
 }
 
-func getFieldNameFromYamlTag(tagName string, object interface{}) (string, error) {
+func getFieldNameFromYamlTag(tagName string, object any) (string, error) {
 	reflectType := reflect.TypeOf(object)
 	if reflectType.Kind() != reflect.Struct {
 		return "", errors.New("the object must be a struct")

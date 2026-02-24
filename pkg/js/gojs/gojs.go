@@ -11,15 +11,15 @@ import (
 	"github.com/projectdiscovery/nuclei/v3/pkg/js/utils"
 )
 
-type Objects map[string]interface{}
+type Objects map[string]any
 
 type Runtime interface {
-	Set(string, interface{}) error
+	Set(string, any) error
 }
 
 type Object interface {
-	Set(string, interface{})
-	Get(string) interface{}
+	Set(string, any)
+	Get(string) any
 }
 
 type Module interface {
@@ -31,14 +31,14 @@ type Module interface {
 
 type GojaModule struct {
 	name string
-	sets map[string]interface{}
+	sets map[string]any
 	once sync.Once
 }
 
 func NewGojaModule(name string) Module {
 	return &GojaModule{
 		name: name,
-		sets: make(map[string]interface{}),
+		sets: make(map[string]any),
 	}
 }
 
@@ -52,7 +52,7 @@ func (p *GojaModule) Name() string {
 
 // wrapModuleFunc wraps a Go function with context injection for modules
 // nolint
-func wrapModuleFunc(runtime *goja.Runtime, fn interface{}) interface{} {
+func wrapModuleFunc(runtime *goja.Runtime, fn any) any {
 	fnType := reflect.TypeOf(fn)
 	if fnType.Kind() != reflect.Func {
 		return fn

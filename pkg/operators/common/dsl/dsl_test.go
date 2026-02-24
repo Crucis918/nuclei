@@ -14,7 +14,7 @@ func TestDslExpressions(t *testing.T) {
 	// Use Google DNS for more reliable testing
 	googleDNS := []string{"8.8.8.8:53", "8.8.4.4:53"}
 
-	dslExpressions := map[string]interface{}{
+	dslExpressions := map[string]any{
 		`resolve("scanme.sh")`:        "128.199.158.128",
 		`resolve("scanme.sh","a")`:    "128.199.158.128",
 		`resolve("scanme.sh","6")`:    "2400:6180:0:d0::91:1001",
@@ -25,11 +25,11 @@ func TestDslExpressions(t *testing.T) {
 	testDslExpressionScenariosWithDNS(t, dslExpressions, googleDNS)
 }
 
-func evaluateExpression(t *testing.T, dslExpression string) interface{} {
+func evaluateExpression(t *testing.T, dslExpression string) any {
 	compiledExpression, err := govaluate.NewEvaluableExpressionWithFunctions(dslExpression, HelperFunctions)
 	require.NoError(t, err, "Error while compiling the %q expression", dslExpression)
 
-	actualResult, err := compiledExpression.Evaluate(make(map[string]interface{}))
+	actualResult, err := compiledExpression.Evaluate(make(map[string]any))
 	require.NoError(t, err, "Error while evaluating the compiled %q expression", dslExpression)
 
 	for _, negativeTestWord := range []string{"panic", "invalid", "error"} {
@@ -39,7 +39,7 @@ func evaluateExpression(t *testing.T, dslExpression string) interface{} {
 	return actualResult
 }
 
-func testDslExpressionScenariosWithDNS(t *testing.T, dslExpressions map[string]interface{}, resolvers []string) {
+func testDslExpressionScenariosWithDNS(t *testing.T, dslExpressions map[string]any, resolvers []string) {
 	// Initialize DNS client pool with custom resolvers for testing
 	err := dnsclientpool.Init(&types.Options{
 		InternalResolversList: resolvers,

@@ -10,10 +10,10 @@ import (
 //
 // Deprecated: Not used anymore.
 // nolint: unused
-func replaceWithValues(data string, values map[string]interface{}) string {
+func replaceWithValues(data string, values map[string]any) string {
 	return fasttemplate.ExecuteStringStd(data, marker.ParenthesisOpen, marker.ParenthesisClose, values)
 }
 
-func getExpressions(data string, values map[string]interface{}) []string {
+func getExpressions(data string, values map[string]any) []string {
 	return expressions.FindExpressions(data, marker.ParenthesisOpen, marker.ParenthesisClose, values)
 }

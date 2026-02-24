@@ -22,9 +22,9 @@ func hasOperators(all []*operators.Operators) bool {
 	return false
 }
 
-func flatten(v interface{}) interface{} {
+func flatten(v any) any {
 	switch v := v.(type) {
-	case []interface{}:
+	case []any:
 		if len(v) == 1 {
 			return v[0]
 		}

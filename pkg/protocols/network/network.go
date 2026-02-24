@@ -37,14 +37,14 @@ type Request struct {
 	//
 	//   Batteringram is inserts the same payload into all defined payload positions at once, pitchfork combines multiple payload sets and clusterbomb generates
 	//   permutations and combinations for all payloads.
-	AttackType generators.AttackTypeHolder `yaml:"attack,omitempty" json:"attack,omitempty" jsonschema:"title=attack is the payload combination,description=Attack is the type of payload combinations to perform,enum=batteringram,enum=pitchfork,enum=clusterbomb"`
+	AttackType generators.AttackTypeHolder `yaml:"attack,omitempty" json:"attack" jsonschema:"title=attack is the payload combination,description=Attack is the type of payload combinations to perform,enum=batteringram,enum=pitchfork,enum=clusterbomb"`
 	// description: |
 	//   Payloads contains any payloads for the current request.
 	//
 	//   Payloads support both key-values combinations where a list
 	//   of payloads is provided, or optionally a single file can also
 	//   be provided as payload which will be read on run-time.
-	Payloads map[string]interface{} `yaml:"payloads,omitempty" json:"payloads,omitempty" jsonschema:"title=payloads for the network request,description=Payloads contains any payloads for the current request"`
+	Payloads map[string]any `yaml:"payloads,omitempty" json:"payloads,omitempty" jsonschema:"title=payloads for the network request,description=Payloads contains any payloads for the current request"`
 	// description: |
 	//   Threads specifies number of threads to use sending requests. This enables Connection Pooling.
 	//
@@ -140,7 +140,7 @@ type Input struct {
 	// values:
 	//   - "hex"
 	//   - "text"
-	Type NetworkInputTypeHolder `yaml:"type,omitempty" json:"type,omitempty" jsonschema:"title=type is the type of input data,description=Type of input specified in data field,enum=hex,enum=text"`
+	Type NetworkInputTypeHolder `yaml:"type,omitempty" json:"type" jsonschema:"title=type is the type of input data,description=Type of input specified in data field,enum=hex,enum=text"`
 	// description: |
 	//   Read is the number of bytes to read from socket.
 	//
@@ -199,7 +199,7 @@ func (request *Request) Compile(options *protocols.ExecutorOptions) error {
 
 	// parse ports and validate
 	if request.Port != "" {
-		for _, port := range strings.Split(request.Port, ",") {
+		for port := range strings.SplitSeq(request.Port, ",") {
 			if port == "" {
 				continue
 			}
@@ -223,14 +223,14 @@ func (request *Request) Compile(options *protocols.ExecutorOptions) error {
 			if input.Type.String() != "" {
 				continue
 			}
-			if expressions.ContainsVariablesWithNames(map[string]interface{}{name: payload}, input.Data) == nil {
+			if expressions.ContainsVariablesWithNames(map[string]any{name: payload}, input.Data) == nil {
 				hasPayloadName = true
 				break
 			}
 		}
 		if ok && hasPayloadName && fileutil.FileExists(payloadStr) {
 			if request.Payloads == nil {
-				request.Payloads = make(map[string]interface{})
+				request.Payloads = make(map[string]any)
 			}
 			request.Payloads[name] = payloadStr
 		}

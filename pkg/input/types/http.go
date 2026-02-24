@@ -101,7 +101,7 @@ func (rr *RequestResponse) ID() string {
 
 // MarshalJSON marshals the request response to json
 func (rr *RequestResponse) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
+	m := make(map[string]any)
 	m["url"] = rr.URL.String()
 	reqBin, err := json.Marshal(rr.Request)
 	if err != nil {

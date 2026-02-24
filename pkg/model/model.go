@@ -9,12 +9,12 @@ import (
 type schemaMetadata struct {
 	PropName string
 	PropType string
-	Example  []interface{}
+	Example  []any
 	OneOf    []*schemaMetadata
 }
 
 var infoSchemaMetadata = []schemaMetadata{
-	{PropName: "author", OneOf: []*schemaMetadata{{PropType: "string", Example: []interface{}{`pdteam`}}, {PropType: "array", Example: []interface{}{`pdteam,mr.robot`}}}},
+	{PropName: "author", OneOf: []*schemaMetadata{{PropType: "string", Example: []any{`pdteam`}}, {PropType: "array", Example: []any{`pdteam,mr.robot`}}}},
 }
 
 // Info contains metadata information about a template
@@ -32,7 +32,7 @@ type Info struct {
 	//   Multiple values can also be specified separated by commas.
 	// examples:
 	//   - value: "\"<username>\""
-	Authors stringslice.StringSlice `json:"author,omitempty" yaml:"author,omitempty" jsonschema:"title=author of the template,description=Author is the author of the template,required,example=username"`
+	Authors stringslice.StringSlice `json:"author" yaml:"author,omitempty" jsonschema:"title=author of the template,description=Author is the author of the template,required,example=username"`
 	// description: |
 	//   Any tags for the template.
 	//
@@ -41,7 +41,7 @@ type Info struct {
 	// examples:
 	//   - name: Example tags
 	//     value: "\"cve,cve2019,grafana,auth-bypass,dos\""
-	Tags stringslice.StringSlice `json:"tags,omitempty" yaml:"tags,omitempty" jsonschema:"title=tags of the template,description=Any tags for the template"`
+	Tags stringslice.StringSlice `json:"tags" yaml:"tags,omitempty" jsonschema:"title=tags of the template,description=Any tags for the template"`
 	// description: |
 	//   Description of the template.
 	//
@@ -71,14 +71,14 @@ type Info struct {
 	Reference *stringslice.RawStringSlice `json:"reference,omitempty" yaml:"reference,omitempty" jsonschema:"title=references for the template,description=Links relevant to the template"`
 	// description: |
 	//   Severity of the template.
-	SeverityHolder severity.Holder `json:"severity,omitempty" yaml:"severity,omitempty"`
+	SeverityHolder severity.Holder `json:"severity" yaml:"severity,omitempty"`
 	// description: |
 	//   Metadata of the template.
 	//
 	// examples:
 	//   - value: >
 	//       map[string]string{"customField1":"customValue1"}
-	Metadata map[string]interface{} `json:"metadata,omitempty" yaml:"metadata,omitempty" jsonschema:"title=additional metadata for the template,description=Additional metadata fields for the template,type=object"`
+	Metadata map[string]any `json:"metadata,omitempty" yaml:"metadata,omitempty" jsonschema:"title=additional metadata for the template,description=Additional metadata fields for the template,type=object"`
 
 	// description: |
 	//   Classification contains classification information about the template.
@@ -111,7 +111,7 @@ func (i Info) JSONSchemaExtend(base *jsonschema.Schema) {
 				if metadata.PropType != "" {
 					prop.Type = metadata.PropType
 				}
-				prop.Examples = []interface{}{metadata.Example}
+				prop.Examples = []any{metadata.Example}
 			}
 		}
 	}
@@ -123,12 +123,12 @@ type Classification struct {
 	//   CVE ID for the template
 	// examples:
 	//   - value: "\"CVE-2020-14420\""
-	CVEID stringslice.StringSlice `json:"cve-id,omitempty" yaml:"cve-id,omitempty" jsonschema:"title=cve ids for the template,description=CVE IDs for the template,example=CVE-2020-14420"`
+	CVEID stringslice.StringSlice `json:"cve-id" yaml:"cve-id,omitempty" jsonschema:"title=cve ids for the template,description=CVE IDs for the template,example=CVE-2020-14420"`
 	// description: |
 	//   CWE ID for the template.
 	// examples:
 	//   - value: "\"CWE-22\""
-	CWEID stringslice.StringSlice `json:"cwe-id,omitempty" yaml:"cwe-id,omitempty" jsonschema:"title=cwe ids for the template,description=CWE IDs for the template,example=CWE-22"`
+	CWEID stringslice.StringSlice `json:"cwe-id" yaml:"cwe-id,omitempty" jsonschema:"title=cwe ids for the template,description=CWE IDs for the template,example=CWE-22"`
 	// description: |
 	//   CVSS Metrics for the template.
 	// examples:

@@ -15,7 +15,7 @@ import (
 func memoizedisPostgres(executionId string, host string, port int) (bool, error) {
 	hash := "isPostgres" + ":" + fmt.Sprint(executionId) + ":" + fmt.Sprint(host) + ":" + fmt.Sprint(port)
 
-	v, err, _ := protocolstate.Memoizer.Do(hash, func() (interface{}, error) {
+	v, err, _ := protocolstate.Memoizer.Do(hash, func() (any, error) {
 		return isPostgres(executionId, host, port)
 	})
 	if err != nil {
@@ -31,7 +31,7 @@ func memoizedisPostgres(executionId string, host string, port int) (bool, error)
 func memoizedexecuteQuery(executionId string, host string, port int, username string, password string, dbName string, query string) (*utils.SQLResult, error) {
 	hash := "executeQuery" + ":" + fmt.Sprint(executionId) + ":" + fmt.Sprint(host) + ":" + fmt.Sprint(port) + ":" + fmt.Sprint(username) + ":" + fmt.Sprint(password) + ":" + fmt.Sprint(dbName) + ":" + fmt.Sprint(query)
 
-	v, err, _ := protocolstate.Memoizer.Do(hash, func() (interface{}, error) {
+	v, err, _ := protocolstate.Memoizer.Do(hash, func() (any, error) {
 		return executeQuery(executionId, host, port, username, password, dbName, query)
 	})
 	if err != nil {
@@ -47,7 +47,7 @@ func memoizedexecuteQuery(executionId string, host string, port int, username st
 func memoizedconnect(executionId string, host string, port int, username string, password string, dbName string) (bool, error) {
 	hash := "connect" + ":" + fmt.Sprint(executionId) + ":" + fmt.Sprint(host) + ":" + fmt.Sprint(port) + ":" + fmt.Sprint(username) + ":" + fmt.Sprint(password) + ":" + fmt.Sprint(dbName)
 
-	v, err, _ := protocolstate.Memoizer.Do(hash, func() (interface{}, error) {
+	v, err, _ := protocolstate.Memoizer.Do(hash, func() (any, error) {
 		return connect(executionId, host, port, username, password, dbName)
 	})
 	if err != nil {
