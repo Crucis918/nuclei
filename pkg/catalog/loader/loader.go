@@ -42,6 +42,8 @@ const (
 
 var (
 	TrustedTemplateDomains = []string{"cloud.projectdiscovery.io"}
+	ErrDialersNotFound     = errors.New("dialers not found")
+	ErrNoMatchingTemplates = errors.New("no matching templates found")
 )
 
 // Config contains the configuration options for the loader
@@ -638,7 +640,13 @@ func isParsingError(store *Store, message string, template string, err error) bo
 
 // LoadTemplates takes a list of templates and returns paths for them
 func (store *Store) LoadTemplates(templatesList []string) []*templates.Template {
-	return store.LoadTemplatesWithTags(templatesList, nil)
+	loadedTemplates, err := store.LoadTemplatesWithTags(templatesList, nil)
+	if err != nil {
+		store.logger.Error().Msgf("could not load templates: %s", err)
+		return []*templates.Template{}
+	}
+
+	return loadedTemplates
 }
 
 // LoadWorkflows takes a list of workflows and returns paths for them
@@ -668,7 +676,7 @@ func (store *Store) LoadWorkflows(workflowsList []string) []*templates.Template 
 
 // LoadTemplatesWithTags takes a list of templates and extra tags
 // returning templates that match.
-func (store *Store) LoadTemplatesWithTags(templatesList, tags []string) []*templates.Template {
+func (store *Store) LoadTemplatesWithTags(templatesList, tags []string) ([]*templates.Template, error) {
 	defer store.saveMetadataIndexOnce()
 
 	indexFilter := store.indexFilter
@@ -706,18 +714,25 @@ func (store *Store) LoadTemplatesWithTags(templatesList, tags []string) []*templ
 		concurrency = types.DefaultTemplateLoadingConcurrency
 	}
 
-	wgLoadTemplates, errWg := syncutil.New(syncutil.WithSize(concurrency))
-	if errWg != nil {
-		panic("could not create wait group")
-	}
-
 	if typesOpts.ExecutionId == "" {
 		typesOpts.ExecutionId = xid.New().String()
 	}
 
-	dialers := protocolstate.GetDialersWithId(typesOpts.ExecutionId)
-	if dialers == nil {
-		panic("dialers with executionId " + typesOpts.ExecutionId + " not found")
+	if protocolstate.GetDialersWithId(typesOpts.ExecutionId) == nil {
+		if err := protocolstate.Init(typesOpts); err != nil {
+			store.logger.Error().Msgf("dialers init failed for executionId %s: %s", typesOpts.ExecutionId, err)
+			return nil, errors.Wrapf(err, "dialers init failed for executionId %s", typesOpts.ExecutionId)
+		}
+		if protocolstate.GetDialersWithId(typesOpts.ExecutionId) == nil {
+			store.logger.Error().Msgf("dialers with executionId %s not found", typesOpts.ExecutionId)
+			return nil, errors.Wrapf(ErrDialersNotFound, "dialers with executionId %s not found", typesOpts.ExecutionId)
+		}
+	}
+
+	wgLoadTemplates, errWg := syncutil.New(syncutil.WithSize(concurrency))
+	if errWg != nil {
+		store.logger.Error().Msgf("could not create wait group: %s", errWg)
+		return nil, errors.Wrap(errWg, "could not create wait group")
 	}
 
 	for _, templatePath := range includedTemplates {
@@ -852,7 +867,11 @@ func (store *Store) LoadTemplatesWithTags(templatesList, tags []string) []*templ
 		return loadedTemplates.Slice[i].Path < loadedTemplates.Slice[j].Path
 	})
 
-	return loadedTemplates.Slice
+	if len(loadedTemplates.Slice) == 0 {
+		return nil, errors.Wrapf(ErrNoMatchingTemplates, "for tags %v", tags)
+	}
+
+	return loadedTemplates.Slice, nil
 }
 
 // IsHTTPBasedProtocolUsed returns true if http/headless protocol is being used for
